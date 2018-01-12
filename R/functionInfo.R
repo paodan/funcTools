@@ -29,7 +29,6 @@ functionInfo = setClass(Class = "functionInfo",
 #' @param f a function name with or without quotation
 #' @param pattern  regular expression to match the methods
 #' @param envir environment to search
-#' @keywords funcTools
 #' @return A functionInfo object, containing the function type, 
 #'         whether containing S3 or S4 methods, dirrect function source, 
 #'         S3 methods info, and S4 methods info.

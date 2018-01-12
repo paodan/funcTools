@@ -30,4 +30,3 @@ funCode(funCode)
 # The source of plot for data.frame
 funCode("plot", "data.frame")
 }
-\keyword{funcTools}
