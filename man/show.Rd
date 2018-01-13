@@ -11,6 +11,3 @@
 \arguments{
 \item{object}{an object of functionInfo class}
 }
-\description{
-show,functionInfo-method
-}

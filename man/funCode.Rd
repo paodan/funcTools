@@ -14,8 +14,8 @@ funCode(f = character(), pattern = NULL, envir = topenv(parent.frame()))
 \item{envir}{environment to search}
 }
 \value{
-A functionInfo object, containing the function type, 
-        whether containing S3 or S4 methods, dirrect function source, 
+A functionInfo object, containing the function type,
+        whether containing S3 or S4 methods, dirrect function source,
         S3 methods info, and S4 methods info.
 }
 \description{
