@@ -51,4 +51,8 @@ yx = list(y = 1, x = 3)
 clear("^x")
 ls(all.names = TRUE)
 
+# Remove variables end with "x".
+clear("x$")
+ls(all.names = TRUE)
+
 }

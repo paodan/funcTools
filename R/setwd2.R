@@ -74,6 +74,10 @@ setwd2 = function(dir, preDir = NULL, local = "Ubuntu", remote = "CentOS"){
 #' clear("^x")
 #' ls(all.names = TRUE)
 #'
+#' # Remove variables end with "x".
+#' clear("x$")
+#' ls(all.names = TRUE)
+#'
 #' @export
 clear = function(pattern = "*", all.names = FALSE, envir = parent.frame()){
   List = ls(pattern = pattern, all.names = all.names, envir = envir)
