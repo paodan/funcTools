@@ -13,7 +13,7 @@ setwd2(dir, preDir = NULL, local = "Ubuntu", remote = "CentOS")
 what path needs to be prefixed? If preDir = NULL, only dir is considered.}
 
 \item{local}{A character string: local platform name, which can be
-obtained by running sessionInfo()$running. If local = NULL,
+obtained by running \code{\link{sessionInfo}}()$running. If local = NULL,
 then preDir will not be considered. Letter case is ignored.}
 
 \item{remote}{A character string: remote platform name,

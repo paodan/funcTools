@@ -5,7 +5,7 @@
 #' @param preDir A character string: if the remote path is accessed locally,
 #' what path needs to be prefixed? If preDir = NULL, only dir is considered.
 #' @param local A character string: local platform name, which can be
-#' obtained by running sessionInfo()$running. If local = NULL,
+#' obtained by running \code{\link{sessionInfo}}()$running. If local = NULL,
 #' then preDir will not be considered. Letter case is ignored.
 #' @param remote A character string: remote platform name,
 #' if NULL then preDir will not be considered. Letter case is ignored.
