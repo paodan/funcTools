@@ -34,3 +34,50 @@ setwd2 = function(dir, preDir = NULL, local = "Ubuntu", remote = "CentOS"){
   }
   return(invisible(oldDir))
 }
+
+
+#' @title clear
+#' @description clear removes the variables, matched by the pattern,
+#' from the environment (the default is Global Environment).
+#' It will return the name of variables which have been removed.
+#' @param pattern A character string. The regular expression pattern of
+#' variable names to be removed.
+#' @param all.names Logical. If TRUE, all object names are returned.
+#' If FALSE, names which begin with a . are omitted.
+#' @param envir An alternative argument to name for specifying the environment.
+#' @return The name of variables which have been removed.
+#' @examples
+#' # Remove all (visible) variables in the Global Environment.
+#' x1 = 1
+#' x3 = "a"
+#' xx = TRUE
+#' y = function(x) x
+#' y1 = 1:4
+#' yx = list(y = 1, x = 3)
+#' .x = data.frame(rnorm(5))
+#' ls(all.names = TRUE)
+#' clear()
+#' ls(all.names = TRUE)
+#'
+#' # Remove all variables including (invisible) variables begin with a ".".
+#' clear(all.names = TRUE)
+#' ls(all.names = TRUE)
+#'
+#' # Remove variables begin with "x".
+#' x1 = 1
+#' x3 = "a"
+#' xx = TRUE
+#' y = function(x) x
+#' y1 = 1:4
+#' yx = list(y = 1, x = 3)
+#' .x = data.frame(rnorm(5))
+#' clear("^x")
+#' ls(all.names = TRUE)
+#'
+#' @export
+clear = function(pattern = "*", all.names = FALSE, envir = parent.frame()){
+  List = ls(pattern = pattern, all.names = all.names, envir = envir)
+  rm(list = List, envir = envir)
+  gc(reset = TRUE)
+  return(List)
+}
