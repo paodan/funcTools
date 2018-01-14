@@ -23,7 +23,6 @@ setwd2 = function(dir, preDir = NULL, local = "Ubuntu", remote = "CentOS"){
   if (is.null(preDir) || is.null(local) || is.null(remote)) {
     oldDir = setwd(dir)
   }
-
   sinfo = sessionInfo()
   machine = c(local = length(grep(local, sinfo$running, TRUE)) > 0,
               remote = length(grep(remote, sinfo$running, TRUE)) > 0)
