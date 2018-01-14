@@ -11,9 +11,13 @@ using namespace Rcpp;
 //   http://gallery.rcpp.org/
 //
 
+//' Just for test
+//' @param x An Interger
+//' @return An nterger by x + 1
+//' @export
 // [[Rcpp::export]]
 NumericVector timesTwo(NumericVector x) {
-  return x * 2;
+  return x * 2 + 1;
 }
 
 
