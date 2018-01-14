@@ -54,5 +54,7 @@ ls(all.names = TRUE)
 # Remove variables end with "x".
 clear("x$")
 ls(all.names = TRUE)
-
+}
+\seealso{
+\code{\link{rm}}, \url{https://github.com/paodan/funcTools}
 }

@@ -31,6 +31,9 @@ is on remote computer (e.g. HPC) but accessed locally.
 setwd2("~")
 
 # set working directory as remote home mounting path if remote is matched
-setwd2(dir = "/Users/homename", preDir = "[mounting path]",
-    local = "ubuntu", remote = "centos")
+\dontrun{setwd2(dir = "/Users/homename", preDir = "[mounting path]",
+    local = "ubuntu", remote = "centos")}
+}
+\seealso{
+\code{\link{setwd}}
 }

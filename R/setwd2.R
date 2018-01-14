@@ -10,13 +10,14 @@
 #' @param remote A character string: remote platform name,
 #' if NULL then preDir will not be considered. Letter case is ignored.
 #' @return The present working directory before setting new one.
+#' @seealso \code{\link{setwd}}
 #' @examples
 #' # set working directory as the local home
 #' setwd2("~")
 #'
 #' # set working directory as remote home mounting path if remote is matched
-#' setwd2(dir = "/Users/homename", preDir = "[mounting path]",
-#'     local = "ubuntu", remote = "centos")
+#' \dontrun{setwd2(dir = "/Users/homename", preDir = "[mounting path]",
+#'     local = "ubuntu", remote = "centos")}
 #' @export
 setwd2 = function(dir, preDir = NULL, local = "Ubuntu", remote = "CentOS"){
   if (is.null(preDir) || is.null(local) || is.null(remote)) {
@@ -46,6 +47,7 @@ setwd2 = function(dir, preDir = NULL, local = "Ubuntu", remote = "CentOS"){
 #' If FALSE, names which begin with a . are omitted.
 #' @param envir An alternative argument to name for specifying the environment.
 #' @return The name of variables which have been removed.
+#' @seealso \code{\link{rm}}, \url{https://github.com/paodan/funcTools}
 #' @examples
 #' # Remove all (visible) variables in the Global Environment.
 #' x1 = 1
@@ -77,7 +79,6 @@ setwd2 = function(dir, preDir = NULL, local = "Ubuntu", remote = "CentOS"){
 #' # Remove variables end with "x".
 #' clear("x$")
 #' ls(all.names = TRUE)
-#'
 #' @export
 clear = function(pattern = "*", all.names = FALSE, envir = parent.frame()){
   List = ls(pattern = pattern, all.names = all.names, envir = envir)
@@ -85,3 +86,14 @@ clear = function(pattern = "*", all.names = FALSE, envir = parent.frame()){
   gc(reset = TRUE)
   return(List)
 }
+
+
+#' test keywords internal
+#'
+#' @keywords internal
+testKeywordsInternal = function(){
+  print("tersKeywordsInternal")
+}
+
+
+
