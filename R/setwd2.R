@@ -27,7 +27,7 @@ setwd2 = function(dir, preDir = NULL, local = "Ubuntu", remote = "CentOS"){
   machine = c(local = length(grep(local, sinfo$running, TRUE)) > 0,
               remote = length(grep(remote, sinfo$running, TRUE)) > 0)
   if (all(machine)) stop("Either local or remote can be matched.")
-  if (!all(machine)) stop("One and must be one of local and remote can be matched.")
+  if (!any(machine)) stop("One and must be one of local and remote can be matched.")
   if (machine[2]){
     oldDir = setwd(dir)
   } else{
