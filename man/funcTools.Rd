@@ -4,5 +4,7 @@
 \name{funcTools}
 \alias{funcTools}
 \alias{funcTools-package}
-\alias{funcTools-package}
 \title{funcTools}
+\description{
+funcTools
+}
