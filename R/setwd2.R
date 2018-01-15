@@ -19,7 +19,6 @@
 #' \dontrun{setwd2(dir = "/Users/homename", preDir = "[mounting path]",
 #'     local = "ubuntu", remote = "centos")}
 #' @export
-#'
 setwd2 = function(dir, preDir = NULL, local = "Ubuntu", remote = "CentOS"){
   if (is.null(preDir) || is.null(local) || is.null(remote)) {
     oldDir = setwd(dir)
