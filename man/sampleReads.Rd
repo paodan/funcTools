@@ -31,3 +31,13 @@ of which is the frequencies of genes in a single cell.
 Provide gene reads of bulk sequencing data, do downsampling
 to get a new set of gene reads to mimic the single cell sequencing data.
 }
+\examples{
+\dontrun{
+read0 = sample(paste0("gene", 1:10^7), size =3*10^6, replace = TRUE)
+readExp1 = sampleReads(reads = read0, size = 10^4, rep = 5,
+                       prob = "dunif", addNoise = FALSE)
+readExp2 = sampleReads(reads = read0, size = 10^4, rep = 2,
+                       prob = rep(1/length(read0), length(read0)),
+                       addNoise = TRUE)
+}
+}

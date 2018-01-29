@@ -2,6 +2,7 @@
 
 export(cbindList)
 export(clear)
+export(evalPar)
 export(funCode)
 export(matrixNew)
 export(sampleReads)
