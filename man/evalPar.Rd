@@ -21,6 +21,7 @@ Return a list of of parameters that changed, and change the
 corresponding value in the global environment.
 }
 \examples{
+
 evalPar(a = list(x = c(1,2,5), y = 3:5),
 c = NULL, e = numeric())
 
