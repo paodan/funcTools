@@ -9,6 +9,7 @@
 #' @return Returns a list of parameters that changed
 #' @export
 #' @examples
+#'
 #' evalPar(a = list(x = c(1,2,5), y = 3:5),
 #' c = NULL, e = numeric())
 #'
