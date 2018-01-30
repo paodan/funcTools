@@ -22,9 +22,10 @@ repeat matrix x by m rows and n columns
 \examples{
 matrixRep(rnorm(3), m = 2, n = 3)
 matrixRep(matrix(rnorm(6), ncol = 2), m = 3, n = 4)
+
 matrixRep(t(c(T, F)), m = 4, n = 3)
 matrixRep(t(letters[1:5]), m = 4, n = 1)
 }
 \seealso{
-matrixNew
+\code{\link{matrixNew}}
 }
