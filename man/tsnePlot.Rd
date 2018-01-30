@@ -4,7 +4,7 @@
 \alias{tsnePlot}
 \title{make a tSNE plot for both the new clusters and original clusters}
 \usage{
-tsnePlot(object, newCluster = "DBclust", ...)
+tsnePlot(object, readCount = NULL, newCluster = "DBclust", ...)
 }
 \arguments{
 \item{object}{Seurat object which have done with \code{\link{run_tsne()}}.}

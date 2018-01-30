@@ -46,7 +46,14 @@ sampleReads = function(reads, size = 10^5, rep = 10, prob = "dunif",
 
   y = lapply(samp, function(x) {data.frame(table(x))})
   # yy = joinAllFrame(listFrame = y, by = "x")
-  yy = cbindList(List = y, ID = "x", replace = 0, includeColId = FALSE)
+  if (length(y) == 1){
+    yy = y[[1]]
+    rownames(yy) = yy[,1]
+    yy = yy[, -1, drop = FALSE]
+    colnames(yy) = paste0(colnames(yy), ".1")
+  } else {
+    yy = cbindList(List = y, ID = "x", replace = 0, includeColId = FALSE)
+  }
 
   # add noise  ****** to be done
   if (addNoise){

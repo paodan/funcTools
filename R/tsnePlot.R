@@ -19,11 +19,11 @@
 #'
 #' @seealso \code{\link{tsne.plot()}}
 #' @export
-setGeneric(name = "tsnePlot", def = function(object, newCluster = "DBclust", ...) {
+setGeneric(name = "tsnePlot", def = function(object, readCount = NULL, newCluster = "DBclust", ...) {
   standardGeneric("tsnePlot")
 })
 setMethod(f = "tsnePlot", signature = "seurat",
-          definition = function(object, newCluster = "DBclust", ...){
+          definition = function(object, readCount = NULL, newCluster = "DBclust", ...){
             data.info = object@data.info
             newClusterName = paste0(newCluster, ".ident")
             if (newCluster == "DBclust"){
@@ -31,18 +31,23 @@ setMethod(f = "tsnePlot", signature = "seurat",
             } else if (newCluster == "FindClusters"){
               data.info$FindClusters.ident = as.factor(as.integer(object@ident))
             } else if (newCluster == "Original"){
-              data.info$Original.ident = (object@ident)
+              data.info$Original.ident = object@data.info$orig.ident
             } else stop("Unknown newCluster: newCluster can be 'DBclust', 'FindClusters' or 'Original'.")
 
-            tsne12 = data.frame(object@tsne.rot,
-                                readCount = freq[rownames(object@tsne.rot)],
-                                data.info)
+            tsne12 = data.frame(object@tsne.rot, data.info)
             if (newClusterName %in% colnames(tsne12)){
               tsne12$new.ident = tsne12[[newClusterName]]
             } else stop(newCluster, " not found in 'object'.")
 
-            p = ggplot(tsne12, aes(tSNE_1, tSNE_2, size = readCount, color = new.ident,
-                                   shape = orig.ident))+
-              geom_point(...)
+            if (!is.null(readCount)){
+              tsne12$readCount = readCount[rownames(object@tsne.rot)]
+              p = ggplot(tsne12, aes(tSNE_1, tSNE_2, size = readCount, color = new.ident,
+                                     shape = orig.ident))+
+                geom_point(...)
+            } else {
+              p = ggplot(tsne12, aes(tSNE_1, tSNE_2, color = new.ident,
+                                     shape = orig.ident))+
+                geom_point(...)
+            }
             return(p)
           })
