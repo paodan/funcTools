@@ -1,23 +1,24 @@
 #' make a tSNE plot for both the new clusters and original clusters
-#' @param object Seurat object which have done with \code{\link{run_tsne()}}.
+#' @param object Seurat object which have done with \code{\link{run_tsne}()}.
 #' @param newCluster Character, new cluster type, one of 'DBclust', 'FindClusters' or 'Original'.
-#' @param ... parameters in \code{geom_point()}, for example alpha = 0.5.
+#' @param ... parameters in \code{\link{geom_point}()}, for example alpha = 0.5.
 #' @return an ggplot object plotting a tSNE with two-cluster information,
 #' new clusters and original clusters.
 #' @import ggplot2
+#' @import Seurat
 #' @importClassesFrom Seurat seurat
 #' @examples
 #' SeuratObject = DBclust_dimension(SeuratObject, 1, 2, reduction.use = "tsne",
 #' MinPts = 1, G.use = 3, set.ident = TRUE)
-#' tsne.plot2(SeuratObject, newCluster = "DBclust")
+#' tsnePlot(SeuratObject, newCluster = "DBclust")
 #'
 #' SeuratObject = FindClusters(dcdat, pc.use = 1:5, k.param = 30, k.scale = 6,
 #' do.modularity = T, resolution = 1.4)
-#' tsne.plot2(SeuratObject, newCluster = "FindClusters")
+#' tsnePlot(SeuratObject, newCluster = "FindClusters")
 #'
-#' tsne.plot2(SeuratObject, newCluster = "Original")
+#' tsnePlot(SeuratObject, newCluster = "Original")
 #'
-#' @seealso \code{\link{tsne.plot()}}
+#' @seealso \code{\link{tsne.plot}()}, \code{\link{tsne}()}, \code{\link{Rtsne}()}
 #' @export
 setGeneric(name = "tsnePlot", def = function(object, readCount = NULL, newCluster = "DBclust", ...) {
   standardGeneric("tsnePlot")
