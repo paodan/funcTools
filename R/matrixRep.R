@@ -16,10 +16,10 @@ matrixRep = function(x, m = 1, n = 1){
   stopifnot(is.numeric(x) || is.matrix(x))
   stopifnot(m > 0 && n > 0)
   if(is.numeric(x)) x = as.matrix(x)
+  mx = nrow(x)
+  nx = ncol(x)
   # repeat row
   if (m > 1){
-    mx = nrow(x)
-    nx = ncol(x)
     z = matrix(rep(t(x), m), nrow = m*mx, ncol = nx, byrow = TRUE)
   } else z = x
 
