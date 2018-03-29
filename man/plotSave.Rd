@@ -4,16 +4,18 @@
 \alias{plotSave}
 \title{Save a plot}
 \usage{
-plotSave(filename, plotCMD, device = NULL, path = NULL, scale = 1,
-  width = NA, height = NA, units = c("in", "cm", "mm"), dpi = 300,
-  limitsize = TRUE, ...)
+plotSave(filename, plotCMD = NULL, Plot = NULL, device = NULL,
+  path = NULL, scale = 1, width = NA, height = NA, units = c("in",
+  "cm", "mm"), dpi = 300, limitsize = TRUE, ...)
 }
 \arguments{
 \item{filename}{File name to create on disk.}
 
 \item{plotCMD}{Plot based on this plot command, cannot use a return
-value of a plot command. for example define h = hist(rnorm(100)) and then
-use plotCMD = h.}
+value of a plot command.}
+
+\item{Plot}{Plot based on a return value of a plot command. The class of the
+return value should be able to dealed by `plot`() function.}
 
 \item{device}{Device to use. Can be either be a device function
 (e.g. [png()]), or one of "eps", "ps", "tex" (pictex),

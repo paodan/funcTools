@@ -8,8 +8,9 @@
 #'
 #' @param filename File name to create on disk.
 #' @param plotCMD Plot based on this plot command, cannot use a return
-#' value of a plot command. for example define h = hist(rnorm(100)) and then
-#' use plotCMD = h.
+#' value of a plot command.
+#' @param Plot Plot based on a return value of a plot command. The class of the
+#' return value should be able to dealed by `plot`() function.
 #' @param device Device to use. Can be either be a device function
 #'   (e.g. [png()]), or one of "eps", "ps", "tex" (pictex),
 #'   "pdf", "jpeg", "tiff", "png", "bmp", "svg" or "wmf" (windows only).
@@ -28,38 +29,45 @@
 #' @export
 #' @examples
 #' \dontrun{
+#' # using plotCMD parameter
 #' plotSave("mtcars.pdf", plotCMD = plot(mtcars$mpg, mtcars$wt))
-#' unlink("mtcars.pdf")
-#' unlink("mtcars.png")
+#' plotSave("mtcars.pdf", plotCMD = ggplot(mtcars, aes(mpg, wt)) + geom_point())
 #'
-#' # work for only objects that \code{\link{print}} function can
-#' # deal with (for example ggplot object)
+#' plotSave("mtcars.pdf", plotCMD = plot(mtcars$mpg, mtcars$wt),
+#'          width = 4, height = 4)
+#' plotSave("mtcars.pdf", plotCMD = plot(mtcars$mpg, mtcars$wt),
+#'          width = 20, height = 20, units = "cm")
+#'
+#' # using Plot parameter
 #' g = ggplot(mtcars, aes(mpg, wt)) + geom_point()
+#' h = hist(rnorm(100))
 #'
-#' plotSave("mtcars.pdf", plotCMD = g)
-#' plotSave("mtcars.png", plotCMD = g)
-#'
-#' plotSave("mtcars.pdf", width = 4, height = 4)
-#' plotSave("mtcars.pdf", width = 20, height = 20, units = "cm")
+#' plotSave("mtcars.pdf", Plot = g)
+#' plotSave("mtcars.png", Plot = h)
 #'
 #' @seealso Similar usage can refer to \code{\link{ggplot}()}.
-plotSave = function(filename, plotCMD, device = NULL, path = NULL, scale = 1,
-                    width = NA, height = NA, units = c("in", "cm", "mm"),
+plotSave = function(filename, plotCMD = NULL, Plot = NULL, device = NULL,
+                    path = NULL, scale = 1,width = NA,
+                    height = NA, units = c("in", "cm", "mm"),
                     dpi = 300, limitsize = TRUE, ...){
-  plotCMDClass = class(plotCMD)
-  notWorkClass = c("list", "numeric", "matrix", "data.frame",
-                   "integer", "character", "logical")
+  stopifnot((!is.null(plotCMD)) + (!is.null(Plot)) == 1)
+  supportedClasses = names(funCode(plot)@fS3@fName)
+  if (!is.null(Plot) && !any(class(Plot) %in% supportedClasses)){
+    stop(paste0(class(Plot), " is not supported by the 'Plot' parameter",
+                " presently, please use 'plotCMD' parameter instead."))
+  }
   dev <- ggplot2:::plot_dev(device, filename, dpi = dpi)
   dim <- ggplot2:::plot_dim(c(width, height), scale = scale, units = units,
                             limitsize = limitsize)
   dev(file = filename, width = dim[1], height = dim[2])
   on.exit(utils::capture.output(grDevices::dev.off()))
-  if (any(plotCMDClass %in% notWorkClass)){
-    stop("Please use a right plot command but not return values of a plot command.")
-  } else if (is.ggplot(plotCMD)){
-    print(plotCMD)
-  } else {
-    plotCMD
+  if (!is.null(plotCMD)){
+    if(is.ggplot(plotCMD)){
+      plot(plotCMD)
+    } else plotCMD
+  }
+  if (!is.null(Plot)){
+    plot(Plot)
   }
   invisible()
 }
