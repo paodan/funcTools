@@ -7,10 +7,10 @@
 #' as a pdf or svg file and the letters in the plot need to be able to copied.
 #'
 #' @param filename File name to create on disk.
-#' @param plotCMD Plot based on this plot command, cannot use a return
-#' value of a plot command.
 #' @param Plot Plot based on a return value of a plot command. The class of the
 #' return value should be able to dealed by `plot`() function.
+#' @param plotCMD Plot based on this plot command, cannot use a return
+#' value of a plot command.
 #' @param device Device to use. Can be either be a device function
 #'   (e.g. [png()]), or one of "eps", "ps", "tex" (pictex),
 #'   "pdf", "jpeg", "tiff", "png", "bmp", "svg" or "wmf" (windows only).
@@ -44,7 +44,7 @@
 #'
 #' plotSave("mtcars.pdf", Plot = g)
 #' plotSave("mtcars.png", Plot = h)
-#'
+#'}
 #' @seealso Similar usage can refer to \code{\link{ggplot}()}.
 plotSave = function(filename, Plot = NULL, plotCMD = NULL, device = NULL,
                     path = NULL, scale = 1,width = NA,
