@@ -46,28 +46,25 @@
 #' plotSave("mtcars.png", Plot = h)
 #'
 #' @seealso Similar usage can refer to \code{\link{ggplot}()}.
-plotSave = function(filename, plotCMD = NULL, Plot = NULL, device = NULL,
+plotSave = function(filename, Plot = NULL, plotCMD = NULL, device = NULL,
                     path = NULL, scale = 1,width = NA,
                     height = NA, units = c("in", "cm", "mm"),
                     dpi = 300, limitsize = TRUE, ...){
-  stopifnot((!is.null(plotCMD)) + (!is.null(Plot)) == 1)
   supportedClasses = names(funCode(plot)@fS3@fName)
-  if (!is.null(Plot) && !any(class(Plot) %in% supportedClasses)){
-    stop(paste0(class(Plot), " is not supported by the 'Plot' parameter",
-                " presently, please use 'plotCMD' parameter instead."))
-  }
   dev <- ggplot2:::plot_dev(device, filename, dpi = dpi)
   dim <- ggplot2:::plot_dim(c(width, height), scale = scale, units = units,
                             limitsize = limitsize)
   dev(file = filename, width = dim[1], height = dim[2])
   on.exit(utils::capture.output(grDevices::dev.off()))
-  if (!is.null(plotCMD)){
-    if(is.ggplot(plotCMD)){
-      plot(plotCMD)
-    } else plotCMD
-  }
   if (!is.null(Plot)){
+    if (!any(class(Plot) %in% supportedClasses)){
+      stop(paste0(class(Plot), " is not supported by the 'Plot' parameter",
+                  " presently, please use 'plotCMD' parameter instead."))
+    }
     plot(Plot)
+  } else {
+    tmp = plotCMD
+    if(is.ggplot(tmp)) plot(tmp)
   }
   invisible()
 }
