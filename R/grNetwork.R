@@ -29,11 +29,11 @@
 #' @export
 #' @examples
 #' \dontrun{
-#' grNetwork(inputMatrix = input.matrix, outputMatrix = output.matrix0[,1:100],
+#' grNetwork(inputMatrix = input.matrix, outputMatrix = output.matrix0,
 #' K="sqrt", nbTrees = 2500, importanceMeasure = impMeas,
 #' seed = 1234, trace = FALSE, fast = TRUE, cores = 12)
 #'
-#' grNetwork(inputMatrix = input.matrix, outputMatrix = output.matrix0[,1:100],
+#' grNetwork(inputMatrix = input.matrix, outputMatrix = output.matrix0,
 #' K = "sqrt", nbTrees = 1000, importanceMeasure = impMeas,
 #' seed = 1234, trace = TRUE, fast = FALSE)
 #'}
@@ -56,10 +56,10 @@ grNetwork <- function(inputMatrix, outputMatrix, K="sqrt", nbTrees=1000,
   # Check if nodesize parameter is in the input arguments
   args = list(...)
   nInArgs = "nodesize" %in% names(args)
-  # in and out gene names
+  # In and out gene names
   outputGeneNames = colnames(outputMatrix)
   inputGeneNames = colnames(inputMatrix)
-  # local function
+  # Local function
   .local = function(targetGeneIdx, inputGeneNames, outputGeneNames,
                     inputMatrix, outputMatrix, K, nbTrees,
                     importanceMeasure, seed, trace,
