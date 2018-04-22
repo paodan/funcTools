@@ -29,6 +29,7 @@ evalPar = function(..., .prm = NULL, envir = parent.frame()){
   stopifnot(all(prmName != ""))
 
   for(mi in names(prm)) {
+    assign(mi, prm[[mi]])
     assign(mi, prm[[mi]], envir = envir)
   }
   return(prm)
