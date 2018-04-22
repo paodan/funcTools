@@ -48,11 +48,11 @@ of each random forest model, including mse, r, p, pVarExplaned.
 }
 \examples{
 \dontrun{
-grNetwork(inputMatrix = input.matrix, outputMatrix = output.matrix0[,1:100],
+grNetwork(inputMatrix = input.matrix, outputMatrix = output.matrix0,
 K="sqrt", nbTrees = 2500, importanceMeasure = impMeas,
 seed = 1234, trace = FALSE, fast = TRUE, cores = 12)
 
-grNetwork(inputMatrix = input.matrix, outputMatrix = output.matrix0[,1:100],
+grNetwork(inputMatrix = input.matrix, outputMatrix = output.matrix0,
 K = "sqrt", nbTrees = 1000, importanceMeasure = impMeas,
 seed = 1234, trace = TRUE, fast = FALSE)
 }

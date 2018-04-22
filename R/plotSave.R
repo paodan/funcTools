@@ -26,6 +26,7 @@
 #' @param returnPlot When `FALSE` (the default), plotSave will not return
 #' the value that plotCMD might return.
 #' @param ... Other arguments passed on to graphics `device`.
+#' @import grid
 #' @export
 #' @examples
 #' \dontrun{
@@ -50,18 +51,27 @@ plotSave = function(filename, Plot = NULL, plotCMD = NULL, device = NULL,
                     path = NULL, scale = 1,width = NA,
                     height = NA, units = c("in", "cm", "mm"),
                     dpi = 300, limitsize = TRUE, ...){
-  supportedClasses = names(funCode(plot)@fS3@fName)
+  supportedClassesPlot = c(names(funCode(plot)@fS3@fName))
+  supportedClassesGrid.draw = names(funCode(grid.draw)@fS3@fName)
   dev <- ggplot2:::plot_dev(device, filename, dpi = dpi)
   dim <- ggplot2:::plot_dim(c(width, height), scale = scale, units = units,
                             limitsize = limitsize)
   dev(file = filename, width = dim[1], height = dim[2])
   on.exit(utils::capture.output(grDevices::dev.off()))
   if (!is.null(Plot)){
-    if (!any(class(Plot) %in% supportedClasses)){
+    # if (!any(class(Plot) %in% supportedClassesPlot)){
+    #   stop(paste0(class(Plot), " is not supported by the 'Plot' parameter",
+    #               " presently, please use 'plotCMD' parameter instead."))
+    # }
+    if (any(class(Plot) %in% supportedClassesPlot)){
+      plot(Plot)
+    } else if (any(class(Plot) %in% supportedClassesGrid.draw)){
+      grid.draw(Plot)
+    } else {
       stop(paste0(class(Plot), " is not supported by the 'Plot' parameter",
                   " presently, please use 'plotCMD' parameter instead."))
     }
-    plot(Plot)
+
   } else {
     tmp = plotCMD
     if(is.ggplot(tmp)) plot(tmp)
