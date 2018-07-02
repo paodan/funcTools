@@ -17,20 +17,42 @@
 #' tmp = list(a = list(x = c(1,2,5), y = 3:5))
 #' evalPar(.prm = list(prm0 = tmp, a = 1, c = NULL,
 #' e = numeric(), e2 = 1:3))
-evalPar = function(..., .prm = NULL, envir = parent.frame()){
+#'
+
+evalPar = function (..., .prm = NULL, envir = parent.frame()) {
   if (is.list(.prm)) {
     prm = .prm
   } else {
-    prm = list(...)
-  }
-  if (length(prm) == 0) return(prm)
-  prmName = names(prm)
-  stopifnot(all(!is.null(prmName)))
-  stopifnot(all(prmName != ""))
+    # important to this function
+    prm = as.list(substitute(list(...)))[-1L]
 
-  for(mi in names(prm)) {
-    assign(mi, prm[[mi]])
-    assign(mi, prm[[mi]], envir = envir)
+    prmName = setNames(names(prm), names(prm))
+    for(mi in prmName){
+      if(is.language(prm[[mi]])){
+        assign(mi, eval(prm[[mi]]), envir = envir)
+      } else {
+        assign(mi, prm[[mi]], envir = envir)
+      }
+    }
   }
-  return(prm)
+
+  return(lapply(prmName, get, envir = envir))
 }
+
+# # old version
+# evalPar = function(..., .prm = NULL, envir = parent.frame()){
+#   if (is.list(.prm)) {
+#     prm = .prm
+#   } else {
+#     prm = list(...)
+#   }
+#   if (length(prm) == 0) return(prm)
+#   prmName = names(prm)
+#   stopifnot(all(!is.null(prmName)))
+#   stopifnot(all(prmName != ""))
+#   for(mi in names(prm)) {
+#     assign(mi, prm[[mi]], envir = envir)
+#   }
+#   return(prm)
+# }
+
