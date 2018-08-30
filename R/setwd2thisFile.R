@@ -10,6 +10,7 @@
 #' getwd()
 #' }
 #' }
+#' @export
 setwd2thisFile = function(){
   preDir = getwd()
   this.dir = dirname(getActiveDocumentContext()$path)
