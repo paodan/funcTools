@@ -22,19 +22,22 @@ setClass("fcnS", slots = list(fcn = "list", fName = "MethodsFunction"))
 #' functionInfo()
 #' @export
 functionInfo = setClass(Class = "functionInfo",
-                        slots = list(typeof = "character", S3S4 = "logical",
-                                     fcn = "function", fS3 = "fcnS", fS4 = "fcnS"))
+                        slots = list(funName = "character", typeof = "character",
+                                     S3S4 = "logical", fcn = "function",
+                                     fS3 = "fcnS", fS4 = "fcnS"))
 
 
 #' Finding function source code
-#' @name funCode
+#' @description funCode function is to obtain the source code of an R function
 #' @param f a function name with or without quotation
-#' @param pattern  regular expression to match the methods
+#' @param pattern  regular expression to match the object class.
 #' @param envir environment to search
 #' @return A functionInfo object, containing the function type,
 #'         whether containing S3 or S4 methods, dirrect function source,
 #'         S3 methods info, and S4 methods info.
-#' @examples
+#' @export
+#' @examples {
+#' \dontrun{
 #' # The source of print
 #' funCode(print)
 #' funCode("print")
@@ -42,8 +45,8 @@ functionInfo = setClass(Class = "functionInfo",
 #' funCode(funCode)
 #' # The source of plot for data.frame
 #' funCode("plot", "data.frame")
-#' @description funCode function is to obtain the source code of an R function
-#' @export
+#' }
+#' }
 funCode = function(f = character(), pattern = NULL,
                    envir = topenv(parent.frame())){
   # get a function name string (f) and a real function (fcn).
@@ -85,7 +88,8 @@ funCode = function(f = character(), pattern = NULL,
   if (is.element(typeof(fcn), c("special", "builtin"))){
     message(".Primitive and .Internal can be shown by pryr::show_c_source()\n")
   }
-  resF = new("functionInfo", typeof = typeof, S3S4 = S3S4, fcn = fcn,
+  resF = new("functionInfo", funName = f,
+             typeof = typeof, S3S4 = S3S4, fcn = fcn,
              fS3 = new("fcnS", fcn = fcnS3, fName = fNameS3),
              fS4 = new("fcnS", fcn = fcnS4, fName = fNameS4))
   return(resF)
@@ -100,6 +104,11 @@ funCode = function(f = character(), pattern = NULL,
 #' object@@fS3 and S4 method names in object@@fS4
 #' @export
 setMethod("show", signature = "functionInfo", function(object) {
+  # funName = as.character(substitute(object))
+  cat(object@funName, "= ")
+  if(length(object@fcn)){
+    print(object@fcn)
+  }
   show(list(functionS3 = object@fS3@fName,
             functionS4 = object@fS4@fName))
 })

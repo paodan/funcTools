@@ -5,8 +5,8 @@
 \title{Save a plot}
 \usage{
 plotSave(filename, Plot = NULL, plotCMD = NULL, device = NULL,
-  path = NULL, scale = 1, width = NA, height = NA, units = c("in",
-  "cm", "mm"), dpi = 300, limitsize = TRUE, ...)
+  path = NULL, scale = 1, width = NA, height = NA,
+  units = c("in", "cm", "mm"), dpi = 300, limitsize = TRUE, ...)
 }
 \arguments{
 \item{filename}{File name to create on disk.}
@@ -48,6 +48,7 @@ from the extension. This function is very convinent when saving a plot
 as a pdf or svg file and the letters in the plot need to be able to copied.
 }
 \examples{
+{
 \dontrun{
 # using plotCMD parameter
 plotSave("mtcars.pdf", plotCMD = plot(mtcars$mpg, mtcars$wt))
@@ -64,6 +65,7 @@ h = hist(rnorm(100))
 
 plotSave("mtcars.pdf", Plot = g)
 plotSave("mtcars.png", Plot = h)
+}
 }
 }
 \seealso{

@@ -4,12 +4,13 @@
 \alias{funCode}
 \title{Finding function source code}
 \usage{
-funCode(f = character(), pattern = NULL, envir = topenv(parent.frame()))
+funCode(f = character(), pattern = NULL,
+  envir = topenv(parent.frame()))
 }
 \arguments{
 \item{f}{a function name with or without quotation}
 
-\item{pattern}{regular expression to match the methods}
+\item{pattern}{regular expression to match the object class.}
 
 \item{envir}{environment to search}
 }
@@ -22,6 +23,8 @@ A functionInfo object, containing the function type,
 funCode function is to obtain the source code of an R function
 }
 \examples{
+{
+\dontrun{
 # The source of print
 funCode(print)
 funCode("print")
@@ -29,4 +32,6 @@ funCode("print")
 funCode(funCode)
 # The source of plot for data.frame
 funCode("plot", "data.frame")
+}
+}
 }

@@ -1,0 +1,58 @@
+#' @title clear
+#' @description \code{clear} removes the variables, matched by the pattern,
+#' from the environment (the default is parent environment).
+#' It will return the name of variables which have been removed.
+#' @param pattern A character string. The regular expression pattern of
+#' variable names to be removed.
+#' @param all.names Logical. If TRUE, all object names are returned.
+#' If FALSE, names which begin with a . are omitted.
+#' @param envir An alternative argument to name for specifying the environment.
+#' @return The name of variables which have been removed.
+#' @seealso \code{\link{rm}}, \url{https://github.com/paodan/funcTools}
+#' @export
+#' @examples {
+#' \dontrun{
+#' # Remove all (visible) variables in the Global Environment.
+#' x1 = 1
+#' x3 = "a"
+#' xx = TRUE
+#' y = function(x) x
+#' y1 = 1:4
+#' yx = list(y = 1, x = 3)
+#' .x = data.frame(rnorm(5))
+#' ls(all.names = TRUE)
+#' clear()
+#' ls(all.names = TRUE)
+#'
+#' # Remove all variables including (invisible) variables begin with a ".".
+#' clear(all.names = TRUE)
+#' ls(all.names = TRUE)
+#'
+#' # Remove variables begin with "x".
+#' x1 = 1
+#' x3 = "a"
+#' xx = TRUE
+#' y = function(x) x
+#' y1 = 1:4
+#' yx = list(y = 1, x = 3)
+#' .x = data.frame(rnorm(5))
+#' clear("^x")
+#' ls(all.names = TRUE)
+#'
+#' # Remove variables end with "x".
+#' clear("x$")
+#' ls(all.names = TRUE)
+#' }
+#' }
+clear = function(pattern = "*", all.names = FALSE, envir = parent.frame()){
+  List = ls(pattern = pattern, all.names = all.names, envir = envir)
+  if(length(List)){
+    message("Remove: \n", paste0(List, collapse = ", "))
+    rm(list = List, envir = envir)
+    gc(reset = TRUE)
+  } else {
+    message("Nothing Removed!")
+  }
+  invisible(List)
+}
+

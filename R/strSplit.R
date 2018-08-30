@@ -1,5 +1,6 @@
-# strsplit2 function
-#' @title strsplit2
+# strSplit function
+#' @title strSplit
+#' @description funCode function is to obtain the source code of an R function
 #' @param x character vector or factor, each element of which is to be split.
 #' @param split character vector (or object which can be coerced to such)
 #' containing regular expression(s) (unless fixed = TRUE) to use for splitting.
@@ -16,28 +17,30 @@
 #' @param nameRow logical. Give names to each row if x has names and nameRow TRUE.
 #'
 #' @return A matrix of splited characters
-#' @examples
-#' # The source of print
+#' @export
+#' @examples {
+#' \dontrun{
 #' x = c(as = "asfef", qu = "qwerty", "yuiop[", "b", "stuff.blah.yech")
 #' # split x on the letter e
-#' strsplit2(x, "e")
+#' strSplit(x, "e")
+#' }
+#' }
 #'
-#' @description funCode function is to obtain the source code of an R function
-#' @export
-strsplit2 = function(x, split, fixed = FALSE, perl = FALSE,
+strSplit = function(x, split, fixed = FALSE, perl = FALSE,
                      useBytes = FALSE, nameRow = FALSE) {
   nm = names(x)
   x = as.character(x)
   n = length(x)
-  s = strsplit(x, split = split, fixed = FALSE, perl = FALSE, useBytes = FALSE)
+  s = strsplit(x, split = split, fixed = fixed,
+               perl = perl, useBytes = useBytes)
   nc = unlist(lapply(s, length))
   out = matrix("", n, max(nc))
   for (i in 1:n) {
     if (nc[i]) out[i, 1:nc[i]] = s[[i]]
   }
-  if (nameRow){
+  if (nameRow && !is.null(nm)){
     row.names(out) = nm
   }
-  out
+  return(out)
 }
 

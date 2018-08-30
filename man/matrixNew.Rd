@@ -16,10 +16,10 @@ matrixNew(m = 3, n = NULL, x = 0, diagonal = FALSE, distr = NULL,
 
 \item{diagonal}{Logical, only diagonal remains if TRUE}
 
-\item{distr}{Distribution functions, e.g. rnorm, rt, runif, etc. 
+\item{distr}{Distribution functions, e.g. rnorm, rt, runif, etc.
 If distr is provided, then x will be masked.}
 
-\item{dimnames}{A dimnames attribute for the matrix: 
+\item{dimnames}{A dimnames attribute for the matrix:
 NULL or a list of length 2 giving the row and column names, respectively.}
 }
 \value{
@@ -29,6 +29,8 @@ A random/diagonal/zeros/ones Matrix.
 Generate random/diagonal/zeros/ones Matrix, the default is 3 by 3 matrix of 0
 }
 \examples{
+{
+\dontrun{
 # The zeros/ones matrix
 matrixNew(4) # zeros of 4 by 4 matrix
 matrixNew(4, 5) # 4 by 5
@@ -42,4 +44,9 @@ matrixNew(m = 3, x = 4, diagonal = TRUE)
 # The random matrix
 matrixNew(m = 4, n = 5, distr = rnorm, dimnames = list(letters[1:4], letters[1:5]))
 matrixNew(m = 4, n = 5, distr = rnorm, diagonal = TRUE)
+}
+}
+}
+\seealso{
+\code{\link{matrixRep}}
 }

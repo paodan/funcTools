@@ -1,11 +1,9 @@
 #' Save a plot
-#'
-#' `plotSave()` is a convenient function for saving a plot. It saves
+#' @description `plotSave()` is a convenient function for saving a plot. It saves
 #' the plot that the plotCMD is to make, using the size of the current
 #' graphics device by default. It also guesses the type of graphics device
 #' from the extension. This function is very convinent when saving a plot
 #' as a pdf or svg file and the letters in the plot need to be able to copied.
-#'
 #' @param filename File name to create on disk.
 #' @param Plot Plot based on a return value of a plot command. The class of the
 #' return value should be able to dealed by `plot`() function.
@@ -27,8 +25,10 @@
 #' the value that plotCMD might return.
 #' @param ... Other arguments passed on to graphics `device`.
 #' @import grid
+#' @import ggplot2
+#' @seealso Similar usage can refer to \code{\link{ggplot}()}.
 #' @export
-#' @examples
+#' @examples {
 #' \dontrun{
 #' # using plotCMD parameter
 #' plotSave("mtcars.pdf", plotCMD = plot(mtcars$mpg, mtcars$wt))
@@ -46,7 +46,7 @@
 #' plotSave("mtcars.pdf", Plot = g)
 #' plotSave("mtcars.png", Plot = h)
 #'}
-#' @seealso Similar usage can refer to \code{\link{ggplot}()}.
+#'}
 plotSave = function(filename, Plot = NULL, plotCMD = NULL, device = NULL,
                     path = NULL, scale = 1,width = NA,
                     height = NA, units = c("in", "cm", "mm"),

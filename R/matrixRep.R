@@ -1,17 +1,19 @@
-#' repeat matrix x by m rows and n columns
-#'
+#' Repeat matrix x by m rows and n columns
 #' @param x a matrix or a numeric vector.
 #' @param m the desired number of rows.
 #' @param n the desired number of columns.
 #' @return Return a matrix repeated m (rows) * n (columns) times
 #' @export
-#' @examples
+#' @seealso \code{\link{matrixNew}}
+#' @examples {
+#' \dontrun{
 #' matrixRep(rnorm(3), m = 2, n = 3)
 #' matrixRep(matrix(rnorm(6), ncol = 2), m = 3, n = 4)
 #'
 #' matrixRep(t(c(T, F)), m = 4, n = 3)
 #' matrixRep(t(letters[1:5]), m = 4, n = 1)
-#' @seealso \code{\link{matrixNew}}
+#' }
+#' }
 matrixRep = function(x, m = 1, n = 1){
   stopifnot(is.numeric(x) || is.matrix(x))
   stopifnot(m > 0 && n > 0)
