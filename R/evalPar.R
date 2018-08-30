@@ -20,7 +20,12 @@
 #'
 evalPar = function (..., .prm = NULL, envir = parent.frame()) {
   if (is.list(.prm)) {
+    if(!is.null(name(.prm)) && !any(name(.prm) == "")){
     prm = .prm
+    prmName = setNames(names(prm), names(prm))
+    } else {
+      stop(".prm must be a named list")
+    }
   } else {
     # important to this function
     prm = as.list(substitute(list(...)))[-1L]
