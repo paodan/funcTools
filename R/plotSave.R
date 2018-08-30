@@ -1,4 +1,4 @@
-#' Save a plot
+#' @title Save a plot\cr
 #' @description `plotSave()` is a convenient function for saving a plot. It saves
 #' the plot that the plotCMD is to make, using the size of the current
 #' graphics device by default. It also guesses the type of graphics device

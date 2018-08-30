@@ -1,4 +1,4 @@
-#' @title clear
+#' @title removes the variables from environment.
 #' @description \code{clear} removes the variables, matched by the pattern,
 #' from the environment (the default is parent environment).
 #' It will return the name of variables which have been removed.

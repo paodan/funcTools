@@ -1,8 +1,8 @@
-#' Make a named list inside out.
+#' @title Make a named list inside out\cr
 #' @description Make a named list inside out. Then the elements of the list
 #' becomes the names of list, and the names of list becomes its element.
 #' @param namedList A named list.
-#' @return A list.
+#' @return A list fliped inside out.
 #' @import reshape2
 #' @export
 #' @examples {
