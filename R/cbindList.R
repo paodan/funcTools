@@ -1,4 +1,4 @@
-#' @title cbind all elements in a list
+#' @title cbind all elements in a list\cr
 #' @description merge a list in which are all data.frame with one common
 #' rowname or one common column number
 #' @name cbindList

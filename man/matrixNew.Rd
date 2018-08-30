@@ -26,7 +26,7 @@ NULL or a list of length 2 giving the row and column names, respectively.}
 A random/diagonal/zeros/ones Matrix.
 }
 \description{
-Generate random/diagonal/zeros/ones Matrix, the default is 3 by
+Generate random/diagonal/zeros/ones matrix, the default is 3 by
 3 matrix of 0.
 }
 \examples{

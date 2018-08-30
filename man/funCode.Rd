@@ -15,9 +15,9 @@ funCode(f = character(), pattern = NULL,
 \item{envir}{environment to search}
 }
 \value{
-A functionInfo object, containing the function type,
-        whether containing S3 or S4 methods, dirrect function source,
-        S3 methods info, and S4 methods info.
+A \code{\link{functionInfo}} object, containing the function name,
+function type, whether containing S3 or S4 methods, dirrect function source,
+S3 methods info, and S4 methods info.
 }
 \description{
 funCode function is to obtain the source code of an R function
@@ -28,8 +28,10 @@ funCode function is to obtain the source code of an R function
 # The source of print
 funCode(print)
 funCode("print")
+
 # The source of funCode
 funCode(funCode)
+
 # The source of plot for data.frame
 funCode("plot", "data.frame")
 }
