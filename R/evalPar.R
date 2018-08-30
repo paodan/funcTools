@@ -20,7 +20,7 @@
 #'
 evalPar = function (..., .prm = NULL, envir = parent.frame()) {
   if (is.list(.prm)) {
-    if(!is.null(name(.prm)) && !any(name(.prm) == "")){
+    if(!is.null(names(.prm)) && !any(names(.prm) == "")){
     prm = .prm
     prmName = setNames(names(prm), names(prm))
     } else {
