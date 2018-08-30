@@ -19,8 +19,8 @@ setwd2thisFile = function(){
     message("Cannot find where this file located! The current working ",
             "directory is not changed!")
   } else {
-    cat("Set working directory to ")
     setwd(this.dir)
+    cat("Set working directory to", this.dir, "\n")
   }
   invisible(preDir)
 }
