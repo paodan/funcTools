@@ -2,6 +2,7 @@
 #' function located.
 #' @return the working directory before the change.
 #' @import rstudioapi
+#' @export
 #' @examples {
 #' \dontrun{
 #' # Put the following codes in one file and save.
