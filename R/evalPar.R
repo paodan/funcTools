@@ -18,6 +18,103 @@
 #' e = numeric(), e2 = 1:3))
 #' }}
 #'
+<<<<<<< HEAD
+evalPar = function(..., .prm = NULL, envir = parent.frame(),
+                   returnValue = TRUE){
+  if (is.list(.prm)) {
+    if(!is.null(names(.prm)) && !any(names(.prm) == "")){
+      prm = .prm
+=======
+# evalPar = function (..., .prm = NULL, envir = parent.frame()) {
+#   if (is.list(.prm)) {
+#     if(!is.null(names(.prm)) && !any(names(.prm) == "")){
+#     prm = .prm
+#     prmName = setNames(names(prm), names(prm))
+#     } else {
+#       stop(".prm must be a named list")
+#     }
+#   } else {
+#     # important to this function
+#     prm = as.list(substitute(list(...)))[-1L]
+#     print(prm)
+#
+#     prmName = setNames(names(prm), names(prm))
+#     for(mi in prmName){
+#       if(is.language(prm[[mi]])){
+#         assign(mi, eval(prm[[mi]]), envir = envir)
+#       } else {
+#         assign(mi, prm[[mi]], envir = envir)
+#       }
+#     }
+#   }
+#   print(names(prm))
+#   invisible(lapply(prmName, get, envir = envir))
+# }
+
+# old version
+evalPar = function(..., .prm = NULL, envir = parent.frame()){
+  if (is.list(.prm)) {
+    if(!is.null(names(.prm)) && !any(names(.prm) == "")){
+      prm = .prm
+      prmName = names(prm)
+      stopifnot(!is.null(prmName))
+      stopifnot(all(prmName != ""))
+      for(mi in names(prm)) {
+        assign(mi, prm[[mi]], envir = envir)
+      }
+      res = prm
+>>>>>>> 395e6fa22d7bcfdbd456cc2fa7ece3431f4ed2b8
+    } else {
+      stop(".prm must be a named list")
+    }
+  } else {
+    # important to this function
+    prm = as.list(substitute(list(...)))[-1L]
+<<<<<<< HEAD
+  }
+
+  prmName = setNames(names(prm), names(prm))
+  for(mi in prmName){
+    # print(mi)
+    if(is.language(prm[[mi]])){
+      # print(eval(prm[[mi]]))
+      assign(mi, eval(prm[[mi]]), envir = envir)
+    } else {
+      assign(mi, prm[[mi]], envir = envir)
+=======
+    # print(prm)
+    prmName = setNames(names(prm), names(prm))
+    for(mi in prmName){
+      # print(mi)
+      if(is.language(prm[[mi]])){
+        # print(eval(prm[[mi]]))
+        assign(mi, eval(prm[[mi]]), envir = envir)
+      } else {
+        assign(mi, prm[[mi]], envir = envir)
+      }
+>>>>>>> 395e6fa22d7bcfdbd456cc2fa7ece3431f4ed2b8
+    }
+    res = lapply(prmName, get, envir = envir)
+  }
+
+<<<<<<< HEAD
+  # return value
+  if (returnValue){
+    res = lapply(prmName, get, envir = envir)
+  } else {
+    res = NULL
+  }
+  cat("Assigned variables are:\n", paste0(names(prmName), collapse = ", "))
+=======
+
+
+  print(names(prm))
+>>>>>>> 395e6fa22d7bcfdbd456cc2fa7ece3431f4ed2b8
+  invisible(res)
+}
+
+
+
 evalPar = function(..., .prm = NULL, envir = parent.frame(),
                    returnValue = TRUE){
   if (is.list(.prm)) {
@@ -51,6 +148,34 @@ evalPar = function(..., .prm = NULL, envir = parent.frame(),
   cat("Assigned variables are:\n", paste0(names(prmName), collapse = ", "))
   invisible(res)
 }
+
+
+
+
+#
+# # old version
+# evalPar = function(..., .prm = NULL, envir = parent.frame()){
+#   if (is.list(.prm)) {
+#     if(!is.null(names(.prm)) && !any(names(.prm) == "")){
+#       prm = .prm
+#     } else {
+#       stop(".prm must be a named list")
+#     }
+#   } else {
+#     # prm = list(...)
+#     prm = as.list(substitute(list(...)))[-1L]
+#   }
+#   if (length(prm) == 0) return(prm)
+#   prmName = names(prm)
+#   stopifnot(all(!is.null(prmName)))
+#   stopifnot(all(prmName != ""))
+#   for(mi in names(prm)) {
+#     assign(mi, prm[[mi]], envir = envir)
+#   }
+#   print(names(prm))
+#   invisible(prm)
+# }
+
 
 # # old version
 # evalPar = function(..., .prm = NULL, envir = parent.frame()){
