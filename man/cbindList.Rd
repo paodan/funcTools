@@ -2,7 +2,7 @@
 % Please edit documentation in R/cbindList.R
 \name{cbindList}
 \alias{cbindList}
-\title{cbindList}
+\title{cbind all elements in a list}
 \usage{
 cbindList(List, ID = 0, replace = NA, sep = ".", fast = FALSE)
 }

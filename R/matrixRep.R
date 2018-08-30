@@ -1,4 +1,5 @@
-#' Repeat matrix x by m rows and n columns
+#' @title Repeat matrix m by n times \cr
+#' @description  Repeat a matrix 'x' m times by row and n time by column.
 #' @param x a matrix or a numeric vector.
 #' @param m the desired number of rows.
 #' @param n the desired number of columns.

@@ -2,7 +2,7 @@
 % Please edit documentation in R/insideOutList.R
 \name{insideOutList}
 \alias{insideOutList}
-\title{Make a named list inside out.}
+\title{Make a named list inside out\cr}
 \usage{
 insideOutList(namedList)
 }
@@ -10,7 +10,7 @@ insideOutList(namedList)
 \item{namedList}{A named list.}
 }
 \value{
-A list.
+A list fliped inside out.
 }
 \description{
 Make a named list inside out. Then the elements of the list

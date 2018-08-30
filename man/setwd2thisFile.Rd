@@ -2,8 +2,7 @@
 % Please edit documentation in R/setwd2thisFile.R
 \name{setwd2thisFile}
 \alias{setwd2thisFile}
-\title{Set working directory to where the file that put this
-function located.}
+\title{Set working directory according to the file including this function\cr}
 \usage{
 setwd2thisFile()
 }

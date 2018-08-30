@@ -2,7 +2,7 @@
 % Please edit documentation in R/matrixRep.R
 \name{matrixRep}
 \alias{matrixRep}
-\title{Repeat matrix x by m rows and n columns}
+\title{Repeat matrix m by n times \cr}
 \usage{
 matrixRep(x, m = 1, n = 1)
 }
@@ -17,7 +17,7 @@ matrixRep(x, m = 1, n = 1)
 Return a matrix repeated m (rows) * n (columns) times
 }
 \description{
-Repeat matrix x by m rows and n columns
+Repeat a matrix 'x' m times by row and n time by column.
 }
 \examples{
 {

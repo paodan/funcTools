@@ -1,4 +1,5 @@
-#' Set working directory to where the file that put this
+#' @title Set working directory according to the file including this function\cr
+#' @description Set working directory to where the file that put this
 #' function located.
 #' @return the working directory before the change.
 #' @import rstudioapi

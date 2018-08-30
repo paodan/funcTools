@@ -5,7 +5,7 @@
 \alias{functionInfo-class}
 \alias{functionInfo}
 \alias{show,functionInfo-method}
-\title{Generating functionInfo object}
+\title{Generating functionInfo object\cr}
 \usage{
 \S4method{show}{functionInfo}(object)
 }

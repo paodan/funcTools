@@ -2,7 +2,7 @@
 % Please edit documentation in R/plotSave.R
 \name{plotSave}
 \alias{plotSave}
-\title{Save a plot}
+\title{Save a plot\cr}
 \usage{
 plotSave(filename, Plot = NULL, plotCMD = NULL, device = NULL,
   path = NULL, scale = 1, width = NA, height = NA,

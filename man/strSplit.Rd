@@ -2,7 +2,7 @@
 % Please edit documentation in R/strSplit.R
 \name{strSplit}
 \alias{strSplit}
-\title{strSplit}
+\title{Split charactors vecotrs and save as a matrix\cr}
 \usage{
 strSplit(x, split, fixed = FALSE, perl = FALSE, useBytes = FALSE,
   nameRow = FALSE)

@@ -2,7 +2,7 @@
 % Please edit documentation in R/clear.R
 \name{clear}
 \alias{clear}
-\title{clear}
+\title{removes the variables from environment.}
 \usage{
 clear(pattern = "*", all.names = FALSE, envir = parent.frame())
 }

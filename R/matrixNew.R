@@ -1,6 +1,7 @@
-#' @description Generate random/diagonal/zeros/ones Matrix, the default is 3 by 3 matrix of 0
+#' @description Generate random/diagonal/zeros/ones Matrix, the default is 3 by
+#' 3 matrix of 0.
 #' @name matrixNew
-#' @title matrixNew
+#' @title Generate random/diagonal/zeros/ones Matrix\cr
 #' @param m Number of rows.
 #' @param n  Number of columns. If n = NULL, then n = m.
 #' @param x The value filling in the matrix .

@@ -2,7 +2,7 @@
 % Please edit documentation in R/functionInfo.R
 \name{funCode}
 \alias{funCode}
-\title{Finding function source code}
+\title{Finding function source code\cr}
 \usage{
 funCode(f = character(), pattern = NULL,
   envir = topenv(parent.frame()))

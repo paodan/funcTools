@@ -2,9 +2,9 @@
 % Please edit documentation in R/evalPar.R
 \name{evalPar}
 \alias{evalPar}
-\title{Evaluate parameters in one goal in the global environment}
+\title{Evaluate parameters in one goal in the global environment\cr}
 \usage{
-evalPar(..., .prm = NULL, envir = parent.frame())
+evalPar(..., .prm = NULL, envir = parent.frame(), returnValue = TRUE)
 }
 \arguments{
 \item{...}{these arguments are of the form tag = value.}

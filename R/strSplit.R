@@ -1,5 +1,4 @@
-# strSplit function
-#' @title strSplit
+#' @title Split charactors vecotrs and save as a matrix\cr
 #' @description funCode function is to obtain the source code of an R function
 #' @param x character vector or factor, each element of which is to be split.
 #' @param split character vector (or object which can be coerced to such)

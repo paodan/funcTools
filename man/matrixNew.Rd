@@ -2,7 +2,7 @@
 % Please edit documentation in R/matrixNew.R
 \name{matrixNew}
 \alias{matrixNew}
-\title{matrixNew}
+\title{Generate random/diagonal/zeros/ones Matrix\cr}
 \usage{
 matrixNew(m = 3, n = NULL, x = 0, diagonal = FALSE, distr = NULL,
   dimnames = NULL)
@@ -26,7 +26,8 @@ NULL or a list of length 2 giving the row and column names, respectively.}
 A random/diagonal/zeros/ones Matrix.
 }
 \description{
-Generate random/diagonal/zeros/ones Matrix, the default is 3 by 3 matrix of 0
+Generate random/diagonal/zeros/ones Matrix, the default is 3 by
+3 matrix of 0.
 }
 \examples{
 {
