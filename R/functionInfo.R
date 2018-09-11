@@ -74,7 +74,7 @@ funCode = function(f = character(), pattern = NULL,
   }
   if (S3S4[[2]]){
     names(fNameS4) = fNameS4
-    sig = strsplit2(strsplit2(fNameS4, "-")[,1], ",")[,-1, drop = F]
+    sig = strSplit(strSplit(fNameS4, "-")[,1], ",")[,-1, drop = F]
     id = setNames(object = 1:length(fNameS4),
                   nm = apply(sig, 1, paste, collapse = ","))
     fcnS4 = lapply(id, function(x) getMethod(f, signature = sig[x,]))
