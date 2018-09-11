@@ -19,8 +19,11 @@ setClass("fcnS", slots = list(fcn = "list", fName = "MethodsFunction"))
 #' @param fS4 fcnS object, the information of S4 mehtods.
 # @describeIn functionInfo set a \code{functionInfo} class.
 #' @return a functionInfo object
+#' @import methods
 #' @examples
+#' \dontrun{
 #' functionInfo()
+#' }
 #' @export
 functionInfo = setClass(Class = "functionInfo",
                         slots = list(funName = "character", typeof = "character",
@@ -36,6 +39,7 @@ functionInfo = setClass(Class = "functionInfo",
 #' @return A \code{\link{functionInfo}} object, containing the function name,
 #' function type, whether containing S3 or S4 methods, dirrect function source,
 #' S3 methods info, and S4 methods info.
+#' @import methods
 #' @export
 #' @examples {
 #' \dontrun{
