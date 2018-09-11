@@ -159,7 +159,7 @@ qdel = function(id){
   return(res)
 }
 
-#' qdel of job by pattern
+#' Delete (qdel) of job by pattern
 #' @param pattern The pattern of job IDs.
 #' @return Deleted job IDs.
 #' @seealso \code{\link{qdel}}
