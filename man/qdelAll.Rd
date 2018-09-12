@@ -4,14 +4,12 @@
 \alias{qdelAll}
 \title{Delete (qdel) of job by pattern}
 \usage{
-qdelAll(pattern = "*", col = 1, user = "wtao")
+qdelAll(pattern = "*", col = 1)
 }
 \arguments{
 \item{pattern}{The pattern to match.}
 
 \item{col}{The column index to match pattern.}
-
-\item{user}{user column in the results of \code{\link{qstat}} function.}
 }
 \value{
 Deleted job IDs.
