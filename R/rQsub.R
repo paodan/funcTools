@@ -160,14 +160,23 @@ qdel = function(id){
 }
 
 #' Delete (qdel) of job by pattern
-#' @param pattern The pattern of job IDs.
+#' @param pattern The pattern to match.
+#' @param col The column index to match pattern.
+#' @param user user column in the results of \code{\link{qstat}} function.
 #' @return Deleted job IDs.
 #' @seealso \code{\link{qdel}}
 #' @export
-qdelAll = function(pattern = "*"){
+qdelAll = function(pattern = "*", col = 1, user = "wtao"){
   q = qstat("all")
-  id = as.character(q[,1])
-  id2Del = grep(pattern, id, value = TRUE)
-  qdel(id2Del)
+  id = as.character(q[,col])
+  indx = grep(pattern, id)
+  if (length(indx) > 0){
+    qUser = subset(q[indx,], q$user == user)
+    id2Del = as.character(qUser[,1])
+    qdel(id2Del)
+  } else {
+    cat("No jobs matched!")
+    id2Del = NULL
+  }
   return(id2Del)
 }

@@ -2,18 +2,22 @@
 % Please edit documentation in R/rQsub.R
 \name{qdelAll}
 \alias{qdelAll}
-\title{qdel of job by pattern}
+\title{Delete (qdel) of job by pattern}
 \usage{
-qdelAll(pattern = "*")
+qdelAll(pattern = "*", col = 1, user = "wtao")
 }
 \arguments{
-\item{pattern}{The pattern of job IDs.}
+\item{pattern}{The pattern to match.}
+
+\item{col}{The column index to match pattern.}
+
+\item{user}{user column in the results of \code{\link{qstat}} function.}
 }
 \value{
 Deleted job IDs.
 }
 \description{
-qdel of job by pattern
+Delete (qdel) of job by pattern
 }
 \seealso{
 \code{\link{qdel}}

@@ -43,4 +43,5 @@ strSplit(x, "e")
 }
 }
 
+import stringr
 }
