@@ -4,11 +4,11 @@
 #' @param rFile the R script to run.
 #' @param preCMD the command to run R script, the default is
 #' 'echo "module load R/3.3.0 && Rscript '.
-#' @param jobName the job name.
+#' @param jobName the job name(s).
 #' @param threaded the number of threads.
 #' @param memoryG memory in Gb.
 #' @param rTimeHour maximum running time in hour.
-#' @param logFile the log file for errors and warnings.
+#' @param logFile the log file(s) for errors and warnings.
 #' @param email email to receive report from HPC.
 #' @param param1 the first parameter passed to R script.
 #' @param ... other parameter passed to R script.
@@ -32,12 +32,9 @@
 #' }
 #' }
 #' @export
-rQsub = function(path = getwd(),
-                 rFile = paste0(path, "/testQsub.R"),
+rQsub = function(path = getwd(), rFile = paste0(path, "/testQsub.R"),
                  jobName = "job",
-                 threaded = 1,
-                 memoryG = 10,
-                 rTimeHour = 2,
+                 threaded = 1, memoryG = 10, rTimeHour = 2,
                  logFile = paste0(path, "/logfilename.log"),
                  email = "wtao@umcutrecht.nl",
                  preCMD = 'echo "module load R/3.3.0 && Rscript ',
@@ -53,22 +50,37 @@ rQsub = function(path = getwd(),
   memory = paste0("h_vmem=", memoryG, "G")
   rTime = paste0("h_rt=", rTimeHour, ":00:00")
 
+  if (length(jobName) == 1){
+    jobName = rep(jobName, length(param1))
+  } else if (length(jobName) < 1 && length(jobName) != length(param1)){
+    stop("The length of 'jobName' must be 1 or the same as 'param1': ", length(param1))
+  }
+
+  if (length(logFile) == 1){
+    logFile = rep(logFile, length(param1))
+  } else if (length(logFile) < 1 || length(logFile) != length(param1)){
+    stop("The length of 'logFile' must be 1 or the same as 'param1': ", length(param1))
+  }
+
   qparam = paste("qsub -N", jobName, "-pe threaded", threaded,
                  "-l", memory, "-l", rTime, "-e", logFile,
                  "-M", email, "-m aes -cwd")
+
+
   paramInR = unlist(lapply(1:num, function(x){
     paste(lapply(params, "[", x), collapse = " ")
   }))
   ids = list()
   for(i in 1:num){
     cat (rFile, "\n", paramInR[i], "\n")
-    cmd = paste0(preCMD, rFile, ' ', paramInR[i], '" | ', qparam)
+    cmd = paste0(preCMD, rFile, ' ', paramInR[i], '" | ', qparam[i])
     cat(i, ":", cmd, "\n")
     ids = c(ids, system(cmd, intern = TRUE, wait = TRUE))
   }
 
   return(ids)
 }
+
 
 
 #' Status (qstat) of running jobs of all users.

@@ -16,7 +16,7 @@ rQsub(path = getwd(), rFile = paste0(path, "/testQsub.R"),
 
 \item{rFile}{the R script to run.}
 
-\item{jobName}{the job name.}
+\item{jobName}{the job name(s).}
 
 \item{threaded}{the number of threads.}
 
@@ -24,7 +24,7 @@ rQsub(path = getwd(), rFile = paste0(path, "/testQsub.R"),
 
 \item{rTimeHour}{maximum running time in hour.}
 
-\item{logFile}{the log file for errors and warnings.}
+\item{logFile}{the log file(s) for errors and warnings.}
 
 \item{email}{email to receive report from HPC.}
 
