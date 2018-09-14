@@ -4,7 +4,7 @@
 \alias{sortDataframe}
 \title{Sort data.frame according to multiple columns.}
 \usage{
-sortDataframe(x, by = x, returnID = FALSE)
+sortDataframe(x, by = x, decreasing = FALSE, returnID = FALSE)
 }
 \arguments{
 \item{x}{a data.frame to sort.}
@@ -14,6 +14,9 @@ of integers. The data.frame x is sorted according to this parameter.
 If it is a data.frame, then the column names should be a
 part of column names of x. A vector of characters must not exceed the
 column names of x. The integer vector is the index of columns.}
+
+\item{decreasing}{logic. Should the sort order be increasing (default)
+or decreasing?}
 
 \item{returnID}{logic. If FALSE (default), the sorted index is not
 returned.}

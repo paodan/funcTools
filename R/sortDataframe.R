@@ -7,6 +7,8 @@
 #' column names of x. The integer vector is the index of columns.
 #' @param returnID logic. If FALSE (default), the sorted index is not
 #' returned.
+#' @param decreasing logic. Should the sort order be increasing (default)
+#' or decreasing?
 #' @return A sorted data.frame according to 'by'.
 #' @export
 #' @examples
@@ -18,7 +20,7 @@
 #' sortDataframe(x, by = x[, 1:2])
 #' sortDataframe(x, returnID = TRUE)
 #' }
-sortDataframe = function(x, by = x, returnID = FALSE){
+sortDataframe = function(x, by = x, decreasing = FALSE, returnID = FALSE){
   stopifnot(is.data.frame(x))
   if (is.character(by)){
     nm = by
@@ -30,7 +32,7 @@ sortDataframe = function(x, by = x, returnID = FALSE){
     stop("Unknown class of 'by'")
   }
   stopifnot(all(nm %in% colnames(x)))
-  cmd = paste0("with(x, order(", paste0(nm, collapse = ","), "))")
+  cmd = paste0("with(x, order(", paste0(nm, collapse = ","), ", decreasing = decreasing))")
   id = eval(parse(text = cmd))
   y = x[id,]
   if (returnID){
