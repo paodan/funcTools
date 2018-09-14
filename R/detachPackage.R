@@ -16,7 +16,7 @@
 #' detachPackages(c("funcTools", "ggplot2", "stringr"))
 #' }
 detachPackages = function(packages, prefix = "package:"){
-  rmPackages = c("")
+  rmPackages = c()
   for(i in packages){
     p = paste0(prefix, i)
     if (p %in% search()){
