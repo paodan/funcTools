@@ -4,7 +4,8 @@
 \alias{edge2Mat}
 \title{Convert network edges to adjacency matrix}
 \usage{
-edge2Mat(edge, rownm, colnm, restValue = 0)
+edge2Mat(edge, rownm, colnm, direction = TRUE, rmName = FALSE,
+  restValue = 0)
 }
 \arguments{
 \item{edge}{a data.frame of three columns, the first two columns
@@ -15,6 +16,12 @@ must present in either rownm or colnm.}
 
 \item{colnm}{column names in the final adjacency matrix. All node names
 must present in either rownm or colnm.}
+
+\item{direction}{logic, whether this network is directed,
+the default is TRUE.}
+
+\item{rmName}{logic, whether to remove row names and column names in the
+adjacency matrix.}
 
 \item{restValue}{the value to fill in the blank edges.}
 }
@@ -31,6 +38,9 @@ edge2Mat(edge, edge[,1], edge[,2])
 
 nodes = unique(c(as.character(edge[,1]), as.character(edge[,2])))
 edge2Mat(edge, nodes, nodes)
+
+edge2Mat(edge, nodes, nodes,direction = FALSE)
+edge2Mat(edge, nodes, nodes,direction = FALSE, rmName = TRUE)
 
 edge = data.frame(c(1:3), c(3:5), c(1,1,1))
 edge2Mat(edge,  edge[,1],  edge[,2] )
