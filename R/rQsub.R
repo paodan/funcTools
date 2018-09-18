@@ -148,17 +148,38 @@ qstat = function(stat = c("all", "run", "wait")){
   stat = match.arg(stat)
   if (stat == "run"){
     cmd = "qstat -s r"
+    cmd2 = "qstat -s r -r"
   } else if (stat == "wait"){
     cmd = "qstat -s p"
+    cmd2 = "qstat -s p -r"
   } else if (stat == "all"){
     cmd = "qstat"
+    cmd2 = "qstat -r"
+  } else {
+    stop("Unknown stat!")
   }
   # res0 = gsub("^ *|(?<= ) | *$", "", system(cmd, intern = TRUE), perl = TRUE)
   res0 = removeSpace(system(cmd, intern = TRUE))
+  res2 = removeSpace(system(cmd2, intern = TRUE))[-(1:2)]
+
   res = strSplit(res0[-2], " ")
   colnames(res) = res[1,]
   res = res[-1,,drop = FALSE]
-  return(data.frame(res))
+  res = data.frame(res)
+
+  f = function(x, pat){
+    gsub(pat, "", grep(pat, x, value = TRUE))
+  }
+
+  # Additional information
+  res$name = f(res2, "^Full jobname: ")
+  res$maxSeconds = f(res2, "^h_rt=")
+  res$hardResources = f(res2, "^Hard Resources: ")
+  res$requestedPE = f(res2, "^Requested PE: ")
+  res$binding = f(res2, "^Binding: ")
+  res$softResources = f(res2, "^Soft Resources:")
+
+  return(res)
 }
 
 #' Delete (qdel) of queue jobs.
