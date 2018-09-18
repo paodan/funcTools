@@ -19,7 +19,7 @@
 #' edge = data.frame(c(1:3), c(3:5), c(1,1,1))
 #' edge2Mat(edge,  edge[,1],  edge[,2] )
 #' }
-edge2Mat = function(edge, rownm, colnm, restValue = 0){
+edge2Mat = function(edge, rownm, colnm, direction = FALSE, rmName = FALSE, restValue = 0){
   stopifnot(ncol(edge) == 3)
 
   if(!is.character(edge[,1])) edge[,1] = as.character(edge[,1])
@@ -30,5 +30,16 @@ edge2Mat = function(edge, rownm, colnm, restValue = 0){
   m = matrix(restValue, length(rownm), length(colnm),
              dimnames = list(rownm, colnm))
   m[as.matrix(edge[,1:2])] = edge[,3]
+
+  if (direction){
+    if (!all(rownm == colnm)){
+      stop("If direction is TRUE, rownm must be identical to colnm!")
+    } else {
+      m[as.matrix(edge[,2:1])] = edge[,3]
+    }
+  }
+  if (rmName){
+    dimnames(m) = NULL
+  }
   return(m)
 }

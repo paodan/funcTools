@@ -4,7 +4,8 @@
 \alias{edge2Mat}
 \title{Convert network edges to adjacency matrix}
 \usage{
-edge2Mat(edge, rownm, colnm, restValue = 0)
+edge2Mat(edge, rownm, colnm, direction = FALSE, rmName = FALSE,
+  restValue = 0)
 }
 \arguments{
 \item{edge}{a data.frame of three columns, the first two columns
