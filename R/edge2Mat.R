@@ -26,7 +26,8 @@
 #' edge = data.frame(c(1:3), c(3:5), c(1,1,1))
 #' edge2Mat(edge,  edge[,1],  edge[,2] )
 #' }
-edge2Mat = function(edge, rownm, colnm, direction = TRUE, rmName = FALSE, restValue = 0){
+edge2Mat = function(edge, rownm, colnm, direction = TRUE,
+                    rmName = FALSE, restValue = 0){
   stopifnot(ncol(edge) == 3)
 
   if(!is.character(edge[,1])) edge[,1] = as.character(edge[,1])
