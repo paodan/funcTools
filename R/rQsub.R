@@ -83,38 +83,155 @@ rQsub = function(path = getwd(), rFile = paste0(path, "/testQsub.R"),
 
 
 
+# process the results form qstat command
+qstatProcess = function(statRes){
+  f = function(x, pat, fill = ""){
+    y = grep(pat, x, value = TRUE)
+    if (length(y) == 0) {
+      y = fill
+    }
+    gsub(pat, "", y)
+  }
+  statRes = removeSpace(statRes)
+
+  len = length(statRes)
+  id1 = grep("^[0-9]* 0", statRes)
+  id2 = c(id1[-1]-1, len)
+  res0 = data.frame(matrix("", nrow = length(id1), ncol = 7,
+                           dimnames = list(seq_along(id1))),
+                    stringsAsFactors = FALSE)
+  colnames(res0) = c("base", "fullName", "maxSeconds", "hardResources",
+                     "requestedPE", "binding", "softResources")
+
+  for(mi in seq_along(id1)){
+    statResSub = statRes[id1[mi] : id2[mi]]
+
+    res0[mi, "base"] = grep("^[0-9]* 0", statResSub, value = TRUE)
+    res0[mi, "fullName"] = f(statResSub, "^Full jobname: ")
+    res0[mi, "maxSeconds"] = f(statResSub, "^h_rt=", fill = 24*3600)
+    res0[mi, "hardResources"] = f(statResSub, "^Hard Resources: ")
+    res0[mi, "requestedPE"] = f(statResSub, "^Requested PE: ",
+                                fill = "threaded 1")
+    res0[mi, "binding"] = f(statResSub, "^Binding: ")
+    res0[mi, "softResources"] = f(statResSub, "^Soft Resources:")
+  }
+  # res0$maxSeconds = as.numeric(strSplit(res0$maxSeconds, " ")[,1])
+
+  res = data.frame(strSplit(res0$base, " "), stringsAsFactors = FALSE)
+  colnames(res) = c("job.ID", "prior", "name", "user", "state", "submit.start.at",
+                    "at", "queue", "slots", "ja.task.ID")[1:ncol(res)]
+  res$slots = as.numeric(res$slots)
+  res$submit.start.at = as.Date(res$submit.start.at, "%m/%d/%Y")
+  res$at = chron::chron(times. = res$at, format = c(dataes = "m/d/y", time = "h:m:s"))
+  res$submit.start.at = as.POSIXlt(paste(res$submit.start.at, res$at))
+
+  if (ncol(res) == 9){
+    res$ja.task.ID = ""
+  }
+  res$at = NULL
+
+  # additional information
+  res$name = res0$fullName
+  res$maxSeconds = as.numeric(strSplit(res0$maxSeconds, " ")[,1])
+  res$will.stop.at = res$submit.start.at + res$maxSeconds
+  res$hardResources = res0$hardResources
+  res$requestedPE = res0$requestedPE
+  res$binding = res0$binding
+  res$softResources = res0$softResources
+  return(res)
+}
+
+
+
+qstatProcess = function(statRes){
+  f = function(x, pat, fill = ""){
+    y = grep(pat, x, value = TRUE)
+    if (length(y) == 0) {
+      y = fill
+    }
+    gsub(pat, "", y)
+  }
+  statRes = removeSpace(statRes)
+
+  len = length(statRes)
+  id1 = grep("^[0-9]* 0", statRes)
+  id2 = c(id1[-1]-1, len)
+  # res0 = data.frame(matrix("", nrow = length(id1), ncol = 7,
+  #                          dimnames = list(seq_along(id1))),
+  #                   stringsAsFactors = FALSE)
+
+  res0 = lapply(seq_along(id1), function(mi){
+    statResSub = statRes[id1[mi] : id2[mi]]
+    return(c(grep("^[0-9]* 0", statResSub, value = TRUE),
+             f(statResSub, "^Full jobname: "),
+             f(statResSub, "^h_rt=", fill = 24*3600),
+             f(statResSub, "^Hard Resources: "),
+             f(statResSub, "^Requested PE: ", fill = "threaded 1"),
+             f(statResSub, "^Binding: "),
+             f(statResSub, "^Soft Resources:")))
+  })
+  res0 = as.data.frame(t(as.data.frame(res0)))
+  colnames(res0) = c("base", "fullName", "maxSeconds", "hardResources",
+                     "requestedPE", "binding", "softResources")
+
+  # res0$maxSeconds = as.numeric(strSplit(res0$maxSeconds, " ")[,1])
+
+  res = data.frame(strSplit(res0$base, " "), stringsAsFactors = FALSE)
+  colnames(res) = c("job.ID", "prior", "name", "user", "state", "submit.start.at",
+                    "at", "queue", "slots", "ja.task.ID")[1:ncol(res)]
+  res$slots = as.numeric(res$slots)
+  res$submit.start.at = as.Date(res$submit.start.at, "%m/%d/%Y")
+  res$at = chron::chron(times. = res$at, format = c(dataes = "m/d/y", time = "h:m:s"))
+  res$submit.start.at = as.POSIXlt(paste(res$submit.start.at, res$at))
+
+  if (ncol(res) == 9){
+    res$ja.task.ID = ""
+  }
+  res$at = NULL
+
+  # additional information
+  res$name = res0$fullName
+  res$maxSeconds = as.numeric(strSplit(res0$maxSeconds, " ")[,1])
+  res$will.stop.at = res$submit.start.at + res$maxSeconds
+  res$hardResources = res0$hardResources
+  res$requestedPE = res0$requestedPE
+  res$binding = res0$binding
+  res$softResources = res0$softResources
+  return(res)
+}
+
+
 #' Status (qstat) of running jobs of all users.
-#' @param stat the job status, including "all", "run", and "wait".
+#' @param stat the job status, including "run" (the default),
+#' "all", and "wait".
 #' @return a data frame of job details, including job ID, prior, name, user,
 #' submit.start, at, queue, slots, and ja.task.ID.
 #' @seealso \code{\link{qstat}}, \code{\link{qstatGroupAll}}
 #' @export
-qstatAll = function(stat = c("all", "run", "wait")){
+qstatAll = function(stat = c("run", "all", "wait")){
   stat = match.arg(stat)
-  if (stat != "all"){
-    if (stat == "run"){
-      cmd = "qstat -u \\* -s r"
-    } else if (stat == "wait"){
-      cmd = "qstat -u \\* -s p"
-    } else {
-      stop("Unknown stat!")
-    }
-    res0 = gsub("^ *|(?<= ) | *$", "", system(cmd, intern = TRUE), perl = TRUE)
-    res = strSplit(res0[-2], " ")
-    colnames(res) = res[1,]
-    res = res[-1,,drop = FALSE]
+  if (stat == "all"){
+    cmd2 = "qstat -u \\* -s rp -r"
+  } else if (stat == "run"){
+    cmd2 = "qstat -u \\* -s r -r"
+  } else if (stat == "wait"){
+    cmd2 = "qstat -u \\* -s p -r"
   } else {
-    res = rbind(qstatAll("run"), qstatAll("wait"))
+    stop("Unknown stat!")
   }
-  return(as.data.frame(res))
+  res = qstatProcess(statRes = system(cmd2, intern = TRUE))
+
+  return(res)
 }
 
+
 #' Status (qstat) of running jobs of group members.
-#' @param stat the job status, including "all", "run", and "wait".
+#' @param stat the job status, including "run" (the default),
+#' "all", and "wait".
 #' @param groupMembers the group member name.
 #' @seealso \code{\link{qstat}}, \code{\link{qstatAll}}
 #' @export
-qstatGroupAll = function(stat = c("all", "run", "wait"),
+qstatGroupAll = function(stat = c("run", "all", "wait"),
                          groupMembers = system("ls /hpc/dla_lti", intern = TRUE)){
   stat = match.arg(stat)
   res0 = qstatAll(stat)
@@ -134,6 +251,7 @@ removeSpace = function(x){
 #' @param x a vector of string or number.
 #' @param n final number of charactors.
 #' @import stringr
+#' @import chron
 #' @export
 formatN = function(x, n = 3){
   stringr::str_pad(string = x, width = n, pad = "0")
@@ -141,46 +259,33 @@ formatN = function(x, n = 3){
 
 
 #' Status (qstat) of my running jobs.
-#' @param stat the job status, including "all", "run", and "wait".
+#' @param stat the job status, including "all" (the default),
+#' "run", and "wait".
 #' @seealso \code{\link{qstatAll}}, \code{\link{qstatGroupAll}}
 #' @export
 qstat = function(stat = c("all", "run", "wait")){
   stat = match.arg(stat)
-  if (stat == "run"){
-    cmd = "qstat -s r"
-    cmd2 = "qstat -s r -r"
-  } else if (stat == "wait"){
-    cmd = "qstat -s p"
-    cmd2 = "qstat -s p -r"
-  } else if (stat == "all"){
-    cmd = "qstat"
-    cmd2 = "qstat -r"
-  } else {
-    stop("Unknown stat!")
-  }
-  # res0 = gsub("^ *|(?<= ) | *$", "", system(cmd, intern = TRUE), perl = TRUE)
-  res0 = removeSpace(system(cmd, intern = TRUE))
-  res2 = removeSpace(system(cmd2, intern = TRUE))[-(1:2)]
-
-  res = strSplit(res0[-2], " ")
-  colnames(res) = res[1,]
-  res = res[-1,,drop = FALSE]
-  res = data.frame(res)
 
   f = function(x, pat){
     gsub(pat, "", grep(pat, x, value = TRUE))
   }
 
-  # Additional information
-  res$name = f(res2, "^Full jobname: ")
-  res$maxSeconds = f(res2, "^h_rt=")
-  res$hardResources = f(res2, "^Hard Resources: ")
-  res$requestedPE = f(res2, "^Requested PE: ")
-  res$binding = f(res2, "^Binding: ")
-  res$softResources = f(res2, "^Soft Resources:")
-
+  if (stat == "run"){
+    # cmd = "qstat -s r"
+    cmd2 = "qstat -s r -r"
+  } else if (stat == "wait"){
+    # cmd = "qstat -s p"
+    cmd2 = "qstat -s p -r"
+  } else if (stat == "all"){
+    # cmd = "qstat"
+    cmd2 = "qstat -s rp -r"
+  } else {
+    stop("Unknown stat!")
+  }
+  res = qstatProcess(statRes = system(cmd2, intern = TRUE))
   return(res)
 }
+
 
 #' Delete (qdel) of queue jobs.
 #' @param id The job IDs.
