@@ -83,7 +83,6 @@ rQsub = function(path = getwd(), rFile = paste0(path, "/testQsub.R"),
 
 
 
-<<<<<<< HEAD
 #' process the results form qstat command
 #' @param statRes the results from `system("qstat -r", TRUE)`.
 #' @return a data.frame of tidy results
@@ -94,9 +93,6 @@ rQsub = function(path = getwd(), rFile = paste0(path, "/testQsub.R"),
 #' x = system("qstat -r", T)
 #' qstatProcess(x)
 #' }
-=======
-# process the results form qstat command
->>>>>>> df9abfb3b1d7600bca6b3edcde762895cbc0e8b4
 qstatProcess = function(statRes){
   f = function(x, pat, fill = ""){
     y = grep(pat, x, value = TRUE)
@@ -110,72 +106,6 @@ qstatProcess = function(statRes){
   len = length(statRes)
   id1 = grep("^[0-9]* 0", statRes)
   id2 = c(id1[-1]-1, len)
-<<<<<<< HEAD
-=======
-  res0 = data.frame(matrix("", nrow = length(id1), ncol = 7,
-                           dimnames = list(seq_along(id1))),
-                    stringsAsFactors = FALSE)
-  colnames(res0) = c("base", "fullName", "maxSeconds", "hardResources",
-                     "requestedPE", "binding", "softResources")
-
-  for(mi in seq_along(id1)){
-    statResSub = statRes[id1[mi] : id2[mi]]
-
-    res0[mi, "base"] = grep("^[0-9]* 0", statResSub, value = TRUE)
-    res0[mi, "fullName"] = f(statResSub, "^Full jobname: ")
-    res0[mi, "maxSeconds"] = f(statResSub, "^h_rt=", fill = 24*3600)
-    res0[mi, "hardResources"] = f(statResSub, "^Hard Resources: ")
-    res0[mi, "requestedPE"] = f(statResSub, "^Requested PE: ",
-                                fill = "threaded 1")
-    res0[mi, "binding"] = f(statResSub, "^Binding: ")
-    res0[mi, "softResources"] = f(statResSub, "^Soft Resources:")
-  }
-  # res0$maxSeconds = as.numeric(strSplit(res0$maxSeconds, " ")[,1])
-
-  res = data.frame(strSplit(res0$base, " "), stringsAsFactors = FALSE)
-  colnames(res) = c("job.ID", "prior", "name", "user", "state", "submit.start.at",
-                    "at", "queue", "slots", "ja.task.ID")[1:ncol(res)]
-  res$slots = as.numeric(res$slots)
-  res$submit.start.at = as.Date(res$submit.start.at, "%m/%d/%Y")
-  res$at = chron::chron(times. = res$at, format = c(dataes = "m/d/y", time = "h:m:s"))
-  res$submit.start.at = as.POSIXlt(paste(res$submit.start.at, res$at))
-
-  if (ncol(res) == 9){
-    res$ja.task.ID = ""
-  }
-  res$at = NULL
-
-  # additional information
-  res$name = res0$fullName
-  res$maxSeconds = as.numeric(strSplit(res0$maxSeconds, " ")[,1])
-  res$will.stop.at = res$submit.start.at + res$maxSeconds
-  res$hardResources = res0$hardResources
-  res$requestedPE = res0$requestedPE
-  res$binding = res0$binding
-  res$softResources = res0$softResources
-  return(res)
-}
-
-
-
-qstatProcess = function(statRes){
-  f = function(x, pat, fill = ""){
-    y = grep(pat, x, value = TRUE)
-    if (length(y) == 0) {
-      y = fill
-    }
-    gsub(pat, "", y)
-  }
-  statRes = removeSpace(statRes)
-
-  len = length(statRes)
-  id1 = grep("^[0-9]* 0", statRes)
-  id2 = c(id1[-1]-1, len)
-  # res0 = data.frame(matrix("", nrow = length(id1), ncol = 7,
-  #                          dimnames = list(seq_along(id1))),
-  #                   stringsAsFactors = FALSE)
-
->>>>>>> df9abfb3b1d7600bca6b3edcde762895cbc0e8b4
   res0 = lapply(seq_along(id1), function(mi){
     statResSub = statRes[id1[mi] : id2[mi]]
     return(c(grep("^[0-9]* 0", statResSub, value = TRUE),
@@ -190,11 +120,6 @@ qstatProcess = function(statRes){
   colnames(res0) = c("base", "fullName", "maxSeconds", "hardResources",
                      "requestedPE", "binding", "softResources")
 
-<<<<<<< HEAD
-=======
-  # res0$maxSeconds = as.numeric(strSplit(res0$maxSeconds, " ")[,1])
-
->>>>>>> df9abfb3b1d7600bca6b3edcde762895cbc0e8b4
   res = data.frame(strSplit(res0$base, " "), stringsAsFactors = FALSE)
   colnames(res) = c("job.ID", "prior", "name", "user", "state", "submit.start.at",
                     "at", "queue", "slots", "ja.task.ID")[1:ncol(res)]
@@ -270,7 +195,6 @@ removeSpace = function(x){
 #' @param x a vector of string or number.
 #' @param n final number of charactors.
 #' @import stringr
-#' @import chron
 #' @export
 formatN = function(x, n = 3){
   stringr::str_pad(string = x, width = n, pad = "0")
