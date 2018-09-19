@@ -7,7 +7,8 @@
 qstat(stat = c("all", "run", "wait"))
 }
 \arguments{
-\item{stat}{the job status, including "all", "run", and "wait".}
+\item{stat}{the job status, including "all" (the default),
+"run", and "wait".}
 }
 \description{
 Status (qstat) of my running jobs.

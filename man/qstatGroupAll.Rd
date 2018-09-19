@@ -4,11 +4,12 @@
 \alias{qstatGroupAll}
 \title{Status (qstat) of running jobs of group members.}
 \usage{
-qstatGroupAll(stat = c("all", "run", "wait"),
+qstatGroupAll(stat = c("run", "all", "wait"),
   groupMembers = system("ls /hpc/dla_lti", intern = TRUE))
 }
 \arguments{
-\item{stat}{the job status, including "all", "run", and "wait".}
+\item{stat}{the job status, including "run" (the default),
+"all", and "wait".}
 
 \item{groupMembers}{the group member name.}
 }

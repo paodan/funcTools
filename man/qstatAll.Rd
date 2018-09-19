@@ -4,10 +4,11 @@
 \alias{qstatAll}
 \title{Status (qstat) of running jobs of all users.}
 \usage{
-qstatAll(stat = c("all", "run", "wait"))
+qstatAll(stat = c("run", "all", "wait"))
 }
 \arguments{
-\item{stat}{the job status, including "all", "run", and "wait".}
+\item{stat}{the job status, including "run" (the default),
+"all", and "wait".}
 }
 \value{
 a data frame of job details, including job ID, prior, name, user,

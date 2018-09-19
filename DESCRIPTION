@@ -13,4 +13,5 @@ Imports: ggplot2,
     reshape2,
     grid,
     rstudioapi,
-    stringr
+    stringr,
+    chron
