@@ -5,9 +5,12 @@
 #' @param preCMD the command to run R script, the default is
 #' 'echo "module load R/3.3.0 && Rscript '.
 #' @param jobName the job name(s).
-#' @param threaded the number of threads.
-#' @param memoryG memory in Gb.
-#' @param rTimeHour maximum running time in hour.
+#' @param threaded integer or integer vector to specify
+#' the number of threads of each job.
+#' @param memoryG numeric or numeric vector to specify the
+#' memory (in Gb) of each job.
+#' @param rTimeHour numeric or numeric vector. Maximum running
+#' time (in hour) of each job.
 #' @param logFile the log file(s) for errors and warnings.
 #' @param email email to receive report from HPC.
 #' @param param1 the first parameter passed to R script.
@@ -29,6 +32,16 @@
 #'       rFile = paste0(path, "/testQsub.R"),
 #'       jobName = "job", threaded = 2,
 #'       param1 = 1:10, param2 = 2:11, param3 = 3:12)
+#'
+#' # Specify job names, threads, memories and running time.
+#' rQsub(path = "/my/file/path",
+#'       rFile = paste0(path, "/testQsub.R"),
+#'       jobName = paste0("job_", formatN(1:10, 2)),
+#'       logFile = paste0(path, "/logfilename_", formatN(1:10, 2), ".log"),
+#'       threaded = rep(c(1, 2), each = 5),
+#'       memoryG = rep(c(10, 20), each = 5),
+#'       rTimeHour = rep(c(24, 48), each = 5),
+#'       param1 = 1:10)
 #' }
 #' }
 #' @export
@@ -46,26 +59,36 @@ rQsub = function(path = getwd(), rFile = paste0(path, "/testQsub.R"),
     stop("The length of arguments are not the same!")
   }
 
-  # memory and time
+  checkNum = function(x, num = length(param1)){
+    if (length(x) == 1){
+      x = rep(x, num)
+    } else if (length(x) < 1 || length(x) != num){
+      stop("The length of ", deparse(substitute(x)),
+           " must be 1 or the same as 'param1': ", num)
+    }
+    x
+  }
+
+  # memory
+  memoryG = checkNum(memoryG, num)
   memory = paste0("h_vmem=", memoryG, "G")
+  # time
+  rTimeHour = checkNum(rTimeHour, num)
   rTime = paste0("h_rt=", rTimeHour, ":00:00")
-
-  if (length(jobName) == 1){
-    jobName = rep(jobName, length(param1))
-  } else if (length(jobName) < 1 && length(jobName) != length(param1)){
-    stop("The length of 'jobName' must be 1 or the same as 'param1': ", length(param1))
-  }
-
-  if (length(logFile) == 1){
-    logFile = rep(logFile, length(param1))
-  } else if (length(logFile) < 1 || length(logFile) != length(param1)){
-    stop("The length of 'logFile' must be 1 or the same as 'param1': ", length(param1))
-  }
+  # jobName
+  jobName = checkNum(jobName, num)
+  # logFile
+  logFile = checkNum(logFile, num)
+  # threaded
+  threaded = checkNum(threaded, num)
 
   qparam = paste("qsub -N", jobName, "-pe threaded", threaded,
                  "-l", memory, "-l", rTime, "-e", logFile,
                  "-M", email, "-m aes -cwd")
-
+  qsub_all_parameters = paste0(logFile[1], "_qsub_all_parameters.log")
+  fileConn = file(qsub_all_parameters)
+  on.exit(close(fileConn))
+  writeLines(qparam, fileConn)
 
   paramInR = unlist(lapply(1:num, function(x){
     paste(lapply(params, "[", x), collapse = " ")
@@ -77,7 +100,6 @@ rQsub = function(path = getwd(), rFile = paste0(path, "/testQsub.R"),
     cat(i, ":", cmd, "\n")
     ids = c(ids, system(cmd, intern = TRUE, wait = TRUE))
   }
-
   return(ids)
 }
 

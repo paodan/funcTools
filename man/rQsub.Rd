@@ -18,11 +18,14 @@ rQsub(path = getwd(), rFile = paste0(path, "/testQsub.R"),
 
 \item{jobName}{the job name(s).}
 
-\item{threaded}{the number of threads.}
+\item{threaded}{integer or integer vector to specify
+the number of threads of each job.}
 
-\item{memoryG}{memory in Gb.}
+\item{memoryG}{numeric or numeric vector to specify the
+memory (in Gb) of each job.}
 
-\item{rTimeHour}{maximum running time in hour.}
+\item{rTimeHour}{numeric or numeric vector. Maximum running
+time (in hour) of each job.}
 
 \item{logFile}{the log file(s) for errors and warnings.}
 
@@ -58,6 +61,16 @@ rQsub(path = "/my/file/path",
       rFile = paste0(path, "/testQsub.R"),
       jobName = "job", threaded = 2,
       param1 = 1:10, param2 = 2:11, param3 = 3:12)
+
+# Specify job names, threads, memories and running time.
+rQsub(path = "/my/file/path",
+      rFile = paste0(path, "/testQsub.R"),
+      jobName = paste0("job_", formatN(1:10, 2)),
+      logFile = paste0(path, "/logfilename_", formatN(1:10, 2), ".log"),
+      threaded = rep(c(1, 2), each = 5),
+      memoryG = rep(c(10, 20), each = 5),
+      rTimeHour = rep(c(24, 48), each = 5),
+      param1 = 1:10)
 }
 }
 }
