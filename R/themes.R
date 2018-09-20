@@ -1,7 +1,13 @@
-
-### plot themes from https://rpubs.com/Koundy/71792
-# ggplot theme for publication ready Plots
-# Koundinya Desiraju
+#' ggplot theme for publication ready Plots
+#' @param base_size font base size.
+#' @param base_family font base family.
+#' @param x_angle x label angle.
+#' @param x_hjust x horizontal alignment.
+#' @param x_vjust x vertical alignment.
+#' @param y_angle y label angle.
+#' @param y_hjust y horizontal alignment.
+#' @param y_vjust y vertical alignment.
+#' @param legend.key.size legend key size.
 #' @import ggplot2
 #' @import ggthemes
 #' @export
@@ -68,15 +74,6 @@ scale_colour_Publication = function(colourColor = c("#386cb0","#fdb462","#7fc97f
                  manual_pal(values = colourColor), ...)
 }
 
-
-#' @import ggplot2
-#' @import ggthemes
-#' @import scales
-#' @export
-scale_colour_mds <- function(pointColor, ...){
-  discrete_scale("colour","mds",
-                 manual_pal(values = pointColor), ...)
-}
 
 #' Make the ggplot transparent
 #' @import ggplot2
