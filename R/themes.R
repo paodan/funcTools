@@ -88,3 +88,29 @@ theme_transparent <- function(){
      , legend.box.background = element_rect(fill = "transparent")
    ))
 }
+
+
+
+#' Change the x and y axis ticks of ggplot
+#' @param gplot a ggplot object.
+#' @param xBreaks the x axis ticks.
+#' @param yBreaks the y axis ticks.
+#' @return a ggplot object with changed x and y axis ticks.
+#' @import ggplot2
+#' @export
+#' @examples
+#' \dontrun{
+#' dat = data.frame(x = rnorm(100), y = rnorm(100))
+#' g = ggplot(dat, aes(x,y)) +
+#'   geom_point()
+#' scale_xy_ticks(g, pretty(dat$x, n = 10), pretty(dat$y, n = 10))
+#' }
+scale_xy_ticks = function(gplot, xBreaks = NULL, yBreaks = NULL){
+  if (!is.null(xBreaks)){
+    gplot = gplot + scale_x_continuous(breaks = xBreaks)
+  }
+  if (!is.null(yBreaks)){
+    gplot = gplot + scale_y_continuous(breaks = yBreaks)
+  }
+  return(gplot)
+}

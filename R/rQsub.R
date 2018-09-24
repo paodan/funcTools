@@ -116,6 +116,10 @@ rQsub = function(path = getwd(), rFile = paste0(path, "/testQsub.R"),
 #' qstatProcess(x)
 #' }
 qstatProcess = function(statRes){
+  if (length(statRes) == 0){
+    message("No queue job was found!")
+    return(character(0))
+  }
   f = function(x, pat, fill = ""){
     y = grep(pat, x, value = TRUE)
     if (length(y) == 0) {
