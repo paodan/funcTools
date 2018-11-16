@@ -37,5 +37,5 @@ mat2Edge(mat, mode = "upper", diag = FALSE)
 }
 }
 \seealso{
-edge2Mat2
+edge2Mat
 }

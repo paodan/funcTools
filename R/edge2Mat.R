@@ -73,7 +73,7 @@ edge2Mat = function(edge, rownm, colnm, direction = TRUE,
 #' mat2Edge(mat, mode = "upper", diag = FALSE)
 #' }
 #' }
-#' @seealso edge2Mat2
+#' @seealso edge2Mat
 #' @export
 mat2Edge = function(mat, mode = c("directed", "undirected", "upper", "lower"),
                     diag = FALSE){
