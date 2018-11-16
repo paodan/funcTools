@@ -51,3 +51,36 @@ edge2Mat = function(edge, rownm, colnm, direction = TRUE,
   }
   return(m)
 }
+
+
+#' Adjacency matrix to a data.frame of edges.
+#' @param mat adjacency matrix.
+#' @param mode Character, to specify the class of graph and which part of
+#' the matrix will be used. Possible values are: "directed" (default),
+#' "undirected", "upper", "lower".
+#' @param diag logic, whether to include the diagonal of the matrix.
+#' @return a data.frame of edge information. The first column is from node,
+#' the second column is to node, and the third is weight.
+#' @import igraph
+#' @examples {
+#' \dontrun{
+#' mat = matrix(rnorm(4*4), nrow = 4,
+#'              dimnames = list(letters[1:4], LETTERS[1:4]))
+#' mat2Edge(mat, mode = "undirected", diag = TRUE)
+#' mat2Edge(mat, mode = "undirected", diag = FALSE)
+#' mat2Edge(mat, mode = "directed", diag = TRUE)
+#' mat2Edge(mat, mode = "upper", diag = TRUE)
+#' mat2Edge(mat, mode = "upper", diag = FALSE)
+#' }
+#' }
+#' @seealso edge2Mat2
+#' @export
+mat2Edge = function(mat, mode = c("directed", "undirected", "upper", "lower"),
+                    diag = FALSE){
+  stopifnot(is.matrix(mat))
+  mode = match.arg(mode)
+  g = graph.adjacency(adjmatrix = mat, weighted = TRUE,
+                      diag = diag, mode = mode)
+  edge = get.data.frame(g)
+  return(edge)
+}
