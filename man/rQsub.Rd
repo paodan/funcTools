@@ -6,8 +6,8 @@
 \usage{
 rQsub(path = getwd(), rFile = paste0(path, "/testQsub.R"),
   jobName = "job", threaded = 1, memoryG = 10, rTimeHour = 2,
-  logFile = paste0(path, "/logfilename.log"),
-  email = "wtao@umcutrecht.nl",
+  logFile = paste0(path, "/logfilename.log"), email = NULL,
+  when2Email = "aes",
   preCMD = "echo \\"module load R/3.3.0 && Rscript ", param1 = 1:10,
   ...)
 }
@@ -29,7 +29,12 @@ time (in hour) of each job.}
 
 \item{logFile}{the log file(s) for errors and warnings.}
 
-\item{email}{email to receive report from HPC.}
+\item{email}{email to receive report from HPC. The default is NULL.}
+
+\item{when2Email}{when will the server send a email. This can be
+"b" (start) and/or "e" (end) and/or "a" (abortion) and/or "s" (suspension)
+of your job. The default is "aes". This parameter will not be
+used if email is NULL.}
 
 \item{preCMD}{the command to run R script, the default is
 'echo "module load R/3.3.0 && Rscript '.}

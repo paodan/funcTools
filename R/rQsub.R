@@ -12,7 +12,11 @@
 #' @param rTimeHour numeric or numeric vector. Maximum running
 #' time (in hour) of each job.
 #' @param logFile the log file(s) for errors and warnings.
-#' @param email email to receive report from HPC.
+#' @param email email to receive report from HPC. The default is NULL.
+#' @param when2Email when will the server send a email. This can be
+#' "b" (start) and/or "e" (end) and/or "a" (abortion) and/or "s" (suspension)
+#' of your job. The default is "aes". This parameter will not be
+#' used if email is NULL.
 #' @param param1 the first parameter passed to R script.
 #' @param ... other parameter passed to R script.
 #' @return A list of output of running rFile.
@@ -49,7 +53,8 @@ rQsub = function(path = getwd(), rFile = paste0(path, "/testQsub.R"),
                  jobName = "job",
                  threaded = 1, memoryG = 10, rTimeHour = 2,
                  logFile = paste0(path, "/logfilename.log"),
-                 email = "wtao@umcutrecht.nl",
+                 email = NULL,
+                 when2Email = "aes",
                  preCMD = 'echo "module load R/3.3.0 && Rscript ',
                  param1 = 1:10,
                  ...){
@@ -82,9 +87,20 @@ rQsub = function(path = getwd(), rFile = paste0(path, "/testQsub.R"),
   # threaded
   threaded = checkNum(threaded, num)
 
+  if (is.null(email)){
+    emailAndWhen = ""
+  } else {
+    if (grep("[aes]", when2Email)){
+      emailAndWhen = paste("-M", email, "-m", when2Email)
+    } else{
+      message("No email will be sent!")
+      emailAndWhen = ""
+    }
+  }
+
   qparam = paste("qsub -N", jobName, "-pe threaded", threaded,
                  "-l", memory, "-l", rTime, "-e", logFile,
-                 "-M", email, "-m aes -cwd")
+                 emailAndWhen, "-cwd")
   qsub_all_parameters = paste0(logFile[1], "_qsub_all_parameters.log")
   fileConn = file(qsub_all_parameters)
   on.exit(close(fileConn))
