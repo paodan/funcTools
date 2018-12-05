@@ -130,11 +130,11 @@ qstatProcess = function(statRes){
   statRes = removeSpace(statRes)
 
   len = length(statRes)
-  id1 = grep("^[0-9]* 0", statRes)
+  id1 = grep("^[0-9]* [0-9]\\.[0-9]*", statRes)
   id2 = c(id1[-1]-1, len)
   res0 = lapply(seq_along(id1), function(mi){
     statResSub = statRes[id1[mi] : id2[mi]]
-    return(c(grep("^[0-9]* 0", statResSub, value = TRUE),
+    return(c(grep("^[0-9]* [0-9]\\.[0-9]*", statResSub, value = TRUE),
              f(statResSub, "^Full jobname: "),
              f(statResSub, "^h_rt=", fill = 24*3600),
              f(statResSub, "^Hard Resources: "),
@@ -142,6 +142,11 @@ qstatProcess = function(statRes){
              f(statResSub, "^Binding: "),
              f(statResSub, "^Soft Resources:")))
   })
+  if (length(res0) < 1){
+    cat("No jobs are on HPC based on your request!\n")
+    return(invisible(NULL))
+  }
+  res0 = res0[sapply(res0, length) == 7]
   res0 = as.data.frame(t(as.data.frame(res0)))
   colnames(res0) = c("base", "fullName", "maxSeconds", "hardResources",
                      "requestedPE", "binding", "softResources")
@@ -189,9 +194,8 @@ qstatAll = function(stat = c("run", "all", "wait")){
   } else {
     stop("Unknown stat!")
   }
-  res = qstatProcess(statRes = system(cmd2, intern = TRUE))
 
-  return(res)
+  return(qstatProcess(statRes = system(cmd2, intern = TRUE)))
 }
 
 
@@ -235,10 +239,6 @@ formatN = function(x, n = 3){
 qstat = function(stat = c("all", "run", "wait")){
   stat = match.arg(stat)
 
-  f = function(x, pat){
-    gsub(pat, "", grep(pat, x, value = TRUE))
-  }
-
   if (stat == "run"){
     # cmd = "qstat -s r"
     cmd2 = "qstat -s r -r"
@@ -251,8 +251,7 @@ qstat = function(stat = c("all", "run", "wait")){
   } else {
     stop("Unknown stat!")
   }
-  res = qstatProcess(statRes = system(cmd2, intern = TRUE))
-  return(res)
+  return(qstatProcess(statRes = system(cmd2, intern = TRUE)))
 }
 
 
