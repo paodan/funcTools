@@ -61,7 +61,6 @@ edge2Mat = function(edge, rownm, colnm, direction = TRUE,
 #' @param diag logic, whether to include the diagonal of the matrix.
 #' @return a data.frame of edge information. The first column is from node,
 #' the second column is to node, and the third is weight.
-#' @import igraph
 #' @examples {
 #' \dontrun{
 #' mat = matrix(rnorm(4*4), nrow = 4,
@@ -77,10 +76,20 @@ edge2Mat = function(edge, rownm, colnm, direction = TRUE,
 #' @export
 mat2Edge = function(mat, mode = c("directed", "undirected", "upper", "lower"),
                     diag = FALSE){
-  stopifnot(is.matrix(mat))
   mode = match.arg(mode)
-  g = graph.adjacency(adjmatrix = mat, weighted = TRUE,
-                      diag = diag, mode = mode)
-  edge = get.data.frame(g)
-  return(edge)
+  rowN = nrow(mat)
+  colN = ncol(mat)
+
+  if (mode == "directed"){
+    id = !diag(!diag, rowN, colN)
+  } else if (mode %in% c("undirected", "upper")){
+    id = upper.tri(mat, diag = diag)
+  } else if (mode == "lower"){
+    id = lower.tri(mat, diag = diag)
+  }
+
+  id = which(id, arr.ind = TRUE, useNames = TRUE)
+  colnames(id) = c("from", "to")
+  return(data.frame(id, weight = mat[id]))
 }
+
