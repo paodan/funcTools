@@ -184,12 +184,11 @@ qstatProcess = function(statRes){
   res = data.frame(strSplit(res0$base, " "), stringsAsFactors = FALSE)
   colnames(res) = c("job.ID", "prior", "name", "user", "state", "submit.start.at",
                     "at", "queue", "slots", "ja.task.ID")[1:ncol(res)]
-  print(res$slots)
   res$slots = if (is.null(res$slots)) {
     0
   } else {
     slot_tmp = res$slots
-    slot_tmp[is.na(slot_tmp)] = 0
+    slot_tmp[slot_tmp == ""] = 0
     as.numeric(slot_tmp)
   }
   res$submit.start.at = as.Date(res$submit.start.at, "%m/%d/%Y")
