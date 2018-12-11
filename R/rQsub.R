@@ -184,6 +184,7 @@ qstatProcess = function(statRes){
   res = data.frame(strSplit(res0$base, " "), stringsAsFactors = FALSE)
   colnames(res) = c("job.ID", "prior", "name", "user", "state", "submit.start.at",
                     "at", "queue", "slots", "ja.task.ID")[1:ncol(res)]
+  print(res$slots)
   res$slots = if (is.null(res$slots)) {
     0
   } else {
