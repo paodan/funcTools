@@ -22,8 +22,22 @@
 #' @return A list of output of running rFile.
 #' @examples {
 #' \dontrun{
-#' # This function can only run on HPC
+#' # This function can only run on HPC.
+#'
+#' ## Section 1, the format of R script file (for example myfile.R) to submit:
+#' args = commandArgs(TRUE)
+#' if (FALSE){
+#'  # Input the code to use rQsub, see section
+#'  # And run the code manually in this '{}', for example:
+#'  rQsub(path = getwd(), rFile = "myfile.R", param1 = 1:5)
+#' }
+#' arg1 = args[1]
+#' # Then input R code to use the arg1 variable. for example:
+#' cat("test code result:", arg1, "\n")
+#'
+#' ## Section 2, the code to use rQsub
 #' # One parameter in R script
+#' path = "/my/file/path"
 #' rQsub(path = "/my/file/path",
 #'       rFile = paste0(path, "/testQsub.R"),
 #'       jobName = "job", threaded = 1,
@@ -49,10 +63,10 @@
 #' }
 #' }
 #' @export
-rQsub = function(path = getwd(), rFile = paste0(path, "/testQsub.R"),
+rQsub = function(path = getwd(), rFile = "testQsub.R",
                  jobName = "job",
                  threaded = 1, memoryG = 10, rTimeHour = 2,
-                 logFile = paste0(path, "/logfilename.log"),
+                 logFile = "logfilename.log",
                  email = NULL,
                  when2Email = "aes",
                  preCMD = 'echo "module load R/3.3.0 && Rscript ',
@@ -170,7 +184,13 @@ qstatProcess = function(statRes){
   res = data.frame(strSplit(res0$base, " "), stringsAsFactors = FALSE)
   colnames(res) = c("job.ID", "prior", "name", "user", "state", "submit.start.at",
                     "at", "queue", "slots", "ja.task.ID")[1:ncol(res)]
-  res$slots = as.numeric(res$slots)
+  res$slots = if (is.null(res$slots)) {
+    0
+  } else {
+    slot_tmp = res$slots
+    slot_tmp[is.na(slot_tmp)] = 0
+    as.numeric(slot_tmp)
+  }
   res$submit.start.at = as.Date(res$submit.start.at, "%m/%d/%Y")
   res$at = chron::chron(times. = res$at, format = c(dataes = "m/d/y", time = "h:m:s"))
   res$submit.start.at = as.POSIXlt(paste(res$submit.start.at, res$at))
