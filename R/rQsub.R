@@ -145,6 +145,72 @@ rQsub = function(path = getwd(), rFile = "testQsub.R",
 #' x = system("qstat -r", T)
 #' qstatProcess(x)
 #' }
+# qstatProcess = function(statRes){
+#   if (length(statRes) == 0){
+#     message("No queue job was found!")
+#     return(character(0))
+#   }
+#   f = function(x, pat, fill = ""){
+#     y = grep(pat, x, value = TRUE)
+#     if (length(y) == 0) {
+#       y = fill
+#     }
+#     gsub(pat, "", y)
+#   }
+#   statRes = removeSpace(statRes)
+#
+#   len = length(statRes)
+#   id1 = grep("^[0-9]* [0-9]\\.[0-9]*", statRes)
+#   id2 = c(id1[-1]-1, len)
+#   res0 = lapply(seq_along(id1), function(mi){
+#     statResSub = statRes[id1[mi] : id2[mi]]
+#     return(c(grep("^[0-9]* [0-9]\\.[0-9]*", statResSub, value = TRUE),
+#              f(statResSub, "^Full jobname: "),
+#              f(statResSub, "^h_rt=", fill = 24*3600),
+#              f(statResSub, "^Hard Resources: "),
+#              f(statResSub, "^Requested PE: ", fill = "threaded 1"),
+#              f(statResSub, "^Binding: "),
+#              f(statResSub, "^Soft Resources:")))
+#   })
+#   if (length(res0) < 1){
+#     cat("No jobs are on HPC based on your request!\n")
+#     return(invisible(NULL))
+#   }
+#   res0 = res0[sapply(res0, length) == 7]
+#   res0 = as.data.frame(t(as.data.frame(res0)))
+#   colnames(res0) = c("base", "fullName", "maxSeconds", "hardResources",
+#                      "requestedPE", "binding", "softResources")
+#
+#   res = data.frame(strSplit(res0$base, " "), stringsAsFactors = FALSE)
+#   colnames(res) = c("job.ID", "prior", "name", "user", "state", "submit.start.at",
+#                     "at", "queue", "slots", "ja.task.ID")[1:ncol(res)]
+#   res$slots = if (is.null(res$slots)) {
+#     0
+#   } else {
+#     slot_tmp = res$slots
+#     slot_tmp[slot_tmp == ""] = 0
+#     as.numeric(slot_tmp)
+#   }
+#   res$submit.start.at = as.Date(res$submit.start.at, "%m/%d/%Y")
+#   res$at = chron::chron(times. = res$at, format = c(dataes = "m/d/y", time = "h:m:s"))
+#   res$submit.start.at = as.POSIXlt(paste(res$submit.start.at, res$at))
+#
+#   if (ncol(res) == 9){
+#     res$ja.task.ID = ""
+#   }
+#   res$at = NULL
+#
+#   # additional information
+#   res$name = res0$fullName
+#   res$maxSeconds = as.numeric(strSplit(res0$maxSeconds, " ")[,1])
+#   res$will.stop.at = res$submit.start.at + res$maxSeconds
+#   res$hardResources = res0$hardResources
+#   res$requestedPE = res0$requestedPE
+#   res$binding = res0$binding
+#   res$softResources = res0$softResources
+#   return(res)
+# }
+
 qstatProcess = function(statRes){
   if (length(statRes) == 0){
     message("No queue job was found!")
@@ -164,22 +230,23 @@ qstatProcess = function(statRes){
   id2 = c(id1[-1]-1, len)
   res0 = lapply(seq_along(id1), function(mi){
     statResSub = statRes[id1[mi] : id2[mi]]
-    return(c(grep("^[0-9]* [0-9]\\.[0-9]*", statResSub, value = TRUE),
-             f(statResSub, "^Full jobname: "),
-             f(statResSub, "^h_rt=", fill = 24*3600),
-             f(statResSub, "^Hard Resources: "),
-             f(statResSub, "^Requested PE: ", fill = "threaded 1"),
-             f(statResSub, "^Binding: "),
-             f(statResSub, "^Soft Resources:")))
+    return(c(base = grep("^[0-9]* [0-9]\\.[0-9]*", statResSub, value = TRUE),
+             fullName = f(statResSub, "^Full jobname: "),
+             maxSeconds = f(statResSub, "^h_rt=|^Hard Resources: h_rt=", fill = 24*3600),
+             memory = f(statResSub, "^h_vmem=|^Hard Resources: h_vmem="),
+             tmpspace = f(statResSub, "^tmpspace=|^Hard Resources: tmpspace="),
+             requestedPE = f(statResSub, "^Requested PE: ", fill = "threaded 1"),
+             binding = f(statResSub, "^Binding: "),
+             softResources = f(statResSub, "^Soft Resources:")))
   })
   if (length(res0) < 1){
     cat("No jobs are on HPC based on your request!\n")
     return(invisible(NULL))
   }
-  res0 = res0[sapply(res0, length) == 7]
+  res0 = res0[sapply(res0, length) == 8]
   res0 = as.data.frame(t(as.data.frame(res0)))
-  colnames(res0) = c("base", "fullName", "maxSeconds", "hardResources",
-                     "requestedPE", "binding", "softResources")
+  # colnames(res0) = c("base", "fullName", "maxSeconds", "hardResources",
+  #                    "requestedPE", "binding", "softResources")
 
   res = data.frame(strSplit(res0$base, " "), stringsAsFactors = FALSE)
   colnames(res) = c("job.ID", "prior", "name", "user", "state", "submit.start.at",
@@ -199,15 +266,22 @@ qstatProcess = function(statRes){
     res$ja.task.ID = ""
   }
   res$at = NULL
+  queue = res$queue
+  res$queue = NULL
+  taskID = res$ja.task.ID
+  res$ja.task.ID = NULL
 
   # additional information
   res$name = res0$fullName
   res$maxSeconds = as.numeric(strSplit(res0$maxSeconds, " ")[,1])
   res$will.stop.at = res$submit.start.at + res$maxSeconds
-  res$hardResources = res0$hardResources
-  res$requestedPE = res0$requestedPE
-  res$binding = res0$binding
-  res$softResources = res0$softResources
+  res$memory = strSplit(res0$memory, " ")[,1]
+  res$tmpspace = strSplit(res0$tmpspace, " ")[,1]
+  # res$requestedPE = res0$requestedPE
+  # res$binding = res0$binding
+  # res$softResources = res0$softResources
+  res$queue = queue
+  res$ja.task.ID = taskID
   return(res)
 }
 
