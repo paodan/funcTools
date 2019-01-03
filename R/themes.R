@@ -27,8 +27,10 @@ theme_Publication <- function(base_size=14, base_family=c("Helvetica", "sans"),
            # plot.background = element_rect(colour = NA),
            panel.border = element_rect(colour = NA),
            axis.title = element_text(face = "bold",size = rel(1)),
-           axis.title.y = element_text(vjust =y_vjust, hjust = y_hjust, face="plain"),
-           axis.title.x = element_text(vjust =x_vjust, hjust = x_hjust, face="plain"),#(vjust = -0.2),
+           # axis.title.y = element_text(vjust =y_vjust, hjust = y_hjust, face="plain"),
+           # axis.title.x = element_text(vjust =x_vjust, hjust = x_hjust, face="plain"),#(vjust = -0.2),
+           axis.title.y = element_text(vjust =0.5, hjust = 0.5, face="plain"),
+           axis.title.x = element_text(vjust =0.5, hjust = 0.5, face="plain"),#(vjust = -0.2),
            axis.text = element_text(),
            axis.text.x = element_text(angle=x_angle, vjust =x_vjust, hjust = x_hjust), ## maybe need to remove
            axis.text.y = element_text(angle=y_angle, vjust =y_vjust, hjust = y_hjust), ## maybe need to remove
