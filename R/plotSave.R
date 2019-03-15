@@ -59,10 +59,10 @@ plotSave = function(filename, Plot = NULL, plotCMD = NULL, device = NULL,
   old_dev <- grDevices::dev.cur()
   dev(file = filename, width = dim[1], height = dim[2])
   # on.exit(utils::capture.output(grDevices::dev.off()))
-  on.exit({
-    utils::capture.output(grDevices::dev.off())
+  on.exit( utils::capture.output({
+    grDevices::dev.off()
     if (old_dev > 1) grDevices::dev.set(old_dev)
-  })
+  }))
   if (!is.null(Plot)){
     # if (!any(class(Plot) %in% supportedClassesPlot)){
     #   stop(paste0(class(Plot), " is not supported by the 'Plot' parameter",
@@ -71,6 +71,7 @@ plotSave = function(filename, Plot = NULL, plotCMD = NULL, device = NULL,
     if (any(class(Plot) %in% supportedClassesPlot)){
       plot(Plot)
     } else if (any(class(Plot) %in% supportedClassesGrid.draw)){
+      grid.newpage()
       grid.draw(Plot)
     } else {
       stop(paste0(class(Plot), " is not supported by the 'Plot' parameter",
