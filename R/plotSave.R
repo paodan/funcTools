@@ -71,6 +71,7 @@ plotSave = function(filename, Plot = NULL, plotCMD = NULL, device = NULL,
     if (any(class(Plot) %in% supportedClassesPlot)){
       plot(Plot)
     } else if (any(class(Plot) %in% supportedClassesGrid.draw)){
+      grid.newpage()
       grid.draw(Plot)
     } else {
       stop(paste0(class(Plot), " is not supported by the 'Plot' parameter",
