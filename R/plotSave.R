@@ -57,6 +57,7 @@ plotSave = function(filename, Plot = NULL, plotCMD = NULL, device = NULL,
   dim <- ggplot2:::plot_dim(c(width, height), scale = scale, units = units,
                             limitsize = limitsize)
   old_dev <- grDevices::dev.cur()
+  print(old_dev)
   dev(file = filename, width = dim[1], height = dim[2])
   # on.exit(utils::capture.output(grDevices::dev.off()))
   on.exit( utils::capture.output({
