@@ -4,10 +4,9 @@
 \alias{rQsub}
 \title{Submit (qsub) R jobs.}
 \usage{
-rQsub(path = getwd(), rFile = paste0(path, "/testQsub.R"),
-  jobName = "job", threaded = 1, memoryG = 10, rTimeHour = 2,
-  logFile = paste0(path, "/logfilename.log"), email = NULL,
-  when2Email = "aes",
+rQsub(path = getwd(), rFile = "testQsub.R", jobName = "job",
+  threaded = 1, memoryG = 10, rTimeHour = 2,
+  logFile = "logfilename.log", email = NULL, when2Email = "aes",
   preCMD = "echo \\"module load R/3.3.0 && Rscript ", param1 = 1:10,
   ...)
 }
@@ -48,34 +47,4 @@ A list of output of running rFile.
 }
 \description{
 Submit R jobs in parallel (array).
-}
-\examples{
-{
-\dontrun{
-# This function can only run on HPC
-# One parameter in R script
-rQsub(path = "/my/file/path",
-      rFile = paste0(path, "/testQsub.R"),
-      jobName = "job", threaded = 1,
-      memoryG = 10, rTimeHour = 2,
-      logFile = paste0(path, "/logfilename.log"),
-      preCMD = 'echo "module load R/3.3.0 && Rscript ',
-      param1 = 1:10)
-# Multiple parameters in R script and using 2 threads
-rQsub(path = "/my/file/path",
-      rFile = paste0(path, "/testQsub.R"),
-      jobName = "job", threaded = 2,
-      param1 = 1:10, param2 = 2:11, param3 = 3:12)
-
-# Specify job names, threads, memories and running time.
-rQsub(path = "/my/file/path",
-      rFile = paste0(path, "/testQsub.R"),
-      jobName = paste0("job_", formatN(1:10, 2)),
-      logFile = paste0(path, "/logfilename_", formatN(1:10, 2), ".log"),
-      threaded = rep(c(1, 2), each = 5),
-      memoryG = rep(c(10, 20), each = 5),
-      rTimeHour = rep(c(24, 48), each = 5),
-      param1 = 1:10)
-}
-}
 }
