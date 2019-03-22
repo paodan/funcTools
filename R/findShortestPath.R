@@ -4,7 +4,7 @@
 #' @param end node
 #' @export
 #' @examples  {
-#' \donrun{
+#' \dontrun{
 #' G = matrix(c(c(0, 6, 0, 1, 0),
 #' c(6, 0, 5, 2, 2),
 #' c(0, 5, 0, 0, 5),
@@ -55,7 +55,7 @@ findShortestPath = function(G, start, end){
   # initiate the distance table
   dists = data.frame(dist = rep(Inf, ncol(G)),
                      previousNode = "",
-                     row.names = nodes)
+                     row.names = nodes, stringsAsFactors = F)
   dists[1,1] = 0
   # initiate the nodes to search
   IN = rownames(dists)
@@ -94,3 +94,13 @@ findShortestPath = function(G, start, end){
        shortestPath = pathOrder,
        distanceTable = dists)
 }
+
+G = matrix(c(c(0, 6, 0, 1, 0),
+             c(6, 0, 5, 2, 2),
+             c(0, 5, 0, 0, 5),
+             c(1, 2, 0, 0, 1),
+             c(0, 2, 5, 1, 0))/10, nrow = 5, byrow = T,
+           dimnames = list(letters[1:5], letters[1:5]))
+# debugonce(findShortestPath)
+findShortestPath(G, start = "a", end = "c")
+

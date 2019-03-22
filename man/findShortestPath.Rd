@@ -18,7 +18,7 @@ Find the shortest path
 }
 \examples{
  {
-\\donrun{
+\dontrun{
 G = matrix(c(c(0, 6, 0, 1, 0),
 c(6, 0, 5, 2, 2),
 c(0, 5, 0, 0, 5),
