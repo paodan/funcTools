@@ -122,3 +122,117 @@ setMethod("show", signature = "functionInfo", function(object) {
 })
 
 
+#' @title find dispatched functions for an object
+#' @param f function name.
+#' @param object the object that the function f is processing
+#' @param envir the working environment
+#' @export
+#'
+funDispatch = function(f, object, envir = topenv(parent.frame())){
+  if (is.character(f)) {
+    fcn <- get(f, mode = "function", envir = envir, inherits = TRUE)
+  } else if (is.function(f)){
+    fcn = f
+    f = deparse(substitute(f)) # not working outside the function
+  }
+  funAll = funCode(f)
+  # return(funAll)
+
+  classes = NULL
+  if (length(funAll@fS3@fcn) > 0){
+    classes = c(classes, names(funAll@fS3@fcn))
+    isDispatched3 = sapply(classes, function(x) is (object, x))
+    isDispatched3 = isDispatched3[isDispatched3]
+    if (length(isDispatched3) == 0 ){
+      if ("default" %in% funAll@fS3@fcn){
+        isDispatched3 = "default"
+      } else {
+        isDispatched3 = "originalFunction"
+      }
+    } else {
+      isDispatched3 = names(isDispatched3)
+    }
+  } else {
+    isDispatched3 = NULL
+  }
+
+  if (length(funAll@fS4@fcn) > 0){
+    classes = c(classes, names(funAll@fS4@fcn))
+    isDispatched4 = sapply(classes, function(x) is (object, x))
+    isDispatched4 = names(isDispatched4[isDispatched4])
+  } else {
+    isDispatched4 = NULL
+  }
+
+  isDispatched = list(S3 = isDispatched3, S4 = isDispatched4)
+  return(isDispatched)
+}
+
+
+
+#' @title apply either the dispatched S3 or S4 method of a function to an object
+#' @param f function name.
+#' @param object the object that the function f is processing.
+#' @param S3 dispatched S3 method or "originalFunction".
+#' @param S4 dispatched S4 method.
+#' @param envir the working environment.
+#' @examples
+#' \dontrun{
+#' funUse(print, "asdfasdfasd")
+#' funUse(print, "asdfadsfasdf", S3 = "default")
+#'
+#' fit <- lm(sepal ~ Petal.Length + Petal.Width + Species, data = datasets::iris)
+#' funUse(print, fit)
+#' funUse(print, fit, S3 = "lm")
+#' print.lm(fit)
+#'
+#' res = funUse(lm, object = sepal ~ Petal.Length + Petal.Width + Species, data = datasets::iris)
+#' res
+#' res = funUse(lm, object = sepal ~ Petal.Length + Petal.Width + Species,
+#'              S3 = "originalFunction", data = datasets::iris)
+#' res
+#' lm(sepal ~ Petal.Length + Petal.Width + Species, data = datasets::iris)
+#' }
+#' @export
+
+funUse = function(f, object, S3 = NULL, S4 = NULL,
+                  envir = topenv(parent.frame()), ...){
+  if (is.character(f)) {
+    fcn <- get(f, mode = "function", envir = envir, inherits = TRUE)
+  } else if (is.function(f)){
+    fcn = f
+    f = deparse(substitute(f)) # not working outside the function
+  }
+  funAll = funCode(f, envir = envir)
+  desp = funDispatch(f, object, envir = envir)
+
+  if (is.null(S3) & is.null(S4)){
+    if (is.null(desp$S3) & is.null(desp$S4)){
+      message("No dispatched function is found!")
+      return(invisible(NULL))
+    } else {
+      if (!is.null(desp$S3)){
+        if ("originalFunction" %in% desp$S3){
+          message("No dispatching, '", f, "' function itself is used!")
+          return(invisible(funAll@fcn(object, ...)))
+        } else {
+          message("For S3, you can specify S3 = one of the following words: \n")
+          message(paste(desp$S3, collapse = " "), "\n")
+          return(invisible(NULL))
+        }
+      }
+      if (!is.null(desp$S4)){
+        message("For S4, you can specify S4 = one of the following words: \n")
+        message(paste(desp$S4, collapse = " "), "\n")
+        return(invisible(NULL))
+      }
+    }
+  } else if (!is.null(S3) && S3 %in% desp$S3){
+    res = funAll@fS3@fcn[[S3]](object, ...)
+  } else if (!is.null(S4) && S4 %in% desp$S4){
+    res = funAll@fS4@fcn[[S4]](object, ...)
+  } else {
+    stop("No S3 or S4 method is found to be able to be dispatched!")
+  }
+    return(invisible(res))
+}
