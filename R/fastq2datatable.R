@@ -37,10 +37,10 @@ fastq2dataframe = function(fastqFile){
 #' fastq_test = data.frame(label = paste0("sequence", 1:n),
 #'                         sequence = sequences,
 #'                         mark = "+", score = scores)
-#' # save file
+#' # Saving file
 #' fastq = fastq2dataframe_rev(fastq_test, "./fastq_test.fastq")
 #'
-#' # read fastq file to a data frame
+#' # Reading fastq file to a data frame
 #' fastqTable = fastq2dataframe("./fastq_test.fastq")
 #' }
 #' }
