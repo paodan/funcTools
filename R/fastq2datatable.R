@@ -27,7 +27,7 @@ fastq2dataframe = function(fastqFile){
 #' @seealso \code{\link{fastq2dataframe}}
 #' @examples {
 #' \dontrun{
-#' # Generating information for 3 reads, of which is length of 50.
+#' # Generating information for 3 reads, each of which is length of 50.
 #' len = 50
 #' n = 3
 #' sequences = sapply(1:n, function(x) paste0(sample(c("A", "T", "C", "G"), len, replace = T), collapse = ""))
