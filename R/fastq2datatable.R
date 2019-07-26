@@ -34,9 +34,11 @@ fastq2dataframe = function(fastqFile){
 #' base = 33:(33+42) # ASCII_BASE=33
 #' mode(base) = "raw"
 #' scores = sapply(1:n, function(x) paste0(sapply(sample(base[2:40], len, replace = T), rawToChar), collapse = ""))
-#' fastq_test = data.frame(label = paste0("sequence", 1:n),
-#'                         sequence = sequences,
+#' labels = paste0("@sequence", 1:n) # "label" must start with `@`.
+#'
+#' fastq_test = data.frame(label = labels, sequence = sequences,
 #'                         mark = "+", score = scores)
+#'
 #' # Saving file
 #' fastq = fastq2dataframe_rev(fastq_test, "./fastq_test.fastq")
 #'
