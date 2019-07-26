@@ -13,5 +13,5 @@ fastq2dataframe(fastqFile)
 Read fastq file and convert to a data frame
 }
 \seealso{
-\link{\code{fastq2dataframe_rev}}
+\code{\link{fastq2dataframe_rev}}
 }

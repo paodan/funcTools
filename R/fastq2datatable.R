@@ -2,7 +2,7 @@
 #' @param fastqFile a fastq file name
 #' @import data.table
 #' @export
-#' @seealso \link{\code{fastq2dataframe_rev}}
+#' @seealso \code{\link{fastq2dataframe_rev}}
 fastq2dataframe = function(fastqFile){
   fastq = fread(file = fastqFile, sep = "\t", header = F)
   n = nrow(fastq)
@@ -24,7 +24,7 @@ fastq2dataframe = function(fastqFile){
 #' @param fileName the fastq file to be written.
 #' @import data.table
 #' @export
-#' @seealso \link{\code{fastq2dataframe}}
+#' @seealso \code{\link{fastq2dataframe}}
 #' @examples {
 #' \dontrun{
 #' # Generating information for 3 reads, of which is length of 50.
@@ -38,7 +38,10 @@ fastq2dataframe = function(fastqFile){
 #'                         sequence = sequences,
 #'                         mark = "+", score = scores)
 #' # save file
-#' fastq2dataframe_rev(fastq_test, "./fastq_test.fastq")
+#' fastq = fastq2dataframe_rev(fastq_test, "./fastq_test.fastq")
+#'
+#' # read fastq file to a data frame
+#' fastqTable = fastq2dataframe("./fastq_test.fastq")
 #' }
 #' }
 fastq2dataframe_rev = function(fastqDataframe, fileName = NULL){
