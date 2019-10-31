@@ -17,6 +17,9 @@
 #' "b" (start) and/or "e" (end) and/or "a" (abortion) and/or "s" (suspension)
 #' of your job. The default is "aes". This parameter will not be
 #' used if email is NULL.
+#' @param computeNode which computing CPU node will be used?
+#' Support regular expression. The default is \code{"all.q@@n00[0-9][0-9]"}
+#' @param moreQsubParams more qsub \href{parameters}{https://wiki.bioinformatics.umcutrecht.nl/bin/viewauth/HPC/HowToS}.
 #' @param param1 the first parameter passed to R script.
 #' @param ... other parameter passed to R script.
 #' @return A list of output of running rFile.
@@ -69,6 +72,8 @@ rQsub = function(path = getwd(), rFile = "testQsub.R",
                  logFile = "logfilename.log",
                  email = NULL,
                  when2Email = "aes",
+                 computeNode = "all.q@n00[0-9][0-9]",
+                 moreQsubParams = "",
                  preCMD = 'echo "module load R/3.3.0 && Rscript ',
                  param1 = 1:10,
                  ...){
@@ -77,6 +82,8 @@ rQsub = function(path = getwd(), rFile = "testQsub.R",
   if (length(unique(sapply(params, length))) != 1){
     stop("The length of arguments are not the same!")
   }
+
+  stopifnot(length(computeNode) == 1 && is.character(computeNode))
 
   checkNum = function(x, num = length(param1)){
     if (length(x) == 1){
@@ -112,9 +119,9 @@ rQsub = function(path = getwd(), rFile = "testQsub.R",
     }
   }
 
-  qparam = paste("qsub -N", jobName, "-pe threaded", threaded,
+  qparam = paste("qsub", "-q", computeNode,  "-N", jobName, "-pe threaded", threaded,
                  "-l", memory, "-l", rTime, "-e", logFile,
-                 emailAndWhen, "-cwd")
+                 emailAndWhen, "-cwd", moreQsubParams)
   qsub_all_parameters = paste0(logFile[1], "_qsub_all_parameters.log")
   fileConn = file(qsub_all_parameters)
   on.exit(close(fileConn))
@@ -132,6 +139,9 @@ rQsub = function(path = getwd(), rFile = "testQsub.R",
   }
   return(ids)
 }
+
+
+
 
 
 
