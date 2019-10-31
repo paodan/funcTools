@@ -28,8 +28,7 @@
 #' @import ggplot2
 #' @seealso Similar usage can refer to \code{\link{ggplot}()}.
 #' @export
-#' @examples {
-#' \dontrun{
+#' @examples
 #' # using plotCMD parameter
 #' plotSave("mtcars.pdf", plotCMD = plot(mtcars$mpg, mtcars$wt))
 #' plotSave("mtcars.pdf", plotCMD = ggplot(mtcars, aes(mpg, wt)) + geom_point())
@@ -45,8 +44,7 @@
 #'
 #' plotSave("mtcars.pdf", Plot = g)
 #' plotSave("mtcars.png", Plot = h)
-#'}
-#'}
+
 plotSave = function(filename, Plot = NULL, plotCMD = NULL, device = NULL,
                     path = NULL, scale = 1,width = NA,
                     height = NA, units = c("in", "cm", "mm"),

@@ -19,7 +19,7 @@
 #' used if email is NULL.
 #' @param computeNode which computing CPU node will be used?
 #' Support regular expression. The default is \code{"all.q@@n00[0-9][0-9]"}
-#' @param moreQsubParams more qsub \href{parameters}{https://wiki.bioinformatics.umcutrecht.nl/bin/viewauth/HPC/HowToS}.
+#' @param moreQsubParams more qsub \href{https://wiki.bioinformatics.umcutrecht.nl/bin/viewauth/HPC/HowToS}{parameters}.
 #' @param param1 the first parameter passed to R script.
 #' @param ... other parameter passed to R script.
 #' @return A list of output of running rFile.
@@ -31,7 +31,7 @@
 #' args = commandArgs(TRUE)
 #' if (FALSE){
 #'  # Input the code to use rQsub, see section
-#'  # And run the code manually in this '{}', for example:
+#'  # And run the code manually in this if`{}` statement , for example:
 #'  rQsub(path = getwd(), rFile = "myfile.R", param1 = 1:5)
 #' }
 #' arg1 = args[1]

@@ -48,8 +48,6 @@ from the extension. This function is very convinent when saving a plot
 as a pdf or svg file and the letters in the plot need to be able to copied.
 }
 \examples{
-{
-\dontrun{
 # using plotCMD parameter
 plotSave("mtcars.pdf", plotCMD = plot(mtcars$mpg, mtcars$wt))
 plotSave("mtcars.pdf", plotCMD = ggplot(mtcars, aes(mpg, wt)) + geom_point())
@@ -65,8 +63,6 @@ h = hist(rnorm(100))
 
 plotSave("mtcars.pdf", Plot = g)
 plotSave("mtcars.png", Plot = h)
-}
-}
 }
 \seealso{
 Similar usage can refer to \code{\link{ggplot}()}.

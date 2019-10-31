@@ -19,3 +19,8 @@ A character vector without duplicates.
 make an character vector suitable for names by adding
 an integer to the end of the characters.
 }
+\examples{
+makeUniqueNames(c("a", "b" ,"a", "a"))
+makeUniqueNames(c("a", "b" ,"a", "a", "b"), ".")
+
+}

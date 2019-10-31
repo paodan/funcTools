@@ -6,12 +6,9 @@
 #' an integer.
 #' @return A character vector without duplicates.
 #' @export
-#' @examples {
-#' \dontrun{
+#' @examples
 #' makeUniqueNames(c("a", "b" ,"a", "a"))
-#' makeUniqueNames(c("a", "b" ,"a", "a", "b), ".")
-#' }
-#' }
+#' makeUniqueNames(c("a", "b" ,"a", "a", "b"), ".")
 #'
 makeUniqueNames = function(x, sep = "_"){
   y = unique(x[duplicated(x)])
