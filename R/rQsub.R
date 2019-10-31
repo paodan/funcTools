@@ -23,8 +23,8 @@
 #' @param param1 the first parameter passed to R script.
 #' @param ... other parameter passed to R script.
 #' @return A list of output of running rFile.
-#' @examples {
-#' \dontrun{
+#' @export
+#' @examples
 #' # This function can only run on HPC.
 #'
 #' ## Section 1, the format of R script file (for example myfile.R) to submit:
@@ -63,9 +63,7 @@
 #'       memoryG = rep(c(10, 20), each = 5),
 #'       rTimeHour = rep(c(24, 48), each = 5),
 #'       param1 = 1:10)
-#' }
-#' }
-#' @export
+
 rQsub = function(path = getwd(), rFile = "testQsub.R",
                  jobName = "job",
                  threaded = 1, memoryG = 10, rTimeHour = 2,

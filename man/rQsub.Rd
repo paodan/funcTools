@@ -7,6 +7,7 @@
 rQsub(path = getwd(), rFile = "testQsub.R", jobName = "job",
   threaded = 1, memoryG = 10, rTimeHour = 2,
   logFile = "logfilename.log", email = NULL, when2Email = "aes",
+  computeNode = "all.q@n00[0-9][0-9]", moreQsubParams = "",
   preCMD = "echo \\"module load R/3.3.0 && Rscript ", param1 = 1:10,
   ...)
 }
@@ -34,6 +35,11 @@ time (in hour) of each job.}
 "b" (start) and/or "e" (end) and/or "a" (abortion) and/or "s" (suspension)
 of your job. The default is "aes". This parameter will not be
 used if email is NULL.}
+
+\item{computeNode}{which computing CPU node will be used?
+Support regular expression. The default is \code{"all.q@n00[0-9][0-9]"}}
+
+\item{moreQsubParams}{more qsub \href{parameters}{https://wiki.bioinformatics.umcutrecht.nl/bin/viewauth/HPC/HowToS}.}
 
 \item{preCMD}{the command to run R script, the default is
 'echo "module load R/3.3.0 && Rscript '.}
