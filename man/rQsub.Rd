@@ -7,7 +7,7 @@
 rQsub(path = getwd(), rFile = "testQsub.R", jobName = "job",
   threaded = 1, memoryG = 10, rTimeHour = 2,
   logFile = "logfilename.log", email = NULL, when2Email = "aes",
-  computeNode = "all.q@n00[0-9][0-9]", moreQsubParams = "",
+  computeNode = "all.q@n00[0-9][0-9]*", moreQsubParams = "",
   preCMD = "echo \\"module load R/3.3.0 && Rscript ", param1 = 1:10,
   ...)
 }
@@ -37,7 +37,7 @@ of your job. The default is "aes". This parameter will not be
 used if email is NULL.}
 
 \item{computeNode}{which computing CPU node will be used?
-Support regular expression. The default is \code{"all.q@n00[0-9][0-9]"}}
+Support regular expression. The default is \code{"all.q@n00[0-9][0-9]*"}}
 
 \item{moreQsubParams}{more qsub \href{https://wiki.bioinformatics.umcutrecht.nl/bin/viewauth/HPC/HowToS}{parameters}.}
 
@@ -61,7 +61,7 @@ Submit R jobs in parallel (array).
 args = commandArgs(TRUE)
 if (FALSE){
  # Input the code to use rQsub, see section
- # And run the code manually in this if`{}` statement , for example: \\code
+ # And run the code manually in this if`{}` statement , for example:
  rQsub(path = getwd(), rFile = "myfile.R", param1 = 1:5)
 }
 arg1 = args[1]

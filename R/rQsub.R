@@ -18,7 +18,7 @@
 #' of your job. The default is "aes". This parameter will not be
 #' used if email is NULL.
 #' @param computeNode which computing CPU node will be used?
-#' Support regular expression. The default is \code{"all.q@@n00[0-9][0-9]"}
+#' Support regular expression. The default is \code{"all.q@@n00[0-9][0-9]*"}
 #' @param moreQsubParams more qsub \href{https://wiki.bioinformatics.umcutrecht.nl/bin/viewauth/HPC/HowToS}{parameters}.
 #' @param param1 the first parameter passed to R script.
 #' @param ... other parameter passed to R script.
@@ -70,7 +70,7 @@ rQsub = function(path = getwd(), rFile = "testQsub.R",
                  logFile = "logfilename.log",
                  email = NULL,
                  when2Email = "aes",
-                 computeNode = "all.q@n00[0-9][0-9]",
+                 computeNode = "all.q@n00[0-9][0-9]*",
                  moreQsubParams = "",
                  preCMD = 'echo "module load R/3.3.0 && Rscript ',
                  param1 = 1:10,
