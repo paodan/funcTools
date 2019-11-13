@@ -23,7 +23,7 @@
 #' lsAccessibleVariable(funObj, T) # all variables in environment within function f.
 #' lsAccessibleVariable(funObj, T, "ab") # variables 'ab' in environment within function f.
 #' }
-
+#' @export
 lsAccessibleVariable = function(fun, printValue = FALSE, variable2print = NULL){
   stopifnot(is.function(fun))
   stopifnot(is.logical(printValue))
