@@ -1,6 +1,6 @@
 #' Read fastq file and convert to a data frame
 #' @param fastqFile a fastq file name
-#' @import data.table
+#' @rawNamespace import(data.table, except = c(melt, dcast))
 #' @export
 #' @seealso \code{\link{fastq2dataframe_rev}}
 fastq2dataframe = function(fastqFile){
