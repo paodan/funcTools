@@ -22,7 +22,7 @@ fastq2dataframe = function(fastqFile){
 #' @param fastqDataframe a data frame of four columns, and the column names must be
 #' "label", "sequence", "mark", and "score".
 #' @param fileName the fastq file to be written.
-#' @import data.table
+#' @rawNamespace import(data.table, except = c(melt, dcast))
 #' @export
 #' @seealso \code{\link{fastq2dataframe}}
 #' @examples {
