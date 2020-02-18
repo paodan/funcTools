@@ -1,10 +1,11 @@
 #' Read fastq file and convert to a data frame
 #' @param fastqFile a fastq file name
-#' @rawNamespace import(data.table, except = c(melt, dcast))
+# @rawNamespace import(data.table, except = c(melt, dcast))
+# @importFrom data.table fread
 #' @export
 #' @seealso \code{\link{fastq2dataframe_rev}}
 fastq2dataframe = function(fastqFile){
-  fastq = fread(file = fastqFile, sep = "\t", header = F)
+  fastq = data.table::fread(file = fastqFile, sep = "\t", header = F)
   n = nrow(fastq)
   if (n %% 4 != 0){
     stop("The row number of fastqFile is not multiple of 4, please check if the file is correct.")
@@ -22,7 +23,8 @@ fastq2dataframe = function(fastqFile){
 #' @param fastqDataframe a data frame of four columns, and the column names must be
 #' "label", "sequence", "mark", and "score".
 #' @param fileName the fastq file to be written.
-#' @rawNamespace import(data.table, except = c(melt, dcast))
+# @rawNamespace import(data.table, except = c(melt, dcast))
+# @importFrom data.table data.table fwrite
 #' @export
 #' @seealso \code{\link{fastq2dataframe}}
 #' @examples {
@@ -51,13 +53,13 @@ fastq2dataframe_rev = function(fastqDataframe, fileName = NULL){
   stopifnot(all(colnames(fastqDataframe) == c("label", "sequence", "mark", "score")))
   stopifnot(nrow(fastqDataframe) > 1)
 
-  fastq = data.table(as.vector(t(fastqDataframe)))
+  fastq = data.table::data.table(as.vector(t(fastqDataframe)))
   if (!is.null(fileName)){
     if(length(grep(".+\\.fastq$", fileName, ignore.case = T)) == 0){
       fileName = paste0(fileName, ".fastq")
     }
 
-    fwrite(fastq, file = fileName, col.names = F, quote = F, showProgress = T)
+    data.table::fwrite(fastq, file = fileName, col.names = F, quote = F, showProgress = T)
   }
   return(fastq)
 }
