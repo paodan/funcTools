@@ -1,6 +1,7 @@
 #' Read fastq file and convert to a data frame
 #' @param fastqFile a fastq file name
-#' @rawNamespace import(data.table, except = c(melt, dcast))
+# @rawNamespace import(data.table, except = c(melt, dcast))
+#' @importFrom data.table fread
 #' @export
 #' @seealso \code{\link{fastq2dataframe_rev}}
 fastq2dataframe = function(fastqFile){
@@ -22,7 +23,8 @@ fastq2dataframe = function(fastqFile){
 #' @param fastqDataframe a data frame of four columns, and the column names must be
 #' "label", "sequence", "mark", and "score".
 #' @param fileName the fastq file to be written.
-#' @rawNamespace import(data.table, except = c(melt, dcast))
+# @rawNamespace import(data.table, except = c(melt, dcast))
+#' @importFrom data.table data.table fwrite
 #' @export
 #' @seealso \code{\link{fastq2dataframe}}
 #' @examples {
