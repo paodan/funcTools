@@ -4,8 +4,11 @@
 \alias{scale_fill_Publication}
 \title{Change discrete fill color of ggplot}
 \usage{
-scale_fill_Publication(fillColor = c("#386cb0", "#fdb462", "#7fc97f",
-  "#ef3b2c", "#662506", "#a6cee3", "#fb9a99", "#984ea3", "#ffff33"), ...)
+scale_fill_Publication(
+  fillColor = c("#386cb0", "#fdb462", "#7fc97f", "#ef3b2c", "#662506", "#a6cee3",
+    "#fb9a99", "#984ea3", "#ffff33"),
+  ...
+)
 }
 \description{
 Change discrete fill color of ggplot

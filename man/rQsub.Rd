@@ -4,12 +4,22 @@
 \alias{rQsub}
 \title{Submit (qsub) R jobs.}
 \usage{
-rQsub(path = getwd(), rFile = "testQsub.R", jobName = "job",
-  threaded = 1, memoryG = 10, rTimeHour = 2,
-  logFile = "logfilename.log", email = NULL, when2Email = "aes",
-  computeNode = "all.q@n00[0-9][0-9]*", moreQsubParams = "",
-  preCMD = "echo \\"module load R/3.3.0 && Rscript ", param1 = 1:10,
-  ...)
+rQsub(
+  path = getwd(),
+  rFile = "testQsub.R",
+  jobName = "job",
+  threaded = 1,
+  memoryG = 10,
+  rTimeHour = 2,
+  logFile = "logfilename.log",
+  email = NULL,
+  when2Email = "aes",
+  computeNode = "all.q@n00[0-9][0-9]*",
+  moreQsubParams = "",
+  preCMD = "echo \\"module load R/3.3.0 && Rscript ",
+  param1 = 1:10,
+  ...
+)
 }
 \arguments{
 \item{path}{file path.}
@@ -66,7 +76,7 @@ if (FALSE){
 }
 arg1 = args[1]
 # Then input R code to use the arg1 variable. for example:
-cat("test code result:", arg1, "\\n")
+cat("test code result:", arg1, "\n")
 
 ## Section 2, the code to use rQsub
 # One parameter in R script

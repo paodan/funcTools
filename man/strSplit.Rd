@@ -4,8 +4,14 @@
 \alias{strSplit}
 \title{Split charactors vecotrs and save as a matrix\cr}
 \usage{
-strSplit(x, split, fixed = FALSE, perl = FALSE, useBytes = FALSE,
-  nameRow = FALSE)
+strSplit(
+  x,
+  split,
+  fixed = FALSE,
+  perl = FALSE,
+  useBytes = FALSE,
+  nameRow = FALSE
+)
 }
 \arguments{
 \item{x}{character vector or factor, each element of which is to be split.}

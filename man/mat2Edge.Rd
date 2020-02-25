@@ -4,8 +4,11 @@
 \alias{mat2Edge}
 \title{Adjacency matrix to a data.frame of edges.}
 \usage{
-mat2Edge(mat, mode = c("directed", "undirected", "upper", "lower"),
-  diag = FALSE)
+mat2Edge(
+  mat,
+  mode = c("directed", "undirected", "upper", "lower"),
+  diag = FALSE
+)
 }
 \arguments{
 \item{mat}{adjacency matrix.}

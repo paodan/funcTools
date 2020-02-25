@@ -4,8 +4,7 @@
 \alias{funCode}
 \title{Finding function source code\cr}
 \usage{
-funCode(f = character(), pattern = NULL,
-  envir = topenv(parent.frame()))
+funCode(f = character(), pattern = NULL, envir = topenv(parent.frame()))
 }
 \arguments{
 \item{f}{a function name with or without quotation}

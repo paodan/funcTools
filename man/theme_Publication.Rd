@@ -4,9 +4,17 @@
 \alias{theme_Publication}
 \title{ggplot theme for publication ready Plots}
 \usage{
-theme_Publication(base_size = 14, base_family = c("Helvetica", "sans"),
-  x_angle = 0, x_hjust = 0.5, x_vjust = 0.5, y_angle = 0,
-  y_hjust = 0.5, y_vjust = 0.5, legend.key.size = unit(0.3, "cm"))
+theme_Publication(
+  base_size = 14,
+  base_family = c("Helvetica", "sans"),
+  x_angle = 0,
+  x_hjust = 0.5,
+  x_vjust = 0.5,
+  y_angle = 0,
+  y_hjust = 0.5,
+  y_vjust = 0.5,
+  legend.key.size = unit(0.3, "cm")
+)
 }
 \arguments{
 \item{base_size}{font base size.}

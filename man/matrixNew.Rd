@@ -4,8 +4,14 @@
 \alias{matrixNew}
 \title{Generate random/diagonal/zeros/ones Matrix\cr}
 \usage{
-matrixNew(m = 3, n = NULL, x = 0, diagonal = FALSE, distr = NULL,
-  dimnames = NULL)
+matrixNew(
+  m = 3,
+  n = NULL,
+  x = 0,
+  diagonal = FALSE,
+  distr = NULL,
+  dimnames = NULL
+)
 }
 \arguments{
 \item{m}{Number of rows.}

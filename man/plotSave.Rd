@@ -4,9 +4,20 @@
 \alias{plotSave}
 \title{Save a plot\cr}
 \usage{
-plotSave(filename, Plot = NULL, plotCMD = NULL, device = NULL,
-  path = NULL, scale = 1, width = NA, height = NA,
-  units = c("in", "cm", "mm"), dpi = 300, limitsize = TRUE, ...)
+plotSave(
+  filename,
+  Plot = NULL,
+  plotCMD = NULL,
+  device = NULL,
+  path = NULL,
+  scale = 1,
+  width = NA,
+  height = NA,
+  units = c("in", "cm", "mm"),
+  dpi = 300,
+  limitsize = TRUE,
+  ...
+)
 }
 \arguments{
 \item{filename}{File name to create on disk.}

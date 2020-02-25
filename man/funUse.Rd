@@ -4,8 +4,7 @@
 \alias{funUse}
 \title{apply either the dispatched S3 or S4 method of a function to an object}
 \usage{
-funUse(f, object, S3 = NULL, S4 = NULL,
-  envir = topenv(parent.frame()), ...)
+funUse(f, object, S3 = NULL, S4 = NULL, envir = topenv(parent.frame()), ...)
 }
 \arguments{
 \item{f}{function name.}
