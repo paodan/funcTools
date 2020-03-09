@@ -1,4 +1,6 @@
-#' list the variables that a function can access
+#' list accessible variables of a function
+#' 
+#' List the variables that a function can access
 #' @param fun function object.
 #' @param printValue logical, if TRUE, print the value of each variable that
 #' the \code{fun} can access. The default is FALSE.
