@@ -10,7 +10,7 @@
 #' @return The name of variables which have been removed.
 #' @seealso \code{\link{rm}}, \url{https://github.com/paodan/funcTools}
 #' @export
-#' @examples {
+#' @examples
 #' \dontrun{
 #' # Remove all (visible) variables in the Global Environment.
 #' x1 = 1
@@ -43,7 +43,7 @@
 #' clear("x$")
 #' ls(all.names = TRUE)
 #' }
-#' }
+#' 
 clear = function(pattern = "*", all.names = FALSE, envir = parent.frame()){
   List = ls(pattern = pattern, all.names = all.names, envir = envir)
   if(length(List)){
