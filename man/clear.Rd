@@ -24,7 +24,6 @@ from the environment (the default is parent environment).
 It will return the name of variables which have been removed.
 }
 \examples{
-{
 \dontrun{
 # Remove all (visible) variables in the Global Environment.
 x1 = 1
@@ -57,7 +56,7 @@ ls(all.names = TRUE)
 clear("x$")
 ls(all.names = TRUE)
 }
-}
+
 }
 \seealso{
 \code{\link{rm}}, \url{https://github.com/paodan/funcTools}

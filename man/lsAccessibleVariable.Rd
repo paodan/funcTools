@@ -2,7 +2,7 @@
 % Please edit documentation in R/lsAccessibleVariable.R
 \name{lsAccessibleVariable}
 \alias{lsAccessibleVariable}
-\title{list the variables that a function can access}
+\title{list accessible variables of a function}
 \usage{
 lsAccessibleVariable(fun, printValue = FALSE, variable2print = NULL)
 }
@@ -22,7 +22,7 @@ is no such variable indicated by variable2print, a warning will be raised.}
 the name(s) of variable(s) which can be accessed by \code{'fun'} function.
 }
 \description{
-list the variables that a function can access
+List the variables that a function can access
 }
 \examples{
 \dontrun{
