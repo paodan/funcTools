@@ -58,7 +58,7 @@ lsClass = function(packages = NULL, pattern = NULL, asList = FALSE){
   
   inSearch = packages %in% search()
   if (!all(inSearch)){
-    notInSearchPackages = substr(packages[!inSearch], 9, 1000)
+    notInSearchPackages = .rmpkg(packages[!inSearch])
     mes = if (length(notInSearchPackages) == 1){
       "package is not loaded, load it by:\n"
     } else {
