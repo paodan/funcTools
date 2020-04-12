@@ -41,6 +41,7 @@ functionInfo = setClass(Class = "functionInfo",
 #' function type, whether containing S3 or S4 methods, dirrect function source,
 #' S3 methods info, and S4 methods info.
 #' @import methods
+#' @import utils
 #' @export
 #' @examples {
 #' \dontrun{
@@ -50,6 +51,7 @@ functionInfo = setClass(Class = "functionInfo",
 #'
 #' # The source of funCode
 #' funCode(funCode)
+#' funCode(lm)
 #'
 #' # The source of plot for data.frame
 #' funCode("plot", "data.frame")
@@ -63,12 +65,29 @@ funCode = function(f = character(), pattern = NULL,
   } else if (is.function(f)){
     fcn = f
     f = deparse(substitute(f)) # not working outside the function
+  } else {
+    stop("'f' must be a function or string.")
   }
   type = typeof(fcn)
-  fNameS3 = suppressWarnings(.S3methods(f)) # S3 methods
+  
+  findGeneric = getFromNamespace("findGeneric", ns = "utils")
+  findS3 = findGeneric(f, envir = envir, warnS4only = FALSE)
+  
+  if (nzchar(findS3)){
+    # fNameS3 = .S3methods(f) # S3 methods
+    fNameS3 = .S3methods(findS3) # S3 methods
+  } else {
+    fNameS3 = character()
+    class(fNameS3) = "MethodsFunction"
+    attr(fNameS3, "info") = data.frame(visible = logical(), 
+                                        from = character(),
+                                        generic = character(),
+                                        isS4 = logical())
+    attr(fNameS3, "byclass") = FALSE
+  }
+  # fNameS3 = suppressWarnings(.S3methods(f)) # S3 methods
   fNameS4 = methods::.S4methods(f) # S4 methods
 
-  typeof = type
   S3S4 = c(S3 = length(fNameS3)>0, S4 = length(fNameS4)>0)
   fcnS3 = fcnS4 = list()
   if (S3S4[[1]]){
@@ -97,7 +116,7 @@ funCode = function(f = character(), pattern = NULL,
     message(".Primitive and .Internal can be shown by pryr::show_c_source()\n")
   }
   resF = new("functionInfo", funName = f,
-             typeof = typeof, S3S4 = S3S4, fcn = fcn,
+             typeof = type, S3S4 = S3S4, fcn = fcn,
              fS3 = new("fcnS", fcn = fcnS3, fName = fNameS3),
              fS4 = new("fcnS", fcn = fcnS4, fName = fNameS4))
   return(resF)
@@ -126,28 +145,51 @@ setMethod("show", signature = "functionInfo", function(object) {
 #' @param f function name.
 #' @param object the object that the function f is processing
 #' @param envir the working environment
+#' @return a list of two elements: S3 and S4, which list all methods that 
+#' can be dispatched for S3 and S4 objects, respectively. NULL in S3 
+#' element means no method is found for this function by treating the object
+#' as an S3 object. And the same for NULL in S4 element. If both S3 and 
+#' S4 elements are NULL, the function \code{f} appears not to be either
+#' S3 generic or S4 generic, and the original function without dispatching
+#' is applied.
 #' @export
-#'
+#' @examples 
+#' \dontrun{
+#' funDispatch(f = "print", object = "asdf") #ls.default
+#' funDispatch("print", object = ~ a + b) #ls.formula
+#' 
+#' funDispatch("lm", object = ~ a + b) #lm itself
+#' 
+#' funDispatch("show", object = "asdf") # S4 "ANY"
+#' 
+#' funDispatch("ls", object = .GlobalEnv) # itself
+#' }
 funDispatch = function(f, object, envir = topenv(parent.frame())){
   if (is.character(f)) {
     fcn <- get(f, mode = "function", envir = envir, inherits = TRUE)
   } else if (is.function(f)){
     fcn = f
     f = deparse(substitute(f)) # not working outside the function
+  } else {
+    stop("'f' must be a function or string.")
   }
-  funAll = funCode(f)
-  # return(funAll)
+  # funAll = funCode(f, envir = envir)
+  funAll = funCode(fcn, envir = envir)
 
-  classes = NULL
   if (length(funAll@fS3@fcn) > 0){
-    classes = c(classes, names(funAll@fS3@fcn))
+    # classes = names(funAll@fS3@fcn)
+    classes = sub(paste0(attr(funAll@fS3@fName, "info")$generic[1], "."), "", names(funAll@fS3@fcn))
+    
+    
     isDispatched3 = sapply(classes, function(x) is (object, x))
     isDispatched3 = isDispatched3[isDispatched3]
     if (length(isDispatched3) == 0 ){
-      if ("default" %in% funAll@fS3@fcn){
+      # if ("default" %in% names(funAll@fS3@fcn)){
+      if ("default" %in% classes){
         isDispatched3 = "default"
       } else {
-        isDispatched3 = "originalFunction"
+        # isDispatched3 = "originalFunction"
+        isDispatched3 = NULL
       }
     } else {
       isDispatched3 = names(isDispatched3)
@@ -157,9 +199,12 @@ funDispatch = function(f, object, envir = topenv(parent.frame())){
   }
 
   if (length(funAll@fS4@fcn) > 0){
-    classes = c(classes, names(funAll@fS4@fcn))
+    classes = names(funAll@fS4@fcn)
     isDispatched4 = sapply(classes, function(x) is (object, x))
     isDispatched4 = names(isDispatched4[isDispatched4])
+    if(length(isDispatched4) == 0){
+      isDispatched4 = "ANY"
+    }
   } else {
     isDispatched4 = NULL
   }
@@ -170,69 +215,75 @@ funDispatch = function(f, object, envir = topenv(parent.frame())){
 
 
 
-#' @title apply either the dispatched S3 or S4 method of a function to an object
+#' @title get the dispatched S3 or S4 method of a function
 #' @param f function name.
 #' @param object the object that the function f is processing.
-#' @param S3 dispatched S3 method or "originalFunction".
-#' @param S4 dispatched S4 method.
+#' @param returnAll Whether all possibly existed \code{origin}al function, 
+#' \code{S3} method and \code{S4} method are returned as a list. The default
+#' is FALSE, meaning returning \code{S3} method first if exists, followed by 
+#' \code{S4} method if exists while \code{S3} method not exists. If both 
+#' \code{S3} and \code{S4} methods do not exist, \code{origin}al function 
+#' appears to be not a generic function so the \code{origin}al source is
+#' returned.
 #' @param envir the working environment.
+#' @return either a list of length 3, containing \code{origin}al function,
+#' \code{S3} method and \code{S4} method, or a function object.
 #' @examples
 #' \dontrun{
-#' funUse(print, "asdfasdfasd")
-#' funUse(print, "asdfadsfasdf", S3 = "default")
+#' # print from base package is a S3 generic
+#' funWhich(print, "asdfasdfasd", TRUE)
+#' funWhich(print, "asdfasdfasd")
+#' 
+#' library(Matrix) # print becomes a S4 standardGeneric
+#' funWhich(print, "asdfasdfasd", TRUE)
 #'
-#' fit <- lm(sepal ~ Petal.Length + Petal.Width + Species, data = datasets::iris)
-#' funUse(print, fit)
-#' funUse(print, fit, S3 = "lm")
-#' print.lm(fit)
+#' fit <- lm(Sepal.Length ~ Petal.Length + Petal.Width + Species, 
+#'           data = datasets::iris)
+#' resFun = funWhich(print, fit)
+#' resFun(fit)
+#' stats:::print.lm(fit)
 #'
-#' res = funUse(lm, object = sepal ~ Petal.Length + Petal.Width + Species, data = datasets::iris)
-#' res
-#' res = funUse(lm, object = sepal ~ Petal.Length + Petal.Width + Species,
-#'              S3 = "originalFunction", data = datasets::iris)
-#' res
-#' lm(sepal ~ Petal.Length + Petal.Width + Species, data = datasets::iris)
+#' funWhich(show, object = ~ a + b)
+#' funWhich(showDefault, object = ~ a + b)
 #' }
 #' @export
-
-funUse = function(f, object, S3 = NULL, S4 = NULL,
-                  envir = topenv(parent.frame()), ...){
+funWhich = function(f, object, returnAll = FALSE,
+                    envir = topenv(parent.frame())){
   if (is.character(f)) {
-    fcn <- get(f, mode = "function", envir = envir, inherits = TRUE)
+    f = f
   } else if (is.function(f)){
-    fcn = f
     f = deparse(substitute(f)) # not working outside the function
-  }
-  funAll = funCode(f, envir = envir)
-  desp = funDispatch(f, object, envir = envir)
-
-  if (is.null(S3) & is.null(S4)){
-    if (is.null(desp$S3) & is.null(desp$S4)){
-      message("No dispatched function is found!")
-      return(invisible(NULL))
-    } else {
-      if (!is.null(desp$S3)){
-        if ("originalFunction" %in% desp$S3){
-          message("No dispatching, '", f, "' function itself is used!")
-          return(invisible(funAll@fcn(object, ...)))
-        } else {
-          message("For S3, you can specify S3 = one of the following words: \n")
-          message(paste(desp$S3, collapse = " "), "\n")
-          return(invisible(NULL))
-        }
-      }
-      if (!is.null(desp$S4)){
-        message("For S4, you can specify S4 = one of the following words: \n")
-        message(paste(desp$S4, collapse = " "), "\n")
-        return(invisible(NULL))
-      }
-    }
-  } else if (!is.null(S3) && S3 %in% desp$S3){
-    res = funAll@fS3@fcn[[S3]](object, ...)
-  } else if (!is.null(S4) && S4 %in% desp$S4){
-    res = funAll@fS4@fcn[[S4]](object, ...)
   } else {
-    stop("No S3 or S4 method is found to be able to be dispatched!")
+    stop("'f' must be a function or string.")
   }
-    return(invisible(res))
+  
+  fdp = funDispatch(f, object, envir = topenv(parent.frame()))
+  resAll = funCode(f, envir = envir)
+  
+  res = list()
+  res$origin = resAll@fcn
+  res["S3"] = if (is.null(fdp$S3[1])) list(NULL) else list(resAll@fS3@fcn[[fdp$S3[1]]])
+  res["S4"] = if (is.null(fdp$S4[1])) list(NULL) else list(resAll@fS4@fcn[[fdp$S4[1]]])
+  
+  if (returnAll)(
+    return(res)
+  ) else {
+    if(is.null(fdp$S3) && is.null(fdp$S4)){
+      message("original function: ", f, "\n")
+      res = res$origin
+      attr(res, "source") = "origin"
+    } else if (!is.null(fdp$S3)){
+      message("S3 function: ", f, ".", fdp$S3, "\n")
+      res = res$S3
+      attr(res, "source") = "S3"
+    } else if(!is.null(fdp$S4)){
+      message("S4 method: ", fdp$S4, "\n")
+      res = res$S4
+      attr(res, "source") = "S4"
+    }
+  }
+  return(res)
 }
+
+
+
