@@ -22,7 +22,6 @@ S3 methods info, and S4 methods info.
 funCode function is to obtain the source code of an R function
 }
 \examples{
-{
 \dontrun{
 # The source of print
 funCode(print)
@@ -30,9 +29,13 @@ funCode("print")
 
 # The source of funCode
 funCode(funCode)
+funCode(lm)
 
 # The source of plot for data.frame
 funCode("plot", "data.frame")
-}
+
+# The source of standardGeneric show
+funCode("show")
+funCode(show)
 }
 }

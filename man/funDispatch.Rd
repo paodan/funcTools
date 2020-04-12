@@ -13,6 +13,43 @@ funDispatch(f, object, envir = topenv(parent.frame()))
 
 \item{envir}{the working environment}
 }
+\value{
+a list of two elements: S3 and S4, which list all methods that 
+can be dispatched for S3 and S4 objects, respectively. NULL in S3 
+element means no method is found for this function by treating the "object"
+as an S3 object. And similar to NULL in S4 element. If both S3 and 
+S4 elements are NULL, the function \code{f} appears not to be either
+S3 generic or S4 generic, and the original function without dispatching
+is applied. The function f can be an alias of another generic function,
+the attribute "name" of the result is the very original generic function 
+name.
+}
 \description{
 find dispatched functions for an object
+}
+\examples{
+\dontrun{
+funDispatch(f = "print", object = "asdf") #ls.default
+funDispatch("print", object = ~ a + b) #ls.formula
+
+funDispatch("lm", object = ~ a + b) #lm itself
+
+funDispatch("show", object = "asdf") # S4 "ANY"
+funDispatch(show, object = "asdf") # S4 "ANY"
+
+x = show
+funDispatch(x, object = "asdf") # S4 "ANY"
+funDispatch("x", object = "asdf") # S4 "ANY"
+
+y = "show"
+funDispatch(y, object = "asdf") # S4 "ANY"
+funDispatch("y", object = "asdf") # Not found
+
+funDispatch("ls", object = .GlobalEnv) # itself
+
+x = ls
+y = "ls"
+funDispatch(x, object = .GlobalEnv) # itself
+funDispatch(y, object = .GlobalEnv) # itself
+}
 }
