@@ -4,9 +4,11 @@
 \alias{functionsCanGetGeneric}
 \title{non-generic functions that can generate generic using "getGeneric"}
 \usage{
-functionsCanGetGeneric(env = as.environment("package:base"), package)
+functionsCanGetGeneric(package, env = as.environment("package:base"))
 }
 \arguments{
+\item{package}{package name.}
+
 \item{envir}{environment, which can transformed using an attached package name.
 default is as.environment("package:base")}
 }

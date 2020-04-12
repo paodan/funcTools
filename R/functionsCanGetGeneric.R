@@ -1,9 +1,10 @@
 #' non-generic functions that can generate generic using "getGeneric"
-
+#' @param package package name.
 #' @param envir environment, which can transformed using an attached package name.
 #' default is as.environment("package:base")
 #' @return the name of non-generic functions that can generate generic functions 
 #' using \link{\code{getGeneric}} function.
+#' @export
 #' @examples
 #' \dontrun{
 #' functionsCanGetGeneric()
@@ -15,10 +16,9 @@
 #'        
 #' c("cov") %in% functionsCanGetGeneric(env = as.environment("package:stats"))
 #' c("which.min", "which") %in% functionsCanGetGeneric()
-
 #' }
-functionsCanGetGeneric = function(env = as.environment("package:base"), 
-                                  package){
+functionsCanGetGeneric = function(package, 
+                                  env = as.environment("package:base")){
   if (!missing(package)){
     env = as.environment(paste0("package:", package))
   }
