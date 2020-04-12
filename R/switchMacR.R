@@ -19,6 +19,7 @@ get_os <- function(){
 #' @param frameworkPath the R.framework path, the default is 
 #' "/Library/Frameworks/R.framework/" on Mac.
 #' @examples 
+#' @export
 #' \dontrun{
 #' R_frameworks()
 #' }

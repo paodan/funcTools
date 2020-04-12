@@ -13,8 +13,3 @@ R_frameworks(frameworkPath = "/Library/Frameworks/R.framework/")
 \description{
 list all R frameworks
 }
-\examples{
-\dontrun{
-R_frameworks()
-}
-}
