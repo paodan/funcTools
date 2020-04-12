@@ -18,8 +18,8 @@ get_os <- function(){
 #' list all R frameworks
 #' @param frameworkPath the R.framework path, the default is 
 #' "/Library/Frameworks/R.framework/" on Mac.
-#' @examples 
 #' @export
+#' @examples 
 #' \dontrun{
 #' R_frameworks()
 #' }
@@ -37,8 +37,8 @@ R_frameworks = function(frameworkPath = "/Library/Frameworks/R.framework/"){
 #' The current version of R framework
 #' @param frameworkPath the R.framework path, the default is 
 #' "/Library/Frameworks/R.framework/" on Mac.
-#' @examples 
 #' @export
+#' @examples 
 #' \dontrun{
 #' R_currentFramework()
 #' }

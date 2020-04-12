@@ -13,3 +13,8 @@ R_currentFramework(frameworkPath = "/Library/Frameworks/R.framework/")
 \description{
 The current version of R framework
 }
+\examples{
+\dontrun{
+R_currentFramework()
+}
+}
