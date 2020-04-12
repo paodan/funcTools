@@ -70,6 +70,7 @@ R_version = function(){
 #' "/Library/Frameworks/R.framework/" on Mac.
 #' @param RStudioPath RStudio path, the default is 
 #' "/Applications/RStudio.app/Contents/MacOS/RStudio".
+#' @export
 #' @examples 
 #' \dontrun{
 #' # List all frameworks
@@ -109,7 +110,7 @@ R_switch = function(version = R_frameworks(),
   
   cmdSwitch = paste0('unlink ', cPath, 
                      ' && ln -s ', vPath, '/', version, '/ ', cPath, 
-                     ' && ', RStudioPath, '&')
+                     ' && ', RStudioPath)
   cmdReset = paste0('unlink ', cPath, 
                       ' && ln -s ', vPath, '/', current, '/ ', cPath)
   
