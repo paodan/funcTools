@@ -6,18 +6,18 @@
 \usage{
 R_switch(
   version = R_frameworks(),
-  reset = FALSE,
-  openRStudio = FALSE,
+  reset = TRUE,
+  openRStudio = TRUE,
   frameworkPath = "/Library/Frameworks/R.framework/",
   RStudioPath = "/Applications/RStudio.app/Contents/MacOS/RStudio"
 )
 }
 \arguments{
 \item{reset}{if TRUE, the framework is changed back to the
-original framework version. The default is FALSE.}
+original framework version.}
 
 \item{openRStudio}{if TRUE, open an RStudio session with the new R framework
-version. The default is FALSE.}
+version.}
 
 \item{frameworkPath}{the R.framework path, the default is 
 "/Library/Frameworks/R.framework/" on Mac.}

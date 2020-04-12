@@ -65,9 +65,9 @@ R_version = function(){
 #' Switch R framework version on Mac
 #' @param Version R framework version to switch to
 #' @param reset if TRUE, the framework is changed back to the
-#' original framework version. The default is FALSE.
+#' original framework version. 
 #' @param openRStudio if TRUE, open an RStudio session with the new R framework
-#' version. The default is FALSE.
+#' version. 
 #' @param frameworkPath the R.framework path, the default is 
 #' "/Library/Frameworks/R.framework/" on Mac.
 #' @param RStudioPath RStudio path, the default is 
@@ -93,8 +93,8 @@ R_version = function(){
 #' R_switch(cfw, reset = FALSE)
 #' }
 R_switch = function(version = R_frameworks(),
-                    reset = FALSE, 
-                    openRStudio = FALSE,
+                    reset = TRUE, 
+                    openRStudio = TRUE,
                     frameworkPath = "/Library/Frameworks/R.framework/",
                     RStudioPath = "/Applications/RStudio.app/Contents/MacOS/RStudio"){
 
