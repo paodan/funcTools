@@ -51,7 +51,7 @@ R_currentFramework = function(frameworkPath = "/Library/Frameworks/R.framework/"
   return(res)
 }
 
-#' R version string
+#' Current R version
 #' @export
 #' @examples
 #' \dontrun{

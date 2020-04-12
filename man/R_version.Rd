@@ -2,12 +2,12 @@
 % Please edit documentation in R/R_switch.R
 \name{R_version}
 \alias{R_version}
-\title{R version string}
+\title{Current R version}
 \usage{
 R_version()
 }
 \description{
-R version string
+Current R version
 }
 \examples{
 \dontrun{
