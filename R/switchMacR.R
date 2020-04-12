@@ -61,12 +61,68 @@ R_currentFramework = function(frameworkPath = "/Library/Frameworks/R.framework/"
 R_version = function(){
   paste0(R.version$major, ".", R.version$minor)
 }
+
+#' Switch R framework version on Mac
+#' @param Version R framework version to switch to
+#' @param reset if TRUE (default), the framework is changed back to the
+#' original framework version.
+#' @param frameworkPath the R.framework path, the default is 
+#' "/Library/Frameworks/R.framework/" on Mac.
+#' @param RStudioPath RStudio path, the default is 
+#' "/Applications/RStudio.app/Contents/MacOS/RStudio".
+#' @examples 
+#' \dontrun{
+#' # List all frameworks
+#' fw = R_frameworks()
+#' fw
 #' 
-#' #' Switch R version 
-#' #' @param Version 
-#' #' 
-#' R_switch = function(Version, path){
-#'   
-#'   system("ls -al /Library/Frameworks/R.framework/Versions", intern = TRUE)
-#'   
+#' # Current framework
+#' cfw = R_currentFramework()
+#' cfw
+#' 
+#' # Switch
+#' R_switch(fw[1], reset = FALSE)
+#' R_switch(fw[2])
+#' 
+#' # Reset the initial framework
+#' R_switch(cfw, reset = FALSE)
+#' 
 #' }
+R_switch = function(version = R_frameworks(),
+                    reset = TRUE, 
+                    frameworkPath = "/Library/Frameworks/R.framework/",
+                    RStudioPath = "/Applications/RStudio.app/Contents/MacOS/RStudio"){
+
+  version = match.arg(version)
+  fw = R_frameworks()
+  stopifnot(version %in% fw)
+  
+  current = R_currentFramework()
+  
+  if(version == current){
+    stop("The current framework (", current, ") is the same framework to switch")
+  }
+  
+  # alias r4="unlink /Library/Frameworks/R.framework/Versions/Current && ln -s /Library/Frameworks/R.framework/Versions/4.0/ /Library/Frameworks/R.framework/Versions/Current && /Applications/RStudio.app/Contents/MacOS/RStudio "
+  vPath = normalizePath(paste0(frameworkPath, "/Versions/"))
+  cPath = paste0(vPath, "/Current")
+  
+  cmdSwitch = paste0('unlink ', cPath, 
+                     ' && ln -s ', vPath, '/', version, '/ ', cPath, 
+                     ' && ', RStudioPath, '&')
+  cmdReset = paste0('unlink ', cPath, 
+                      ' && ln -s ', vPath, '/', current, '/ ', cPath)
+  
+  if(reset) {
+    on.exit({
+      Sys.sleep(2)
+      system(cmdReset)
+      message("R framework is reset to ", R_currentFramework())
+      })
+  }
+  message("Current working R version is ", R_version(), 
+          " (framework: ", current, ")")
+  message("R framework is switched to ", version)
+  res = system(cmdSwitch)
+  return(invisible(res))
+}
