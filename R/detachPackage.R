@@ -41,9 +41,10 @@ detachPackages = function(packages, prefix = "package:"){
 #' detachPackagesAll()
 #' }
 detachPackagesAll = function(){
-  all = grep("^package:", search(), value = T)
-  notRM = c("base", "methods", "datasets", "utils", "graphics", "stats", "grDevices")
-  toRemove = all[! all %in% paste0("package:", notRM)]
+  all = search()
+  notRM = c("base", "methods", "datasets", "utils", "grDevices", "graphics", "stats")
+  exceptions = c(".GlobalEnv", "tools:rstudio", "Autoloads")
+  toRemove = all[! all %in% c(paste0("package:", notRM), exceptions)]
   rmPackages = detachPackages(toRemove, prefix = "")
   return(rmPackages)
 }

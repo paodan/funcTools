@@ -31,8 +31,10 @@ lsClass = function(packages = NULL, pattern = NULL, asList = FALSE){
     packages = search()
   }
   
-  p0 = intersect(packages, c(".GlobalEnv", "Autoloads", "tools:rstudio"))
-  packages0 = packages[!packages %in% p0]
+  p0 = intersect(packages, c(".GlobalEnv", "devtools_shims", 
+                             "Autoloads", "tools:rstudio"))
+  # packages0 = packages[!packages %in% p0]
+  packages0 = setdiff(packages, p0)
   
   packages1 = packages0[(substr(packages0, start = 1, 8) != "package:")]
   if(length(packages1) > 0){
@@ -43,7 +45,8 @@ lsClass = function(packages = NULL, pattern = NULL, asList = FALSE){
   
   inInstalled = packages %in% paste0("package:", installed.packages()[,1])
   notInstalledPackages = setdiff(packages[!inInstalled], 
-                                 c(".GlobalEnv", "Autoloads", "tools:rstudio"))
+                                 c(".GlobalEnv", "devtools_shims", 
+                                   "Autoloads", "tools:rstudio"))
   
   if (length(notInstalledPackages) > 0){
     mes = if (length(notInstalledPackages) == 1){
