@@ -64,8 +64,10 @@ R_version = function(){
 
 #' Switch R framework version on Mac
 #' @param Version R framework version to switch to
-#' @param reset if TRUE (default), the framework is changed back to the
-#' original framework version.
+#' @param reset if TRUE, the framework is changed back to the
+#' original framework version. The default is FALSE.
+#' @param openRStudio if TRUE, open an RStudio session with the new R framework
+#' version. The default is FALSE.
 #' @param frameworkPath the R.framework path, the default is 
 #' "/Library/Frameworks/R.framework/" on Mac.
 #' @param RStudioPath RStudio path, the default is 
@@ -82,15 +84,17 @@ R_version = function(){
 #' cfw
 #' 
 #' # Switch
-#' R_switch(fw[1], reset = FALSE)
-#' R_switch(fw[2])
+#' R_switch(setdiff(fw, cfw)[1], reset = FALSE, openRStudio = TRUE)
+#' R_switch(cfw, reset = FALSE, openRStudio = TRUE)
+#' 
+#' R_switch(setdiff(fw, cfw)[1], reset = TRUE, openRStudio = FALSE)
 #' 
 #' # Reset the initial framework
 #' R_switch(cfw, reset = FALSE)
-#' 
 #' }
 R_switch = function(version = R_frameworks(),
-                    reset = TRUE, 
+                    reset = FALSE, 
+                    openRStudio = FALSE,
                     frameworkPath = "/Library/Frameworks/R.framework/",
                     RStudioPath = "/Applications/RStudio.app/Contents/MacOS/RStudio"){
 
@@ -98,10 +102,17 @@ R_switch = function(version = R_frameworks(),
   fw = R_frameworks()
   stopifnot(version %in% fw)
   
+  if(reset & !openRStudio){
+    warning("When reset = TRUE and openRStudio = FALSE, R framework is ", 
+            "changed for only 1 second. No obvious effect can be seen.")
+  }
+  
   current = R_currentFramework()
   
   if(version == current){
-    stop("The current framework (", current, ") is the same framework to switch")
+    stop("The current framework (", current, ") is the same framework to ", 
+         "switch, following framework(s) is/are available:\n\t", 
+         paste0(setdiff(R_frameworks(), current), collapse = ", "))
   }
   
   # alias r4="unlink /Library/Frameworks/R.framework/Versions/Current && ln -s /Library/Frameworks/R.framework/Versions/4.0/ /Library/Frameworks/R.framework/Versions/Current && /Applications/RStudio.app/Contents/MacOS/RStudio "
@@ -109,20 +120,23 @@ R_switch = function(version = R_frameworks(),
   cPath = paste0(vPath, "/Current")
   
   cmdSwitch = paste0('unlink ', cPath, 
-                     ' && ln -s ', vPath, '/', version, '/ ', cPath, 
-                     ' && ', RStudioPath)
+                     ' && ln -s ', vPath, '/', version, '/ ', cPath)
+  if (openRStudio){
+    cmdSwitch = paste0(cmdSwitch, ' && ', RStudioPath)
+  }
+  
   cmdReset = paste0('unlink ', cPath, 
                       ' && ln -s ', vPath, '/', current, '/ ', cPath)
   
   if(reset) {
     on.exit({
-      Sys.sleep(2)
+      Sys.sleep(1)
       system(cmdReset)
       message("R framework is reset to ", R_currentFramework())
       })
   }
-  message("Current working R version is ", R_version(), 
-          " (framework: ", current, ")")
+  message("Current R framework is ", current, 
+          " (working R version is ", R_version(), ")")
   message("R framework is switched to ", version)
   res = system(cmdSwitch)
   return(invisible(res))

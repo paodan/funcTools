@@ -6,14 +6,18 @@
 \usage{
 R_switch(
   version = R_frameworks(),
-  reset = TRUE,
+  reset = FALSE,
+  openRStudio = FALSE,
   frameworkPath = "/Library/Frameworks/R.framework/",
   RStudioPath = "/Applications/RStudio.app/Contents/MacOS/RStudio"
 )
 }
 \arguments{
-\item{reset}{if TRUE (default), the framework is changed back to the
-original framework version.}
+\item{reset}{if TRUE, the framework is changed back to the
+original framework version. The default is FALSE.}
+
+\item{openRStudio}{if TRUE, open an RStudio session with the new R framework
+version. The default is FALSE.}
 
 \item{frameworkPath}{the R.framework path, the default is 
 "/Library/Frameworks/R.framework/" on Mac.}
@@ -37,11 +41,12 @@ cfw = R_currentFramework()
 cfw
 
 # Switch
-R_switch(fw[1], reset = FALSE)
-R_switch(fw[2])
+R_switch(setdiff(fw, cfw)[1], reset = FALSE, openRStudio = TRUE)
+R_switch(cfw, reset = FALSE, openRStudio = TRUE)
+
+R_switch(setdiff(fw, cfw)[1], reset = TRUE, openRStudio = FALSE)
 
 # Reset the initial framework
 R_switch(cfw, reset = FALSE)
-
 }
 }
