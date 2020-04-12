@@ -2,6 +2,7 @@
 
 export(R_currentFramework)
 export(R_frameworks)
+export(R_switch)
 export(R_version)
 export(cbindList)
 export(clear)
