@@ -101,10 +101,13 @@ funCode = function(f = character(), pattern = NULL,
   }
   if (S3S4[[2]]){
     names(fNameS4) = fNameS4
-    sig = strSplit(strSplit(fNameS4, "-")[,1], ",")[,-1, drop = F]
+    # sig = strSplit(strSplit(fNameS4, "-")[,1], ",")[,-1, drop = F]
+    sig = strSplit(sub("-method$", "", fNameS4), ",")[,-1, drop = F]
     id = setNames(object = 1:length(fNameS4),
-                  nm = apply(sig, 1, paste, collapse = ","))
+                  nm = apply(sig, 1, paste, collapse = "#"))
+    # id = setNames(object = 1:length(fNameS4), nm = sig)
     fcnS4 = lapply(id, function(x) getMethod(f, signature = sig[x,]))
+    
     names(fNameS4) = names(id)
   }
   # filtering
@@ -114,14 +117,17 @@ funCode = function(f = character(), pattern = NULL,
     fcnS3 = fcnS3[id3]
     fcnS4 = fcnS4[id4]
   }
+  
   # message
   if (is.element(typeof(fcn), c("special", "builtin"))){
     message(".Primitive and .Internal can be shown by pryr::show_c_source()\n")
   }
+  
   resF = new("functionInfo", funName = f,
              typeof = type, S3S4 = S3S4, fcn = fcn,
              fS3 = new("fcnS", fcn = fcnS3, fName = fNameS3),
              fS4 = new("fcnS", fcn = fcnS4, fName = fNameS4))
+  
   return(resF)
 }
 
@@ -134,10 +140,10 @@ funCode = function(f = character(), pattern = NULL,
 #' object@@fS3 and S4 method names in object@@fS4
 #' @export
 setMethod("show", signature = "functionInfo", function(object) {
-  # funName = as.character(substitute(object))
-  cat(object@funName, "= ")
+  cat(object@funName, "= \n")
   if(length(object@fcn)){
-    print(object@fcn)
+    writeLines(paste0("  ", capture.output(print(object@fcn))))
+    cat("\n")
   }
   show(list(functionS3 = object@fS3@fName,
             functionS4 = object@fS4@fName))
