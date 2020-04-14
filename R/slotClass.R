@@ -1,5 +1,9 @@
 
 #' Obtain class names of slots in an S4 object
+#' 
+#' @description get class names of slots in an S4 object, which is similar 
+#' to \link{\code{getSlots}} function, but \code{getSlots} get class names of 
+#' slots based on a class name not an object instance.
 #' @param object an S4 object
 #' @param slot_names character, the class of which slot to obtain. Default is NULL, 
 #' meaning obtain the class name of all slots that object has.

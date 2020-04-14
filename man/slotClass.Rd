@@ -17,7 +17,9 @@ a list of class names for either all slots (if slot_names = NULL) or for
 the slots that `slot_names` specifys.
 }
 \description{
-Obtain class names of slots in an S4 object
+get class names of slots in an S4 object, which is similar 
+to \link{\code{getSlots}} function, but \code{getSlots} get class names of 
+slots based on a class name not an object instance.
 }
 \examples{
 \dontrun{
