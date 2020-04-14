@@ -201,7 +201,9 @@ funDispatch = function(f, object, envir = topenv(parent.frame())){
   
   findGeneric = getFromNamespace("findGeneric", ns = "utils")
   findS3 = findGeneric(f, envir = envir, warnS4only = FALSE)
-  findS4 = ifelse(is(fcn, "standardGeneric"), fcn@generic, "")
+  # findS4 = ifelse(is(fcn, "standardGeneric"), fcn@generic, "")
+  fcnGNR = getGeneric(f, where = envir)
+  findS4 = ifelse(is.null(fcnGNR), "", fcnGNR@generic)
   
   findS34 = unique(c(findS3, findS4)[c(findS3, findS4) != ""])
   if(length(findS34) == 0) { # not a generic
