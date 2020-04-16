@@ -3,11 +3,14 @@
 \name{\%,\%}
 \alias{\%,\%}
 \alias{\%, \%}
+\alias{\%/\%}
 \title{Paste two strings without a space}
 \usage{
 x \%,\% y
 
 x \%, \% y
+
+x \%/\% y
 }
 \arguments{
 \item{x}{character}
@@ -18,9 +21,13 @@ x \%, \% y
 Paste two strings without a space
 
 Paste two strings with a space
+
+Paste two strings with a slash (/)
 }
 \description{
 Paste two strings without a space
+
+Paste two strings with a space
 
 Paste two strings with a space
 }
@@ -28,5 +35,6 @@ Paste two strings with a space
 {
 "a" \%,\% "b"
 "a" \%, \% "b"
+"folder" \%/\% "file"
 }
 }
