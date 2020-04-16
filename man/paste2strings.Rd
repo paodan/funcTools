@@ -3,14 +3,14 @@
 \name{\%,\%}
 \alias{\%,\%}
 \alias{\%, \%}
-\alias{\%/\%}
+\alias{\%//\%}
 \title{Paste two strings without a space}
 \usage{
 x \%,\% y
 
 x \%, \% y
 
-x \%/\% y
+x \%//\% y
 }
 \arguments{
 \item{x}{character}

@@ -32,6 +32,6 @@
 #' @param y character
 #' @rdname Paste2strings
 #' @export
-"%/%" = function(x, y){
+"%//%" = function(x, y){
   paste0(x, "/", y)
 }

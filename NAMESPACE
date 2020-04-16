@@ -2,7 +2,7 @@
 
 export("%, %")
 export("%,%")
-export("%/%")
+export("%//%")
 export(R_currentFramework)
 export(R_frameworks)
 export(R_switch)
