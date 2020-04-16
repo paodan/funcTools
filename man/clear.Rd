@@ -10,8 +10,8 @@ clear(pattern = "*", all.names = FALSE, envir = parent.frame())
 \item{pattern}{A character string. The regular expression pattern of
 variable names to be removed.}
 
-\item{all.names}{Logical. If TRUE, all object names are returned.
-If FALSE, names which begin with a . are omitted.}
+\item{all.names}{Logical. If TRUE, all object names are removed (except 
+.Random.seed). If FALSE, object names which begin with a . are omitted.}
 
 \item{envir}{An alternative argument to name for specifying the environment.}
 }
