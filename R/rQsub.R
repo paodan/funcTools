@@ -284,15 +284,46 @@ qstatProcess = function(statRes){
   res$maxSeconds = as.numeric(strSplit(res0$maxSeconds, " ")[,1])
   res$will.stop.at = res$submit.start.at + res$maxSeconds
   res$memory = strSplit(res0$memory, " ")[,1]
+  res$memory[res$memory == ""] = "10G"
   res$tmpspace = strSplit(res0$tmpspace, " ")[,1]
   # res$requestedPE = res0$requestedPE
   # res$binding = res0$binding
   # res$softResources = res0$softResources
   res$queue = queue
   res$ja.task.ID = taskID
+  
   return(res)
 }
 
+#' Summarize qstat results
+#' @param statRes the result of qstat/qstatAll/qstatGroupAll functions.
+#' @examples 
+#' \dontrun{
+#' tmp = qstatAll()
+#' qstatSummary(tmp)
+#' }
+#' @export
+qstatSummary = function(statRes){
+  memory = as.numeric(sub("G", "", statRes$memory))
+  
+  attr(statRes, "usedMemoryInTotal") = mT = sum(memory, na.rm = TRUE)
+  attr(statRes, "usedSlotsInTotal") = sT = sum(statRes$slots, na.rm = TRUE)
+  
+  message(mT, " Gb memory ", "and ", sT, " cores have been inlcuded in the table\n\n")
+  
+  attr(statRes, "memoryPerUser") = mU = sort(tapply(memory, INDEX = statRes$user, 
+                                                sum, na.rm = TRUE),
+                                         decreasing = TRUE)
+  message("The following top (upto) 5 users are using or going to use most memory: \n")
+  message(sprintf("  %s(%s G)", names(head(mU, 5)), head(mU, 5)), "\n\n")
+  
+  attr(statRes, "slotsPerUser") = sU = sort(tapply(statRes$slots, INDEX = statRes$user, 
+                                               sum, na.rm = TRUE),
+                                        decreasing = TRUE)
+  message("The following top (upto) 5 users are using or going to use most cores: \n")
+  message(sprintf("  %s(%s)", names(head(sU, 5)), head(sU, 5)), "\n\n")
+  return(statRes)
+}
 
 #' Status (qstat) of running jobs of all users.
 #' @param stat the job status, including "run" (the default),
@@ -313,7 +344,9 @@ qstatAll = function(stat = c("run", "all", "wait")){
     stop("Unknown stat!")
   }
 
-  return(qstatProcess(statRes = system(cmd2, intern = TRUE)))
+  res = qstatProcess(statRes = system(cmd2, intern = TRUE))
+  res = qstatSummary(res)
+  return(res)
 }
 
 
@@ -329,6 +362,7 @@ qstatGroupAll = function(stat = c("run", "all", "wait"),
   res0 = qstatAll(stat)
   res = subset(res0, user %in% groupMembers)
   if (nrow(res) > 0) rownames(res) = 1:nrow(res)
+  res = qstatSummary(res)
   return(res)
 }
 
@@ -369,7 +403,9 @@ qstat = function(stat = c("all", "run", "wait")){
   } else {
     stop("Unknown stat!")
   }
-  return(qstatProcess(statRes = system(cmd2, intern = TRUE)))
+  res = qstatProcess(statRes = system(cmd2, intern = TRUE))
+  res = qstatSummary(res)
+  return(res)
 }
 
 
