@@ -292,6 +292,7 @@ qstatProcess = function(statRes){
   res$queue = queue
   res$ja.task.ID = taskID
   
+  class(res) = c("statRes", "data.frame")
   return(res)
 }
 
@@ -325,6 +326,21 @@ qstatSummary = function(statRes){
   return(statRes)
 }
 
+#' Print statRes object
+#' @param statRes the result of qstat/qstatAll/qstatGroupAll functions.
+#' @examples 
+#' \dontrun{
+#' tmp = qstatAll()
+#' print(tmp)
+#' }
+#' @export
+print.statRes = function(statRes){
+  print.data.frame(statRes)
+  res = qstatSummary(statRes)
+  return(invisible(res))
+}
+
+
 #' Status (qstat) of running jobs of all users.
 #' @param stat the job status, including "run" (the default),
 #' "all", and "wait".
@@ -345,7 +361,7 @@ qstatAll = function(stat = c("run", "all", "wait")){
   }
 
   res = qstatProcess(statRes = system(cmd2, intern = TRUE))
-  res = qstatSummary(res)
+  # res = qstatSummary(res)
   return(res)
 }
 
@@ -362,7 +378,7 @@ qstatGroupAll = function(stat = c("run", "all", "wait"),
   res0 = qstatAll(stat)
   res = subset(res0, user %in% groupMembers)
   if (nrow(res) > 0) rownames(res) = 1:nrow(res)
-  res = qstatSummary(res)
+  # res = qstatSummary(res)
   return(res)
 }
 
@@ -404,7 +420,7 @@ qstat = function(stat = c("all", "run", "wait")){
     stop("Unknown stat!")
   }
   res = qstatProcess(statRes = system(cmd2, intern = TRUE))
-  res = qstatSummary(res)
+  # res = qstatSummary(res)
   return(res)
 }
 
