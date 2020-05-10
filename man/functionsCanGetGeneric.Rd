@@ -14,7 +14,7 @@ default is as.environment("package:base")}
 }
 \value{
 the name of non-generic functions that can generate generic functions 
-using \link{\code{getGeneric}} function.
+using \code{\link{getGeneric}} function.
 }
 \description{
 non-generic functions that can generate generic using "getGeneric"

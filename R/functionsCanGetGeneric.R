@@ -3,7 +3,7 @@
 #' @param envir environment, which can transformed using an attached package name.
 #' default is as.environment("package:base")
 #' @return the name of non-generic functions that can generate generic functions 
-#' using \link{\code{getGeneric}} function.
+#' using \code{\link{getGeneric}} function.
 #' @export
 #' @examples
 #' \dontrun{
