@@ -544,19 +544,10 @@ hpcInfo = function(){
   
   info = sortDataframe(info, "queuename")
   rownames(info) = seq(nrow(info))
+  
   class(info) = c("HpcInfo", "data.frame")
-  return(info)
-}
-
-#' print HpcInfo object
-#' @param x HpcInfo object.
-#' @param ... other parameters in print.data.frame function.
-#' @return print.HpcInfo returns an invisible data frame, which shows the 
-#' available jobs, slots and memory on HPC nodes.
-#' @export
-print.HpcInfo = function(x, ...){
-  y = x[c('queuename', 'usedJobs', 'totalJobs', 'hl.num_proc', 
-          'hl.mem_total', 'hl.mem_free')]
+  
+  y = info
   
   qA = qstatAll()
   slotsBooked = data.frame(slots = tapply(qA$slots, qA$queue, sum, na.rm = TRUE))
@@ -573,7 +564,18 @@ print.HpcInfo = function(x, ...){
   
   y$memoryAvail = y$hl.mem_total - memoryBooked
   
-  z = y[, c("queuename", "jobsAvail", "slotsAvail", "memoryAvail")]
-  print.data.frame(z, ...)
+  return(y)
+}
+
+#' print HpcInfo object
+#' @param x HpcInfo object.
+#' @param ... other parameters in print.data.frame function.
+#' @return print.HpcInfo returns an invisible data frame, which shows the 
+#' available jobs, slots and memory on HPC nodes.
+#' @export
+print.HpcInfo = function(x, ...){
+  z = x[, c("queuename", "jobsAvail", "slotsAvail", "memoryAvail")]
+  print.data.frame(sortDataframe(z, "memoryAvail"), ...)
   return(invisible(z))
 }
+
