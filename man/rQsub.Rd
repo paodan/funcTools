@@ -65,6 +65,7 @@ A list of output of running rFile.
 Submit R jobs in parallel (array).
 }
 \examples{
+\dontrun{
 # This function can only run on HPC.
 
 ## Section 1, the format of R script file (for example myfile.R) to submit:
@@ -103,4 +104,5 @@ rQsub(path = "/my/file/path",
       memoryG = rep(c(10, 20), each = 5),
       rTimeHour = rep(c(24, 48), each = 5),
       param1 = 1:10)
+}
 }

@@ -25,6 +25,7 @@
 #' @return A list of output of running rFile.
 #' @export
 #' @examples
+#' \dontrun{
 #' # This function can only run on HPC.
 #'
 #' ## Section 1, the format of R script file (for example myfile.R) to submit:
@@ -63,6 +64,7 @@
 #'       memoryG = rep(c(10, 20), each = 5),
 #'       rTimeHour = rep(c(24, 48), each = 5),
 #'       param1 = 1:10)
+#' }
 
 rQsub = function(path = getwd(), rFile = "testQsub.R",
                  jobName = "job",
@@ -454,4 +456,124 @@ qdelAll = function(pattern = "*", col = 1){
     id2Del = NULL
   }
   return(id2Del)
+}
+
+
+#' Information of HPC computing nodes
+#' @return a data frame, including 
+#' · queuename, the queue name;
+#' · qtype, the queue type - one of B(atch), I(nteractive), C(heckpointing), P(arallel);
+#' · resv.used.tot., the number of used and available job slots;
+#' · load_avg, the load average of the queue host or another load value;
+#' · arch, the architecture of the queue host;
+#' · stats, the state of the queue - one of u(nknown), a(larm), A(larm), 
+#'   C(alendar suspended), s(uspended), S(ubordinate), d(isabled), D(isabled), 
+#'   E(rror), c(configuration ambiguous), o(rphaned), P(reempted).
+#' · etc.
+#' 
+#' @export
+#' @examples 
+#' \dontrun{
+#' hpcInfo()
+#' 
+#' View(hpcInfo())
+#' }
+hpcInfo = function(){
+  qstatF0 = system("qstat -F", intern = TRUE)
+  qstatF0 = grep("^[q|a|h|t|\\-]", removeSpace(sub("^\t", "", qstatF0)), 
+                 value = TRUE)
+  
+  id_head = 1
+  id_jobs_start = grep("^---", qstatF0) + 1
+  id_jobs_end = c(grep("^---", qstatF0)[-1] - 1, length(qstatF0))
+  
+  len = unique(id_jobs_end - id_jobs_start)
+  if(length(len) != 1){
+    stop("Not every node has the same length of information.")
+  }
+  
+  info1 = matrix(strSplit(qstatF0[id_jobs_start], " "), 
+                 nrow = length(id_jobs_start),
+                 dimnames = list(seq_along(id_jobs_start), 
+                                 strSplit(qstatF0[id_head], " ")))
+  info2 = matrix(as.numeric(strSplit(info1[,"resv/used/tot."], "/")), 
+                 nrow = nrow(info1),
+                 dimnames = list(seq(nrow(info1)), 
+                                 strSplit("resvJobs/usedJobs/totalJobs", "/")))
+  
+  colNM = strSplit(qstatF0[(id_jobs_start[1] + 1):id_jobs_end[1]], "=")[,1]
+  # value = strSplit(qstatF0[-c(id_head, id_jobs_start-1)], "=")[,2]
+  value = strSplit(qstatF0[-c(id_head, id_jobs_start-1, id_jobs_start)], 
+                   "=")[,2]
+  info3 = matrix(value, ncol = len, byrow = TRUE, 
+                 dimnames = list(seq_along(id_jobs_start), colNM))
+  
+  info = data.frame(info1, info2, info3, stringsAsFactors = FALSE)
+  
+  numericVar1 = c("load_avg", "hl.mem_total", "hl.swap_total", 
+                  "hl.virtual_total", 
+                  "hl.mem_free", 
+                  "hl.swap_free", "hl.virtual_free", "hl.mem_used", 
+                  "hl.swap_used", "hl.virtual_used", 
+                  "hc.h_vmem", "hc.tmpspace")
+  
+  numericVar2 = c("hl.num_proc", "hl.m_socket", "hl.m_core", "hl.m_thread", 
+                  "hl.load_avg", "hl.load_short", 
+                  "hl.load_medium", "hl.load_long", 
+                  "hl.cpu", "hl.np_load_avg", 
+                  "hl.np_load_short", "hl.np_load_medium", "hl.np_load_long", 
+                  "hc.slots", 
+                  # "qf.h_rt", 
+                  "qf.seq_no", "qf.rerun")
+  
+  GT2N = function(x) {
+    xG = grep("*G$", x)
+    xT = grep("*T$", x)
+    y = rep(0, length(x))
+    y[xG] = as.numeric(sub("G", "", x[xG]))
+    y[xT] = as.numeric(sub("T", "", x[xT])) * 1024
+    y
+  }
+  
+  for(mi in numericVar1){
+    info[[mi]] = GT2N(info[[mi]])
+  }
+  for(mi in numericVar2){
+    info[[mi]] = as.numeric(info[[mi]])
+  }
+  
+  info = sortDataframe(info, "queuename")
+  rownames(info) = seq(nrow(info))
+  class(info) = c("HpcInfo", "data.frame")
+  return(info)
+}
+
+#' print HpcInfo object
+#' @param x HpcInfo object.
+#' @param ... other parameters in print.data.frame function.
+#' @return print.HpcInfo returns an invisible data frame, which shows the 
+#' available jobs, slots and memory on HPC nodes.
+#' @export
+print.HpcInfo = function(x, ...){
+  y = x[c('queuename', 'usedJobs', 'totalJobs', 'hl.num_proc', 
+          'hl.mem_total', 'hl.mem_free')]
+  
+  qA = qstatAll()
+  slotsBooked = data.frame(slots = tapply(qA$slots, qA$queue, sum, na.rm = TRUE))
+  y$slotsBooked = slotsBooked[y$queuename, 1]
+  y$slotsBooked[is.na(y$slotsBooked)] = 0
+  
+  y$jobsAvail = y$totalJobs - y$usedJobs
+  y$slotsAvail = y$hl.num_proc - y$slotsBooked
+  
+  memoryBooked = data.frame(memory = tapply(qA$memory, qA$queue, function(a, b) 
+    sum(as.numeric(sub("G", "", a)), na.rm = TRUE)))[y$queuename, 1]
+  
+  memoryBooked[is.na(memoryBooked)] = 0
+  
+  y$memoryAvail = y$hl.mem_total - memoryBooked
+  
+  z = y[, c("queuename", "jobsAvail", "slotsAvail", "memoryAvail")]
+  print.data.frame(z, ...)
+  return(invisible(z))
 }
