@@ -459,6 +459,17 @@ qdelAll = function(pattern = "*", col = 1){
 }
 
 
+
+GT2N = function(x) {
+  if(all(is.na(x))) return(NA)
+  xG = grep("*G$", x)
+  xT = grep("*T$", x)
+  y = rep(0, length(x))
+  y[xG] = as.numeric(sub("G", "", x[xG]))
+  y[xT] = as.numeric(sub("T", "", x[xT])) * 1024
+  y
+}
+
 #' Information of HPC computing nodes
 #' @return a data frame, including 
 #' · queuename, the queue name;
@@ -480,17 +491,12 @@ qdelAll = function(pattern = "*", col = 1){
 #' }
 hpcInfo = function(){
   qstatF0 = system("qstat -F", intern = TRUE)
-  qstatF0 = grep("^[q|a|h|t|\\-]", removeSpace(sub("^\t", "", qstatF0)), 
+  qstatF0 = grep("^[q|a|h|t]|^\\-\\-", removeSpace(sub("^\t", "", qstatF0)), 
                  value = TRUE)
   
   id_head = 1
   id_jobs_start = grep("^---", qstatF0) + 1
   id_jobs_end = c(grep("^---", qstatF0)[-1] - 1, length(qstatF0))
-  
-  len = unique(id_jobs_end - id_jobs_start)
-  if(length(len) != 1){
-    stop("Not every node has the same length of information.")
-  }
   
   info1 = matrix(strSplit(qstatF0[id_jobs_start], " "), 
                  nrow = length(id_jobs_start),
@@ -501,12 +507,18 @@ hpcInfo = function(){
                  dimnames = list(seq(nrow(info1)), 
                                  strSplit("resvJobs/usedJobs/totalJobs", "/")))
   
-  colNM = strSplit(qstatF0[(id_jobs_start[1] + 1):id_jobs_end[1]], "=")[,1]
-  # value = strSplit(qstatF0[-c(id_head, id_jobs_start-1)], "=")[,2]
-  value = strSplit(qstatF0[-c(id_head, id_jobs_start-1, id_jobs_start)], 
-                   "=")[,2]
-  info3 = matrix(value, ncol = len, byrow = TRUE, 
-                 dimnames = list(seq_along(id_jobs_start), colNM))
+  colNM = unique(strSplit(qstatF0[-c(1, id_jobs_start, id_jobs_start - 1)], "=")[,1])
+  
+  qstatList = lapply(seq_along(id_jobs_start), function(mi){
+    x = qstatF0[(id_jobs_start[mi]+1):id_jobs_end[mi]]
+    empty = rep(NA, length(x))
+    nmValue = strSplit(x, "=")
+    empty[match(nmValue[,1], colNM)] = nmValue[,2]
+    return(empty)
+  })
+  
+  info3 = t(do.call("cbind", qstatList))
+  colnames(info3) = colNM
   
   info = data.frame(info1, info2, info3, stringsAsFactors = FALSE)
   
@@ -526,15 +538,6 @@ hpcInfo = function(){
                   # "qf.h_rt", 
                   "qf.seq_no", "qf.rerun")
   
-  GT2N = function(x) {
-    xG = grep("*G$", x)
-    xT = grep("*T$", x)
-    y = rep(0, length(x))
-    y[xG] = as.numeric(sub("G", "", x[xG]))
-    y[xT] = as.numeric(sub("T", "", x[xT])) * 1024
-    y
-  }
-  
   for(mi in numericVar1){
     info[[mi]] = GT2N(info[[mi]])
   }
@@ -547,24 +550,22 @@ hpcInfo = function(){
   
   class(info) = c("HpcInfo", "data.frame")
   
-  y = info
-  
   qA = qstatAll()
   slotsBooked = data.frame(slots = tapply(qA$slots, qA$queue, sum, na.rm = TRUE))
-  y$slotsBooked = slotsBooked[y$queuename, 1]
-  y$slotsBooked[is.na(y$slotsBooked)] = 0
+  info$slotsBooked = slotsBooked[info$queuename, 1]
+  info$slotsBooked[is.na(info$slotsBooked)] = 0
   
-  y$jobsAvail = y$totalJobs - y$usedJobs
-  y$slotsAvail = y$hl.num_proc - y$slotsBooked
+  info$jobsAvail = info$totalJobs - info$usedJobs
+  info$slotsAvail = info$hl.num_proc - info$slotsBooked
   
   memoryBooked = data.frame(memory = tapply(qA$memory, qA$queue, function(a, b) 
-    sum(as.numeric(sub("G", "", a)), na.rm = TRUE)))[y$queuename, 1]
+    sum(as.numeric(sub("G", "", a)), na.rm = TRUE)))[info$queuename, 1]
   
   memoryBooked[is.na(memoryBooked)] = 0
   
-  y$memoryAvail = y$hl.mem_total - memoryBooked
+  info$memoryAvail = info$hl.mem_total - memoryBooked
   
-  return(sortDataframe(y, "memoryAvail"))
+  return(sortDataframe(info, "memoryAvail"))
 }
 
 #' print HpcInfo object
