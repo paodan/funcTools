@@ -498,10 +498,18 @@ hpcInfo = function(){
   id_jobs_start = grep("^---", qstatF0) + 1
   id_jobs_end = c(grep("^---", qstatF0)[-1] - 1, length(qstatF0))
   
-  info1 = matrix(strSplit(qstatF0[id_jobs_start], " "), 
-                 nrow = length(id_jobs_start),
+  
+  fo1 = strSplit(qstatF0[id_jobs_start], " ")
+  if(ncol(fo1) == 5){
+    fo1 = cbind(fo1, rep("", nrow(fo1)))
+  }
+  info1 = matrix(fo1, nrow = length(id_jobs_start), 
                  dimnames = list(seq_along(id_jobs_start), 
                                  strSplit(qstatF0[id_head], " ")))
+  # info1 = matrix(strSplit(qstatF0[id_jobs_start], " "), 
+  #                nrow = length(id_jobs_start),
+  #                dimnames = list(seq_along(id_jobs_start), 
+  #                                strSplit(qstatF0[id_head], " ")))
   info2 = matrix(as.numeric(strSplit(info1[,"resv/used/tot."], "/")), 
                  nrow = nrow(info1),
                  dimnames = list(seq(nrow(info1)), 
