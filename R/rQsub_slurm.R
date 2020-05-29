@@ -72,3 +72,20 @@ qdel2 = function(id){
   res = system(cmd, intern = TRUE)
   return(res)
 }
+
+
+# To be finished ****
+hpcInfo2 = function(){
+  res0 = system("sinfo -o %all", TRUE)
+  res1 = as.data.frame(strSplit(res0[-1], "\\|"), stringsAsFactors = FALSE)
+  colnames(res1) = as.vector(strSplit(res0[1], "\\|"))
+  numIDs = c("CPUs", "TMP_DISK", "FREE_MEM", "MEMORY", "PRIO_TIER", 
+             "NODES", "SOCKETS", "CORES", "THREADS")
+  for(mi in numIDs){
+    res1[[mi]] = as.numeric(res1[[mi]])
+    if(mi %in% c("FREE_MEM", "MEMORY")){
+      res1[[mi]] = res1[[mi]]/10^3
+    }
+  }
+  return(res1)
+}
