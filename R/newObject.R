@@ -1,13 +1,62 @@
-
-#' Object oriented programming like Javascript
+#' An object constructor of an S3 class
 #' 
-
-
+#' This is inspired by the object oriented programming in Javascript and ggproto 
+#' function/object in ggplot2 package. Here the attributes of the 
+#' object are replaced in place, and it is able to access the object it"self" 
+#' and it's parent object in the method of this object.
+#' 
+#' @param `_class` of which class an object to create
+#' @param `_inherit` the parent class an object to inherit
+#' 
+#' @return an instance of `_class` object. Meanwhile, an S3 method of `$` 
+#' function is generated in the same environment of the object that you just
+#' constructed. For example, if the "NewClass" is assigned to `_class` 
+#' parameter, then a function/method called $.NewClass is constructed.
+#' 
+#' @examples 
+#' \dontrun{
+#' Adder <- newObject("Adder",
+#'                    x = 0,
+#'                    add = function(n) {
+#'                      self$x <- self$x + n
+#'                      self$x
+#'                    }
+#' )
+#' Adder$x
+#' Adder$add(10)
+#' # Adder$x is replaced in place
+#' Adder$add(10)
+#' 
+#' Doubler <- newObject("Doubler", Adder,
+#'                      add = function(n) {
+#'                        self$x = self$x *(n) * self$super()$x
+#'                        self$x
+#'                      }
+#' )
+#' Doubler$x
+#' Adder$x
+#' Doubler$add(10)
+#' Doubler$self()
+#' 
+#' identical(Adder, Doubler$super())
+#' Adder$self() # Adder
+#' Doubler$super()$self() # Adder
+#' 
+#' # update Adder
+#' Adder$add(10)
+#' Adder$x
+#' # the super of Doubler is also update
+#' Doubler$super()$x
+#' # But Double itself is not changed
+#' Doubler$x
+#' }
+#' @export
 newObject = function(`_class` = NULL, `_inherit` = NULL, ...){
   e <- new.env(parent = emptyenv())
   
   members <- list(..., self = function(self) {
-    return(base:::as.list.environment(self))
+    print(base:::as.list.environment(self))
+    return(invisible(self))
   })
   if (length(members) != sum(nzchar(names(members)))) {
     abort("All members of a ggproto object must be named.")
@@ -57,7 +106,6 @@ newObject = function(`_class` = NULL, `_inherit` = NULL, ...){
   # $ method to access obj
   dollarMethod = function(x, name) {
     res <- fetch_ggproto(x, name)
-    ####                              ####
     
     if (!is.function(res)) {
       return(res)

@@ -63,6 +63,18 @@ itemValue = function(str, z0){
 
 
 ### convert the parameters of javascript into a list object
+# text = textNew = '{"service":"GUIDED_HELP","params":[{"key":"context","value":"yt_web_kevlar_watch"}]},{"service":"CSI","params":[{"key":"c","value":"WEB"},{"key":"cver","value":"2.20200701.03.01"},{"key":"yt_li","value":"1"},{"key":"GetWatchNext_rid","value":"0x7eb3f0213efd0eb4"}]}'
+# iv = collapseJsCode(textNew)
+# str(iv)
+# 
+# urlSeed = "https://www.youtube.com/watch?v=iTV89Tqfmgk&list=PLsyeobzWxl7rXr9qxVZPbaoU7uUqP7iPM"
+# urlpage = readLines(urlSeed, warn = FALSE)
+# titleLine = grep("prefetchHintConfig",
+#                  urlpage,
+#                  perl = FALSE,
+#                  value = TRUE)
+# iv = collapseJsCode(text = titleLine)
+# str(iv)
 collapseJsCode = function(text){
   iv = list()
   repeat{
@@ -102,15 +114,4 @@ collapseJsCode = function(text){
 }
 
 
-text = textNew = '{"service":"GUIDED_HELP","params":[{"key":"context","value":"yt_web_kevlar_watch"}]},{"service":"CSI","params":[{"key":"c","value":"WEB"},{"key":"cver","value":"2.20200701.03.01"},{"key":"yt_li","value":"1"},{"key":"GetWatchNext_rid","value":"0x7eb3f0213efd0eb4"}]}'
-iv = collapseJsCode(textNew)
-str(iv)
 
-urlSeed = "https://www.youtube.com/watch?v=iTV89Tqfmgk&list=PLsyeobzWxl7rXr9qxVZPbaoU7uUqP7iPM"
-urlpage = readLines(urlSeed, warn = FALSE)
-titleLine = grep("prefetchHintConfig",
-                 urlpage,
-                 perl = FALSE,
-                 value = TRUE)
-iv = collapseJsCode(text = titleLine)
-str(iv)
