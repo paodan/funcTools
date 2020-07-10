@@ -16,7 +16,11 @@ tidyText(
 \arguments{
 \item{text}{the text to be tidy.}
 
+\item{leftSign}{the left one of paired sign.}
+
 \item{commaSign}{the unpaired sign, default is ",".}
+
+\item{rightSign}{the right one of paired sign.}
 
 \item{showN}{integer, the number of characters to show.}
 

@@ -1,8 +1,8 @@
 #' Print text in a tidy way.
 #' @param text the text to be tidy.
-#' @param leftSign the left one of paired sign, default is "\\{".
+#' @param leftSign the left one of paired sign.
 #' @param commaSign the unpaired sign, default is ",".
-#' @param rightSign the right one of paired sign, default is "\\}".
+#' @param rightSign the right one of paired sign.
 #' @param showN integer, the number of characters to show.
 #' @param removeSpace logical, remove unnecessary space, the default is TRUE.
 #' @export 

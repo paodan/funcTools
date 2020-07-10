@@ -4,9 +4,16 @@
 \alias{newObject}
 \title{An object constructor of an S3 class}
 \usage{
-newObject(`_class` = NULL, `_inherit` = NULL, ...)
+newObject(`_class` = NULL, `_inherit` = NULL, pos = 1, ...)
 }
 \arguments{
+\item{pos}{into which environment the $ method (see value part) is assigned. 
+The pos argument can specify the environment in which to assign the object 
+in any of several ways: as a positive integer 
+(the position in the search list, default is 1); as the character string name of an 
+element in the search list; or as an environment (including using sys.frame 
+to access the currently active function calls).}
+
 \item{`_class`}{of which class an object to create}
 
 \item{`_inherit`}{the parent class an object to inherit}
@@ -21,11 +28,11 @@ parameter, then a function/method called $.NewClass is constructed.
 This is inspired by the object oriented programming in Javascript and ggproto 
 function/object in ggplot2 package. Here the attributes of the 
 object are replaced in place, and it is able to access the object it"self" 
-and it's parent object in the method of this object.
+and its parent object in the method of this object.
 }
 \examples{
 \dontrun{
-Adder <- newObject("Adder",
+Adder <- newObject("Adder", 
                    x = 0,
                    add = function(n) {
                      self$x <- self$x + n

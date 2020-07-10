@@ -3,10 +3,16 @@
 #' This is inspired by the object oriented programming in Javascript and ggproto 
 #' function/object in ggplot2 package. Here the attributes of the 
 #' object are replaced in place, and it is able to access the object it"self" 
-#' and it's parent object in the method of this object.
+#' and its parent object in the method of this object.
 #' 
 #' @param `_class` of which class an object to create
 #' @param `_inherit` the parent class an object to inherit
+#' @param pos into which environment the $ method (see value part) is assigned. 
+#' The pos argument can specify the environment in which to assign the object 
+#' in any of several ways: as a positive integer 
+#' (the position in the search list, default is 1); as the character string name of an 
+#' element in the search list; or as an environment (including using sys.frame 
+#' to access the currently active function calls).
 #' 
 #' @return an instance of `_class` object. Meanwhile, an S3 method of `$` 
 #' function is generated in the same environment of the object that you just
@@ -15,7 +21,7 @@
 #' 
 #' @examples 
 #' \dontrun{
-#' Adder <- newObject("Adder",
+#' Adder <- newObject("Adder", 
 #'                    x = 0,
 #'                    add = function(n) {
 #'                      self$x <- self$x + n
@@ -51,7 +57,8 @@
 #' Doubler$x
 #' }
 #' @export
-newObject = function(`_class` = NULL, `_inherit` = NULL, ...){
+newObject = function(`_class` = NULL, `_inherit` = NULL, pos = 1,
+                     ...){
   e <- new.env(parent = emptyenv())
   
   members <- list(..., self = function(self) {
@@ -122,6 +129,7 @@ newObject = function(`_class` = NULL, `_inherit` = NULL, ...){
   
   # export the dollarMethod to the parent environment
   dollarMethodName = paste0('$.', `_class`)
-  assign(dollarMethodName, dollarMethod, envir = parent.env(environment()))
+  # assign(dollarMethodName, dollarMethod, envir = parent.env(environment()))
+  assign(dollarMethodName, dollarMethod, pos = pos)
   return(e)
 }
