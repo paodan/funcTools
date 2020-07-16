@@ -34,7 +34,6 @@
 #'  makeFilenames(s2, replacement = "-")
 #'  #> "-Hello-"
 #'
-#' @family \pkg{spMisc} utilities
 
 makeFilenames <- function(s, replacement = "_", allow.space = TRUE){
     replacement <- as.character(replacement)
