@@ -138,7 +138,7 @@ rQsub2 = function(path = getwd(), rFile = "testQsub.R",
     if (when2Email == "aes"){
       when2Email = "END,FAIL,STAGE_OUT,TIME_LIMIT"
     }
-    emailAndWhen = paste("--mail-user=", email, "--mail-type=", when2Email)
+    emailAndWhen = paste0("--mail-user=", email, " --mail-type=", when2Email)
   }
   
   qparam = paste("sbatch", computeNode, "-J", jobName, "-c", threaded,
