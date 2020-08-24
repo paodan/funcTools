@@ -43,4 +43,3 @@ a string \code{s} with \code{replacement} (by default it is underscore
  #> "-Hello-"
 
 }
-\concept{\pkg{spMisc} utilities}
