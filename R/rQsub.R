@@ -312,7 +312,7 @@ qstatSummary = function(statRes){
   attr(statRes, "usedMemoryInTotal") = mT = sum(memory, na.rm = TRUE)
   attr(statRes, "usedSlotsInTotal") = sT = sum(statRes$slots, na.rm = TRUE)
   
-  message(mT, " Gb memory ", "and ", sT, " cores have been inlcuded in the table\n\n")
+  message(mT, " Gb memory ", "and ", sT, " cores have been included in the table\n\n")
   
   attr(statRes, "memoryPerUser") = mU = sort(tapply(memory, INDEX = statRes$user, 
                                                 sum, na.rm = TRUE),

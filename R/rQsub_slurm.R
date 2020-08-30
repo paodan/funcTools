@@ -226,19 +226,217 @@ qstat3 = function(stat = c("all", "run", "wait"),
   return(res1)
 }
 
+
+
+
+qstatProcess2 = function(statRes){
+  res = strSplit(statRes, "\\|") # split columns.
+  res = res[,-ncol(res)]   # remove the last (empty) column.
+  colnames(res) = res[1,]  # the first row is the column names.
+  res = res[-1,]           # remove the first row after naming the columns.
+  res = as.data.frame(res[res[,"User"] != "",,drop = FALSE]) # convert to data frame.
+  return(res)
+}
+
+qstatSummary2 = function(statRes){
+  
+  fmt = function(item){
+    tapply(item, statRes$State, sum, na.rm = TRUE)
+  }
+  memory = as.numeric(sub("Gn|Gc", "", statRes$ReqMem))
+  memorySummary = fmt(memory)
+  
+  node = as.numeric(statRes$ReqNodes)
+  nodeSummary = fmt(node)
+  
+  cpu = as.numeric(statRes$ReqCPUS)
+  cpuSummary = fmt(cpu)
+  
+  
+  attr(statRes, "usedMemoryInTotal") = mT = memorySummary
+  attr(statRes, "usedNodesInTotal") = nT = nodeSummary
+  attr(statRes, "usedCPUsInTotal") = cT = cpuSummary
+  
+  pst = function(itemSummary){
+    paste(paste0(itemSummary, "(", names(itemSummary), ")"),
+          collapse = ", ")
+  }
+  
+  message(pst(mT), " Gb memory ", "and \n", 
+          pst(cT), " CPUs have been included in the table\n\n")
+  
+  
+  itemPerU = function(item){
+    y = tapply(item, INDEX = list(statRes$User, statRes$State), 
+               sum, na.rm = TRUE)
+    y[is.na(y)] = 0
+    y = data.frame(y)
+    if(!"RUNNING" %in% colnames(y)){
+      y$RUNNING = 0
+    }
+    y
+  }
+  
+  mU = itemPerU(memory)
+  
+  attr(statRes, "memoryPerUser") = mU
+  
+  mUSort = sort(setNames(mU$RUNNING, rownames(mU)), decreasing = TRUE)
+  message("The following top (upto) 5 users are using most of the memory: ")
+  message(sprintf("  %s(%s G)", names(head(mUSort, 5)), 
+                  head(mUSort, 5)), "\n\n")
+  
+  cU = itemPerU(cpu)
+  
+  attr(statRes, "CPUsPerUser") = cU 
+  
+  cUSort = sort(setNames(cU$RUNNING, rownames(cU)), decreasing = TRUE)
+  message("The following top (upto) 5 users are using the most of CPUs: ")
+  message(sprintf("  %s(%s)", names(head(cUSort, 5)), head(cUSort, 5)), "\n\n")
+  return(invisible(statRes))
+}
+
+
+#' checking all users' job status on HPC for slurm system
+#' @param stat status, one of "run", "all", "wait", 
+#' "COMPLETED", "TIMEOUT", "FAILED", "OUT_OF_MEMORY", and "CANCELLED".
+#' @examples 
+#' \dontrun{
+#' qstatAll2("all")
+#' qstatAll2("run")
+#' qstatAll2("TIMEOUT")
+#' }
+#' @export
+qstatAll2 = function(stat = c("run", "all", "wait",
+                              "COMPLETED", "TIMEOUT", "FAILED", 
+                              "OUT_OF_MEMORY", "CANCELLED")){
+  stat = match.arg(stat)
+  
+  variables = unique(c('JobID', 'JobName', 'Account', 'State',
+                       'Group', 'User', 'WorkDir',
+                       'AllocNodes', 'NodeList', 'AllocCPUS', 
+                       'Submit', 'Start', 'Eligible','Elapsed', 
+                       unlist(strsplit(removeSpace(system("sacct -e", 
+                                                          intern = TRUE)), " "))))
+  cmd2 = paste("sacct --alluser -p -o ", paste0(variables, collapse = ","))
+  
+  res0 = system(cmd2, intern = TRUE)
+  res = qstatProcess2(res0)
+  
+  if (stat == "all"){
+    res = res
+  } else if (stat == "run"){
+    res = subset(res, State == "RUNNING")
+  } else if (stat == "wait"){
+    res = subset(res, State == "PENDING")
+  } else if (stat == "COMPLETED"){
+    res = subset(res, State == "COMPLETED")
+  } else if (stat == "TIMEOUT"){
+    res = subset(res, State == "TIMEOUT")
+  } else if (stat == "FAILED"){
+    res = subset(res, State == "FAILED")
+  } else if (stat == "OUT_OF_MEMORY"){
+    res = subset(res, State == "OUT_OF_MEMORY")
+  } else if (stat == "CANCELLED"){
+    res = subset(res, substr(State, 1, 9) == "CANCELLED")
+  } else {
+    stop("Unknown stat!")
+  }
+  
+  # res = qstatProcess(statRes = system(cmd2, intern = TRUE))
+  res = qstatSummary2(res)
+  return(invisible(res))
+}
+
+
+#' checking your own job status on HPC for slurm system
+#' @param stat status, one of "run", "all", "wait", 
+#' "COMPLETED", "TIMEOUT", "FAILED", "OUT_OF_MEMORY", and "CANCELLED".
+#' @examples 
+#' \dontrun{
+#' qstat2(stat = "run")
+#' qstat2("all")
+#' }
+#' @export
+qstat2 = function(stat = c("run", "all", "wait",
+                           "COMPLETED", "TIMEOUT", "FAILED", 
+                           "OUT_OF_MEMORY", "CANCELLED")){
+  stat = match.arg(stat)
+  
+  variables = unique(c('JobID', 'JobName', 'Account', 'State',
+                       'Group', 'User', 'WorkDir',
+                       'AllocNodes', 'NodeList', 'AllocCPUS', 
+                       'Submit', 'Start', 'Eligible','Elapsed', 
+                       unlist(strsplit(removeSpace(system("sacct -e", 
+                                                          intern = TRUE)), " "))))
+  cmd2 = paste("sacct -p -o ", paste0(variables, collapse = ","))
+  
+  res0 = system(cmd2, intern = TRUE)
+  res = qstatProcess2(res0)
+  
+  if (stat == "all"){
+    res = res
+  } else if (stat == "run"){
+    res = subset(res, State == "RUNNING")
+  } else if (stat == "wait"){
+    res = subset(res, State == "PENDING")
+  } else if (stat == "COMPLETED"){
+    res = subset(res, State == "COMPLETED")
+  } else if (stat == "TIMEOUT"){
+    res = subset(res, State == "TIMEOUT")
+  } else if (stat == "FAILED"){
+    res = subset(res, State == "FAILED")
+  } else if (stat == "OUT_OF_MEMORY"){
+    res = subset(res, State == "OUT_OF_MEMORY")
+  } else if (stat == "CANCELLED"){
+    res = subset(res, substr(State, 1, 9) == "CANCELLED")
+  } else {
+    stop("Unknown stat!")
+  }
+  
+  # res = qstatProcess(statRes = system(cmd2, intern = TRUE))
+  res = qstatSummary2(res)
+  return(invisible(res))
+}
+
+
 #' Delete (scancel) of SLURM jobs.
 #' @param id The job ID.
 #' @seealso \code{\link{qdelAll2}}
 #' @export
 qdel2 = function(id){
   # cmd = paste("scancel", paste(id, collapse = " "))
-  cmd = paste("scancel", id)
-  res = system(cmd, intern = TRUE)
+  cmds = paste("scancel", id)
+  res = c()
+  for(cmd in cmds)
+    res[cmd] = system(cmd, intern = TRUE)
   return(res)
 }
 
+#' Delete (scancel) of SLURM jobs.
+#' @param pattern regular expression pattern. The default is "*".
+#' @param col the index of column to match the pattern. The default is 1.
+#' @seealso \code{\link{qdel2}}
+#' @export
+qdelAll2 = function(pattern = "*", col = 1){
+  q = qstat2("all")
+  id = as.character(q[,col])
+  indx = grep(pattern, id)
+  if (length(indx) > 0){
+    qUser = q[indx,]
+    id2Del = as.character(qUser[,1])
+    qdel(id2Del)
+  } else {
+    cat("No jobs matched!")
+    id2Del = NULL
+  }
+  return(id2Del)
+}
 
-# To be finished ****
+
+#' The Memory and CPU usage of each node on HPC
+#' 
+#' @export
 hpcInfo2 = function(){
   res0 = system("sinfo -o %all", TRUE)
   res1 = as.data.frame(strSplit(res0[-1], "\\|"), stringsAsFactors = FALSE)
@@ -246,10 +444,14 @@ hpcInfo2 = function(){
   numIDs = c("CPUS", "TMP_DISK", "FREE_MEM", "MEMORY", "PRIO_TIER", 
              "NODES", "SOCKETS", "CORES", "THREADS")
   for(mi in numIDs){
-    res1[[mi]] = as.numeric(res1[[mi]])
+    res1[[mi]] = suppressWarnings(as.numeric(res1[[mi]]))
     if(mi %in% c("FREE_MEM", "MEMORY")){
       res1[[mi]] = res1[[mi]]/10^3
     }
   }
-  return(res1)
+  infoShow = res1[, c("HOSTNAMES", "FREE_MEM", "CPUS(A/I/O/T)")]
+  infoShow = sortDataframe(infoShow, "FREE_MEM")
+  infoShow$index = 1:nrow(infoShow)
+  print(infoShow)
+  return(invisible(res1))
 }
