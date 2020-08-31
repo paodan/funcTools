@@ -168,65 +168,54 @@ rQsub2 = function(path = getwd(), rFile = "testQsub.R",
 
 
 #' Status (sacct) of SLURM. jobs.
-#' @param stat the job status, including "running", "completed", "failed", 
+#' @param stat the job status, including "running", "completed", "failed",
 #' "timeout", "resizing", "deadline", "node_fail".
 #' @export
 #' @seealso \code{\link{qstat}}
-qstat2 = function(stat = c("running", "completed", "failed", "timeout", 
-                           "resizing", "deadline", "node_fail"), 
-                  groups = NULL, users = NULL){
-  
-  stopifnot(all(stat %in% c("running", "completed", "failed", "timeout", 
-                            "resizing", "deadline", "node_fail")))
-  # running (r),
-  # completed (cd), failed (f), timeout (to), resizing (rs),
-  # deadline (dl) and node_fail (nf)
-  stats = c(running = "r", completed = "cd", failed ="f", timeout = "to", 
-            resizing = "rs", deadline = "dl", node_fail = "nf")
-  s = stats[stat]
-  
-  cmd2 = paste0("sacct -s ", paste0(s, collapse  = " -s "))
-  
-  if(!is.null(groups)){
-    cmd2 = paste0(cmd2, " -A ", paste0(groups, collapse = ","))
-  }
-  if(is.null(users)){
-    cmd2 = paste0(cmd2, " -a ")
-  } else {
-    cmd2 = paste0(cmd2, " -u ", paste0(users, collapse = ","))
-  }
-  
-  cmd2 = paste0(cmd2, " -o JobID,JobName,User,Account,UID,Timelimit,", 
-                "Submit,Start,Elapsed,NCPUS,NNodes,AllocTRES,NodeList,", 
-                # "NTasks,", 
-                "Partition,ReqMem,State,WorkDir")
-  
-  res0 = system(cmd2, intern = TRUE)
-  res1 = grep("^[0-9]+ ", res0, value = TRUE)
-  res2 = removeSpace(res1)
-  
-  res = as.data.frame(strSplit(res2, " "), stringsAsFactors = FALSE)
-  colnames(res) = as.vector(strSplit(removeSpace(res0[1]), " "))
-  
-  numID = c("JobID", "UID", "NCPUS", "NNodes")
-  for(mi in numID){
-    res[[mi]] = as.numeric(res[[mi]])
-  }
-  res$ReqMem = as.numeric(sub("Gn", "", res$ReqMem))
-  return(res)
-}
-
-
-####### To be finished **********
-qstat3 = function(stat = c("all", "run", "wait"), 
-                  groups = NULL, users = NULL){
-  res0 = system("squeue -o %all", intern = T)
-  res1= as.data.frame(strSplit(tail(res0, -1), "\\|"), stringsAsFactors = FALSE)
-  colnames(res1) = as.vector(strSplit(head(res0, 1), "\\|"))
-  return(res1)
-}
-
-
+# 
+# qstat2 = function(stat = c("running", "completed", "failed", "timeout",
+#                            "resizing", "deadline", "node_fail"),
+#                   groups = NULL, users = NULL){
+# 
+#   stopifnot(all(stat %in% c("running", "completed", "failed", "timeout",
+#                             "resizing", "deadline", "node_fail")))
+#   # running (r),
+#   # completed (cd), failed (f), timeout (to), resizing (rs),
+#   # deadline (dl) and node_fail (nf)
+#   stats = c(running = "r", completed = "cd", failed ="f", timeout = "to",
+#             resizing = "rs", deadline = "dl", node_fail = "nf")
+#   s = stats[stat]
+# 
+#   cmd2 = paste0("sacct -s ", paste0(s, collapse  = " -s "))
+# 
+#   if(!is.null(groups)){
+#     cmd2 = paste0(cmd2, " -A ", paste0(groups, collapse = ","))
+#   }
+#   if(is.null(users)){
+#     cmd2 = paste0(cmd2, " -a ")
+#   } else {
+#     cmd2 = paste0(cmd2, " -u ", paste0(users, collapse = ","))
+#   }
+# 
+#   cmd2 = paste0(cmd2, " -o JobID,JobName,User,Account,UID,Timelimit,",
+#                 "Submit,Start,Elapsed,NCPUS,NNodes,AllocTRES,NodeList,",
+#                 # "NTasks,",
+#                 "Partition,ReqMem,State,WorkDir")
+# 
+#   res0 = system(cmd2, intern = TRUE)
+#   res1 = grep("^[0-9]+ ", res0, value = TRUE)
+#   res2 = removeSpace(res1)
+# 
+#   res = as.data.frame(strSplit(res2, " "), stringsAsFactors = FALSE)
+#   colnames(res) = as.vector(strSplit(removeSpace(res0[1]), " "))
+# 
+#   numID = c("JobID", "UID", "NCPUS", "NNodes")
+#   for(mi in numID){
+#     res[[mi]] = as.numeric(res[[mi]])
+#   }
+#   res$ReqMem = as.numeric(sub("Gn", "", res$ReqMem))
+#   return(res)
+# }
 
 
 qstatProcess2 = function(statRes){
@@ -239,11 +228,15 @@ qstatProcess2 = function(statRes){
 }
 
 qstatSummary2 = function(statRes){
+  if(nrow(statRes) == 0){
+    message("0 Gb memory and 0 CPUs have been included in the table\n\n")
+    return(invisible(statRes))
+  }
   
   fmt = function(item){
     tapply(item, statRes$State, sum, na.rm = TRUE)
   }
-  memory = as.numeric(sub("Gn|Gc", "", statRes$ReqMem))
+  memory = as.numeric(sub("Mn|Mc", "E-3", sub("Gn|Gc", "", statRes$ReqMem)))
   memorySummary = fmt(memory)
   
   node = as.numeric(statRes$ReqNodes)
@@ -271,7 +264,7 @@ qstatSummary2 = function(statRes){
                sum, na.rm = TRUE)
     y[is.na(y)] = 0
     y = data.frame(y)
-    if(!"RUNNING" %in% colnames(y)){
+    if(nrow(y) > 0 && !"RUNNING" %in% colnames(y)){
       y$RUNNING = 0
     }
     y
@@ -344,8 +337,9 @@ qstatAll2 = function(stat = c("run", "all", "wait",
   }
   
   # res = qstatProcess(statRes = system(cmd2, intern = TRUE))
-  res = qstatSummary2(res)
-  return(invisible(res))
+  class(res) = c("statRes2", "data.frame")
+  # return(invisible(res))
+  return(res)
 }
 
 
@@ -395,8 +389,28 @@ qstat2 = function(stat = c("run", "all", "wait",
   }
   
   # res = qstatProcess(statRes = system(cmd2, intern = TRUE))
-  res = qstatSummary2(res)
-  return(invisible(res))
+  class(res) = c("statRes2", "data.frame")
+  # return(invisible(res))
+  return(res)
+}
+
+#' Status (sacct, equivalent to qstat) of running jobs of group members.
+#' @param stat the job status, including "run" (the default),
+#' "all", "wait", "COMPLETED", "TIMEOUT", "FAILED", "OUT_OF_MEMORY", 
+#' and "CANCELLED".
+#' @param groupMembers the group member names. The default is the group members 
+#' of the user who run this code.
+#' @seealso \code{\link{qstat2}}, \code{\link{qstatAll2}}
+#' @export
+qstatGroupAll2 = function(stat = c("run", "all", "wait",
+                                   "COMPLETED", "TIMEOUT", "FAILED", 
+                                   "OUT_OF_MEMORY", "CANCELLED"),
+                          groupMembers = dir(paste0("/hpc/", strSplit(system("groups", intern = TRUE), ' ')[1,1]))){
+  
+  res0 = qstatAll2(stat)
+  
+  res = subset(res0, User %in% groupMembers)
+  return(res)
 }
 
 

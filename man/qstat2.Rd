@@ -2,13 +2,8 @@
 % Please edit documentation in R/rQsub_slurm.R
 \name{qstat2}
 \alias{qstat2}
-\title{Status (sacct) of SLURM. jobs.}
+\title{checking your own job status on HPC for slurm system}
 \usage{
-qstat2(
-  stat = c("run", "all", "wait", "COMPLETED", "TIMEOUT", "FAILED", "OUT_OF_MEMORY",
-    "CANCELLED")
-)
-
 qstat2(
   stat = c("run", "all", "wait", "COMPLETED", "TIMEOUT", "FAILED", "OUT_OF_MEMORY",
     "CANCELLED")
@@ -19,8 +14,6 @@ qstat2(
 "COMPLETED", "TIMEOUT", "FAILED", "OUT_OF_MEMORY", and "CANCELLED".}
 }
 \description{
-Status (sacct) of SLURM. jobs.
-
 checking your own job status on HPC for slurm system
 }
 \examples{
@@ -28,7 +21,4 @@ checking your own job status on HPC for slurm system
 qstat2(stat = "run")
 qstat2("all")
 }
-}
-\seealso{
-\code{\link{qstat}}
 }
