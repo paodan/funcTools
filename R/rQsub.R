@@ -307,7 +307,7 @@ qstatProcess = function(statRes){
 #' }
 #' @export
 qstatSummary = function(statRes){
-  memory = as.numeric(sub("G", "", statRes$memory))
+  memory = as.numeric(sub("M", "E-3", sub("G", "", statRes$memory)))
   
   attr(statRes, "usedMemoryInTotal") = mT = sum(memory, na.rm = TRUE)
   attr(statRes, "usedSlotsInTotal") = sT = sum(statRes$slots, na.rm = TRUE)
