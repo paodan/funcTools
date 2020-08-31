@@ -166,58 +166,6 @@ rQsub2 = function(path = getwd(), rFile = "testQsub.R",
 
 
 
-
-#' Status (sacct) of SLURM. jobs.
-#' @param stat the job status, including "running", "completed", "failed",
-#' "timeout", "resizing", "deadline", "node_fail".
-#' @export
-#' @seealso \code{\link{qstat}}
-# 
-# qstat2 = function(stat = c("running", "completed", "failed", "timeout",
-#                            "resizing", "deadline", "node_fail"),
-#                   groups = NULL, users = NULL){
-# 
-#   stopifnot(all(stat %in% c("running", "completed", "failed", "timeout",
-#                             "resizing", "deadline", "node_fail")))
-#   # running (r),
-#   # completed (cd), failed (f), timeout (to), resizing (rs),
-#   # deadline (dl) and node_fail (nf)
-#   stats = c(running = "r", completed = "cd", failed ="f", timeout = "to",
-#             resizing = "rs", deadline = "dl", node_fail = "nf")
-#   s = stats[stat]
-# 
-#   cmd2 = paste0("sacct -s ", paste0(s, collapse  = " -s "))
-# 
-#   if(!is.null(groups)){
-#     cmd2 = paste0(cmd2, " -A ", paste0(groups, collapse = ","))
-#   }
-#   if(is.null(users)){
-#     cmd2 = paste0(cmd2, " -a ")
-#   } else {
-#     cmd2 = paste0(cmd2, " -u ", paste0(users, collapse = ","))
-#   }
-# 
-#   cmd2 = paste0(cmd2, " -o JobID,JobName,User,Account,UID,Timelimit,",
-#                 "Submit,Start,Elapsed,NCPUS,NNodes,AllocTRES,NodeList,",
-#                 # "NTasks,",
-#                 "Partition,ReqMem,State,WorkDir")
-# 
-#   res0 = system(cmd2, intern = TRUE)
-#   res1 = grep("^[0-9]+ ", res0, value = TRUE)
-#   res2 = removeSpace(res1)
-# 
-#   res = as.data.frame(strSplit(res2, " "), stringsAsFactors = FALSE)
-#   colnames(res) = as.vector(strSplit(removeSpace(res0[1]), " "))
-# 
-#   numID = c("JobID", "UID", "NCPUS", "NNodes")
-#   for(mi in numID){
-#     res[[mi]] = as.numeric(res[[mi]])
-#   }
-#   res$ReqMem = as.numeric(sub("Gn", "", res$ReqMem))
-#   return(res)
-# }
-
-
 qstatProcess2 = function(statRes){
   res = strSplit(statRes, "\\|") # split columns.
   res = res[,-ncol(res)]   # remove the last (empty) column.
@@ -289,6 +237,20 @@ qstatSummary2 = function(statRes){
   return(invisible(statRes))
 }
 
+
+#' Print statRes2 object
+#' @param statRes the result of qstat2/qstatAll2/qstatGroupAll2 functions.
+#' @examples 
+#' \dontrun{
+#' tmp = qstatAll2()
+#' print(tmp)
+#' }
+#' @export
+print.statRes2 = function(statRes){
+  print.data.frame(statRes)
+  res = qstatSummary2(statRes)
+  return(invisible(res))
+}
 
 #' checking all users' job status on HPC for slurm system
 #' @param stat status, one of "run", "all", "wait", 
