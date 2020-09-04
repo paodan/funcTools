@@ -19,6 +19,7 @@
 #' mem_used2()
 #' mem_used2(TRUE)
 #' }
+#' @export
 mem_used2 = function(maximum = FALSE){
   show_bytes = utils::getFromNamespace("show_bytes", ns = "pryr")
   node_size = utils::getFromNamespace("node_size", ns = "pryr")
