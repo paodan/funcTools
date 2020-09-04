@@ -2,7 +2,7 @@
 #' 
 #' This function is inspired by pryr::mem_used function.
 #' 
-#' @param maximum locical, whether to show the maximun memory that R used.
+#' @param maximum locical, whether to show the maximum memory that R used.
 #' Default is FALSE, which means the memory that R currently used.
 #' @import pryr
 #' @examples 
@@ -14,7 +14,7 @@
 #' mem_used2()
 #' mem_used2(TRUE)
 #' 
-#' # After removing x, current memory recover but the maximun memory does not.
+#' # After removing x, current memory recover but the maximum memory does not.
 #' rm(x)
 #' mem_used2()
 #' mem_used2(TRUE)
