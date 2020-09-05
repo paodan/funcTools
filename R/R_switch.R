@@ -52,14 +52,26 @@ R_currentFramework = function(frameworkPath = "/Library/Frameworks/R.framework/"
 }
 
 #' Current R version
+#' @param full logical, if TRUE, the date will be shown. If the R is a
+#' development version, then "devel" will be added ahead of the version
+#' number.
 #' @export
 #' @examples
 #' \dontrun{
 #' R_version()
+#' R_version(TRUE)
 #' }
 #' 
-R_version = function(){
-  paste0(R.version$major, ".", R.version$minor)
+R_version = function(full = FALSE){
+  if(!full) {
+    version = paste0(R.version$major, ".", R.version$minor)
+  } else {
+    rv = R.Version()
+    isDev = length(grep("development", rv$status, ignore.case = TRUE)) > 0
+    version = paste0(rv$major, ".", rv$minor, "_", rv$year, rv$month, rv$day)
+    if (isDev) version = paste0("devel_", version)
+  }
+  return(version)
 }
 
 #' Switch R framework version on Mac

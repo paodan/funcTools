@@ -4,7 +4,12 @@
 \alias{R_version}
 \title{Current R version}
 \usage{
-R_version()
+R_version(full = FALSE)
+}
+\arguments{
+\item{full}{logical, if TRUE, the date will be shown. If the R is a
+development version, then "devel" will be added ahead of the version
+number.}
 }
 \description{
 Current R version
@@ -12,6 +17,7 @@ Current R version
 \examples{
 \dontrun{
 R_version()
+R_version(TRUE)
 }
 
 }
