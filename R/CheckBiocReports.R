@@ -1,4 +1,4 @@
-#' Check the package reports on Biocondocutor
+#' Check the package reports on Bioconductor
 #' @param package the package name
 #' @param url0 the url of the latest bioconductor package reports.
 #' @importFrom xml2 read_html

@@ -2,7 +2,7 @@
 % Please edit documentation in R/checkBiocReports.R
 \name{checkBiocReports}
 \alias{checkBiocReports}
-\title{Check the package reports on Biocondocutor}
+\title{Check the package reports on Bioconductor}
 \usage{
 checkBiocReports(
   package = "RegEnrich",
@@ -15,7 +15,7 @@ checkBiocReports(
 \item{url0}{the url of the latest bioconductor package reports.}
 }
 \description{
-Check the package reports on Biocondocutor
+Check the package reports on Bioconductor
 }
 \examples{
 \dontrun{
