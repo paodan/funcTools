@@ -6,10 +6,10 @@
 #' @export
 #' @examples 
 #' \dontrun{
-#' CheckBiocReports()
-#' CheckBiocReports("FlowSOM")
+#' checkBiocReports()
+#' checkBiocReports("FlowSOM")
 #' }
-CheckBiocReports = function(package = "RegEnrich", 
+checkBiocReports = function(package = "RegEnrich", 
                             url0 = "http://bioconductor.org/checkResults/devel/bioc-LATEST/"){
   url = paste0(url0, package)
   x = read_html(url)
