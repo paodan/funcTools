@@ -28,9 +28,9 @@ checkBiocReports = function(package = "RegEnrich",
       text = c(text, tmp)
     }
   }
-  res = rbind(matrix(head(text, 16), ncol = 8, byrow = T),
-              cbind(rep("", 3), 
-                    matrix(tail(text, -16), ncol = 7, byrow = T)))
+  txt1 = matrix(head(text, 16), ncol = 8, byrow = T)
+  txt2 = matrix(tail(text, -16), ncol = 7, byrow = T)
+  res = rbind(txt1, cbind(rep("", nrow(txt2)), txt2))
   info = res[1:2, 1]
   # print(info)
   res_colname = res[1, c(-1, -8)]
@@ -41,12 +41,12 @@ checkBiocReports = function(package = "RegEnrich",
   
   # Check warning and error
   nError = sum(apply(res, 2, function(ii) substr(ii, 2, 6) == "ERROR" ))
-  nWarning = sum(apply(res, 2, function(ii) substr(ii, 2, 8) == "WARNING"))
+  nWarning = sum(apply(res, 2, function(ii) substr(ii, 2, 9) == "WARNINGS"))
   if(nError > 0){
     message(nError, " ERROR(s) exists.")
   }
   if(nWarning > 0){
-    message(nError, " WARNING(s) exists.")
+    message(nWarning, " WARNING(s) exists.")
   }
   
   return(res)
