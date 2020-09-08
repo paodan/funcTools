@@ -43,10 +43,10 @@ checkBiocReports = function(package = "RegEnrich",
   nError = sum(apply(res, 2, function(ii) substr(ii, 2, 6) == "ERROR" ))
   nWarning = sum(apply(res, 2, function(ii) substr(ii, 2, 9) == "WARNINGS"))
   if(nError > 0){
-    message(nError, " ERROR(s) exists.")
+    message(nError, " ERROR(s) exist(s).")
   }
   if(nWarning > 0){
-    message(nWarning, " WARNING(s) exists.")
+    message(nWarning, " WARNING(s) exist(s).")
   }
   
   return(res)
