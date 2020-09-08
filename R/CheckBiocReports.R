@@ -28,9 +28,9 @@ checkBiocReports = function(package = "RegEnrich",
       text = c(text, tmp)
     }
   }
-  res = rbind(matrix(head(text, 16), ncol = 8, byrow = T),
-              cbind(rep("", 3), 
-                    matrix(tail(text, -16), ncol = 7, byrow = T)))
+  txt1 = matrix(head(text, 16), ncol = 8, byrow = T)
+  txt2 = matrix(tail(text, -16), ncol = 7, byrow = T)
+  res = rbind(txt1, cbind(rep("", nrow(txt2)), txt2))
   info = res[1:2, 1]
   # print(info)
   res_colname = res[1, c(-1, -8)]
