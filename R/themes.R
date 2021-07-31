@@ -14,7 +14,7 @@
 theme_Publication <- function(base_size=14, base_family=c("Helvetica", "sans"),
                               x_angle = 0, x_hjust = 0.5, x_vjust = 0.5,
                               y_angle = 0, y_hjust = 0.5, y_vjust = 0.5,
-                              legend.key.size= unit(0.3, "cm")) {
+                              legend.key.size= unit(0.3, "cm"), gridLineSize = .8) {
   base_family = match.arg(base_family)
   (theme_foundation(base_size=base_size, base_family=base_family)
    + theme(plot.title = element_text(face = "bold", size = rel(1.2), hjust = 0.5),
@@ -36,9 +36,9 @@ theme_Publication <- function(base_size=14, base_family=c("Helvetica", "sans"),
            axis.text.y = element_text(angle=y_angle, vjust =y_vjust, hjust = y_hjust), ## maybe need to remove
            axis.line = element_line(colour="black"),
            axis.ticks = element_line(),
-           panel.grid.major = element_line(colour="#f0f0f0"),
+           panel.grid.major = element_line(colour="#f0f0f0", size = gridLineSize),
            panel.grid.minor = element_blank(),
-           legend.key = element_rect(colour = NA),
+           legend.key = element_rect(colour = NA, fill = "transparent"),
            legend.position = "right",
            legend.direction = "vertical", #"horizontal",
            legend.key.size= legend.key.size,

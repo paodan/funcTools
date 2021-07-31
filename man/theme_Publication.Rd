@@ -13,7 +13,8 @@ theme_Publication(
   y_angle = 0,
   y_hjust = 0.5,
   y_vjust = 0.5,
-  legend.key.size = unit(0.3, "cm")
+  legend.key.size = unit(0.3, "cm"),
+  gridLineSize = 0.8
 )
 }
 \arguments{
