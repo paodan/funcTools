@@ -4,7 +4,7 @@
 \alias{identicalSlots}
 \title{Judge if the slots in two S4 objects are identical}
 \usage{
-identicalSlots(obj1, obj2, slots = NULL)
+identicalSlots(obj1, obj2, slots = NULL, isList = FALSE)
 }
 \arguments{
 \item{obj1}{First S4 object}
@@ -13,6 +13,8 @@ identicalSlots(obj1, obj2, slots = NULL)
 
 \item{slots}{The slot names, the default is NULL, which means all of the slot
 names in the first object.}
+
+\item{isList}{logical, is the obj1 or obj2 a list, the default is FALSE.}
 }
 \value{
 A list of two elements (FALSE and TRUE) if both exists. 
@@ -35,5 +37,13 @@ identicalSlots(A, A)
 y = x + 1
 (B = sparseMatrix(i, j, x = y))
 identicalSlots(A, B)
+
+x = list(a = 1:3, b = letters)
+y = list(a = 1:3, b = LETTERS)
+identicalSlots(x, y, isList = T)
+
+x = list(a = 1:3, b = letters, c = TRUE)
+y = list(a = 1:3, b = LETTERS, c = TRUE)
+identicalSlots(x, y, isList = T)
 }
 }
