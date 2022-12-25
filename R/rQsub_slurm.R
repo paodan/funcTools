@@ -239,7 +239,7 @@ qstatSummary2 = function(statRes){
 
 
 #' Print statRes2 object
-#' @param statRes the result of qstat2/qstatAll2/qstatGroupAll2 functions.
+#' @param statRes the result of sacct/sacctAll/sacctGroupAll functions.
 #' @examples 
 #' \dontrun{
 #' tmp = qstatAll2()
@@ -317,6 +317,61 @@ qstatAll2 = function(stat = c("run", "all", "wait",
 qstat2 = function(stat = c("run", "all", "wait",
                            "COMPLETED", "TIMEOUT", "FAILED", 
                            "OUT_OF_MEMORY", "CANCELLED")){
+  .Deprecated("sacct")
+  stat = match.arg(stat)
+  
+  variables = unique(c('JobID', 'JobName', 'Account', 'State',
+                       'Group', 'User', 'WorkDir',
+                       'AllocNodes', 'NodeList', 'AllocCPUS', 
+                       'Submit', 'Start', 'Eligible','Elapsed', 
+                       unlist(strsplit(removeSpace(system("sacct -e", 
+                                                          intern = TRUE)), " "))))
+  cmd2 = paste("sacct -p -o ", paste0(variables, collapse = ","))
+  
+  res0 = system(cmd2, intern = TRUE)
+  res = qstatProcess2(res0)
+  
+  if (stat == "all"){
+    res = res
+  } else if (stat == "run"){
+    res = subset(res, State == "RUNNING")
+  } else if (stat == "wait"){
+    res = subset(res, State == "PENDING")
+  } else if (stat == "COMPLETED"){
+    res = subset(res, State == "COMPLETED")
+  } else if (stat == "TIMEOUT"){
+    res = subset(res, State == "TIMEOUT")
+  } else if (stat == "FAILED"){
+    res = subset(res, State == "FAILED")
+  } else if (stat == "OUT_OF_MEMORY"){
+    res = subset(res, State == "OUT_OF_MEMORY")
+  } else if (stat == "CANCELLED"){
+    res = subset(res, substr(State, 1, 9) == "CANCELLED")
+  } else {
+    stop("Unknown stat!")
+  }
+  
+  # res = qstatProcess(statRes = system(cmd2, intern = TRUE))
+  class(res) = c("statRes2", "data.frame")
+  # return(invisible(res))
+  return(res)
+}
+
+
+
+#' checking your own job status on HPC for slurm system
+#' @param stat status, one of "run", "all", "wait", 
+#' "COMPLETED", "TIMEOUT", "FAILED", "OUT_OF_MEMORY", and "CANCELLED".
+#' @examples 
+#' \dontrun{
+#' sacct(stat = "run")
+#' sacct("all")
+#' }
+#' @export
+sacct = function(stat = c("run", "all", "wait",
+                           "COMPLETED", "TIMEOUT", "FAILED", 
+                           "OUT_OF_MEMORY", "CANCELLED")){
+  .Deprecated("sacct")
   stat = match.arg(stat)
   
   variables = unique(c('JobID', 'JobName', 'Account', 'State',
@@ -362,7 +417,7 @@ qstat2 = function(stat = c("run", "all", "wait",
 #' and "CANCELLED".
 #' @param groupMembers the group member names. The default is the group members 
 #' of the user who run this code.
-#' @seealso \code{\link{qstat2}}, \code{\link{qstatAll2}}
+#' @seealso \code{\link{sacct}}, \code{\link{sacctAll}}
 #' @export
 qstatGroupAll2 = function(stat = c("run", "all", "wait",
                                    "COMPLETED", "TIMEOUT", "FAILED", 
@@ -378,9 +433,23 @@ qstatGroupAll2 = function(stat = c("run", "all", "wait",
 
 #' Delete (scancel) of SLURM jobs.
 #' @param id The job ID.
-#' @seealso \code{\link{qdelAll2}}
+#' @seealso \code{\link{scancelAll}}
 #' @export
 qdel2 = function(id){
+  .Deprecated("scancel")
+  # cmd = paste("scancel", paste(id, collapse = " "))
+  cmds = paste("scancel", id)
+  res = c()
+  for(cmd in cmds)
+    res[cmd] = system(cmd, intern = TRUE)
+  return(res)
+}
+
+#' Delete (scancel) of SLURM jobs.
+#' @param id The job ID.
+#' @seealso \code{\link{scancelAll}}
+#' @export
+scancel = function(id){
   # cmd = paste("scancel", paste(id, collapse = " "))
   cmds = paste("scancel", id)
   res = c()
@@ -395,13 +464,35 @@ qdel2 = function(id){
 #' @seealso \code{\link{qdel2}}
 #' @export
 qdelAll2 = function(pattern = "*", col = 1){
-  q = qstat2("all")
+  .Deprecated("scancelAll")
+  q = sacct("all")
   id = as.character(q[,col])
   indx = grep(pattern, id)
   if (length(indx) > 0){
     qUser = q[indx,]
     id2Del = as.character(qUser[,1])
-    qdel(id2Del)
+    qdel2(rev(id2Del))
+  } else {
+    cat("No jobs matched!")
+    id2Del = NULL
+  }
+  return(id2Del)
+}
+
+
+#' Delete (scancel) of SLURM jobs.
+#' @param pattern regular expression pattern. The default is "*".
+#' @param col the index of column to match the pattern. The default is 1.
+#' @seealso \code{\link{qdel2}}
+#' @export
+scancelAll = function(pattern = "*", col = 1){
+  q = sacct("all")
+  id = as.character(q[,col])
+  indx = grep(pattern, id)
+  if (length(indx) > 0){
+    qUser = q[indx,]
+    id2Del = as.character(qUser[,1])
+    qdel2(rev(id2Del))
   } else {
     cat("No jobs matched!")
     id2Del = NULL
@@ -426,7 +517,7 @@ hpcInfo2 = function(){
     }
   }
   infoShow = res1[, c("HOSTNAMES", "FREE_MEM", "CPUS(A/I/O/T)")]
-  infoShow = sortDataframe(infoShow, "FREE_MEM")
+  infoShow = sortDataframe(infoShow, "FREE_MEM", decreasing = TRUE)
   infoShow$index = 1:nrow(infoShow)
   print(infoShow)
   return(invisible(res1))
