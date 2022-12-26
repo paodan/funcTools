@@ -165,7 +165,7 @@ rQsub2 = function(path = getwd(), rFile = "testQsub.R",
 }
 
 
-#' Submit (sbatch, like qsub) R jobs.
+#' sbatch: Submit (sbatch, like qsub) R jobs.
 #' @description Submit R jobs in parallel (array).
 #' @param path file path.
 #' @param rFile the R script to run.
@@ -209,7 +209,6 @@ rQsub2 = function(path = getwd(), rFile = "testQsub.R",
 #' @examples
 #' \dontrun{
 #' # This function can only run on HPC with slurm.
-
 #'
 #' #######################################################
 #' # For the compatiblity of rQsub2 function
@@ -531,7 +530,7 @@ qstatAll2 = function(stat = c("run", "all", "wait",
 }
 
 
-#' checking all users' job status on HPC for slurm system
+#' sacctAll: checking all users' job status on HPC for slurm system
 #' @param stat status, one of "run", "all", "wait", 
 #' "COMPLETED", "TIMEOUT", "FAILED", "OUT_OF_MEMORY", and "CANCELLED".
 #' @examples 
@@ -637,7 +636,7 @@ qstat2 = function(stat = c("run", "all", "wait",
 
 
 
-#' checking your own job status on HPC for slurm system
+#' sacct: checking your own job status on HPC for slurm system
 #' @param stat status, one of "run", "all", "wait", 
 #' "COMPLETED", "TIMEOUT", "FAILED", "OUT_OF_MEMORY", and "CANCELLED".
 #' @examples 
@@ -722,7 +721,7 @@ qdel2 = function(id){
   return(res)
 }
 
-#' Delete (scancel) of SLURM jobs.
+#' scancel: Delete (scancel) of SLURM jobs.
 #' @param id The job ID.
 #' @seealso \code{\link{scancelAll}}
 #' @export
@@ -757,7 +756,7 @@ qdelAll2 = function(pattern = "*", col = 1){
 }
 
 
-#' Delete (scancel) of SLURM jobs.
+#' scancelAll: Delete (scancel) of SLURM jobs.
 #' @param pattern regular expression pattern. The default is "*".
 #' @param col the index of column to match the pattern. The default is 1.
 #' @seealso \code{\link{qdel2}}
