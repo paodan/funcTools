@@ -490,6 +490,7 @@ print.statRes2 = function(statRes){
 qstatAll2 = function(stat = c("run", "all", "wait",
                               "COMPLETED", "TIMEOUT", "FAILED", 
                               "OUT_OF_MEMORY", "CANCELLED")){
+  .Deprecated("sacctAll")
   stat = match.arg(stat)
   
   variables = unique(c('JobID', 'JobName', 'Account', 'State',
@@ -529,6 +530,58 @@ qstatAll2 = function(stat = c("run", "all", "wait",
   return(res)
 }
 
+
+#' checking all users' job status on HPC for slurm system
+#' @param stat status, one of "run", "all", "wait", 
+#' "COMPLETED", "TIMEOUT", "FAILED", "OUT_OF_MEMORY", and "CANCELLED".
+#' @examples 
+#' \dontrun{
+#' sacctAll("all")
+#' sacctAll("run")
+#' sacctAll("TIMEOUT")
+#' }
+#' @export
+sacctAll = function(stat = c("run", "all", "wait",
+                              "COMPLETED", "TIMEOUT", "FAILED", 
+                              "OUT_OF_MEMORY", "CANCELLED")){
+  stat = match.arg(stat)
+  
+  variables = unique(c('JobID', 'JobName', 'Account', 'State',
+                       'Group', 'User', 'WorkDir',
+                       'AllocNodes', 'NodeList', 'AllocCPUS', 
+                       'Submit', 'Start', 'Eligible','Elapsed', 
+                       unlist(strsplit(removeSpace(system("sacct -e", 
+                                                          intern = TRUE)), " "))))
+  cmd2 = paste("sacct --alluser -p -o ", paste0(variables, collapse = ","))
+  
+  res0 = system(cmd2, intern = TRUE)
+  res = qstatProcess2(res0)
+  
+  if (stat == "all"){
+    res = res
+  } else if (stat == "run"){
+    res = subset(res, State == "RUNNING")
+  } else if (stat == "wait"){
+    res = subset(res, State == "PENDING")
+  } else if (stat == "COMPLETED"){
+    res = subset(res, State == "COMPLETED")
+  } else if (stat == "TIMEOUT"){
+    res = subset(res, State == "TIMEOUT")
+  } else if (stat == "FAILED"){
+    res = subset(res, State == "FAILED")
+  } else if (stat == "OUT_OF_MEMORY"){
+    res = subset(res, State == "OUT_OF_MEMORY")
+  } else if (stat == "CANCELLED"){
+    res = subset(res, substr(State, 1, 9) == "CANCELLED")
+  } else {
+    stop("Unknown stat!")
+  }
+  
+  # res = qstatProcess(statRes = system(cmd2, intern = TRUE))
+  class(res) = c("statRes2", "data.frame")
+  # return(invisible(res))
+  return(res)
+}
 
 #' checking your own job status on HPC for slurm system
 #' @param stat status, one of "run", "all", "wait", 
@@ -596,7 +649,6 @@ qstat2 = function(stat = c("run", "all", "wait",
 sacct = function(stat = c("run", "all", "wait",
                            "COMPLETED", "TIMEOUT", "FAILED", 
                            "OUT_OF_MEMORY", "CANCELLED")){
-  .Deprecated("sacct")
   stat = match.arg(stat)
   
   variables = unique(c('JobID', 'JobName', 'Account', 'State',
