@@ -165,6 +165,231 @@ rQsub2 = function(path = getwd(), rFile = "testQsub.R",
 }
 
 
+#' Submit (sbatch, like qsub) R jobs.
+#' @description Submit R jobs in parallel (array).
+#' @param path file path.
+#' @param rFile the R script to run.
+#' @param preCMD the command to run R script, the default is
+#' 'echo "module load R/3.3.0 && Rscript '.
+#' @param jobName the job name(s).
+#' @param threaded integer or integer vector to specify
+#' the number of threads of each job.
+#' @param memoryG numeric or numeric vector to specify the
+#' memory (in Gb) of each job.
+#' @param rTimeHour numeric or numeric vector. Maximum running
+#' time (in hour) of each job.
+#' @param logFile the log file(s) for errors and warnings.
+#' @param email email to receive report from HPC. The default is NULL.
+#' @param when2Email when will the server send a email. 
+#' Valid values are NONE, BEGIN, END, FAIL, REQUEUE, ALL (equivalent 
+#' to BEGIN, END, FAIL, REQUEUE, and STAGE_OUT), STAGE_OUT  (burst buffer
+#' stage  out  and  teardown completed), TIME_LIMIT, TIME_LIMIT_90 (reached 90 
+#' percent of time limit), TIME_LIMIT_80 (reached 80 percent of time limit), 
+#' TIME_LIMIT_50 (reached 50  percent  of  time  limit) and ARRAY_TASKS (send 
+#' emails for each array task). Multiple values may be specified in a 
+#' comma separated list. The default is "END,FAIL,STAGE_OUT,TIME_LIMIT". For
+#' compatibility, when2Email="aes" is allowed, 
+#' meaning when2Email="END,FAIL,STAGE_OUT,TIME_LIMIT".
+#' 
+#' 
+#' @param computeNode which computing CPU node will be used?
+#' Support regular expression. The default is NULL, meaning the node is not 
+#' specified. For compatibility, computeNode = \code{"all.q@@n00[0-9][0-9]*"} is 
+#' equivalent to computeNode = NULL.
+#' 
+#' @param array either integers or character indicating array IDs, for example 1:10, "1-10", "1-10,100,1000".
+#' @param dependency logical, If true, this job can only be run after the previous job 
+#' named by jobName is finished.
+#' @param moreQsubParams more sbatch \href{https://slurm.schedmd.com/sbatch.html}{parameters}.
+#' @param param1 the first parameter passed to R script.
+#' @param ... other parameter passed to R script.
+#' @return A list of output of running rFile.  
+#' @details SLURM_ARRAY_TASK_ID is the variable in the systeim environment that can be used in R scripts.
+#' @export
+#' @examples
+#' \dontrun{
+#' # This function can only run on HPC with slurm.
+
+#'
+#' #######################################################
+#' # For the compatiblity of rQsub2 function
+#' ## Section 1, the format of R script file (for example myfile.R) to submit:
+#' args = commandArgs(TRUE)
+#' if (FALSE){
+#'  # Input the code to use sbatch/rQsub, see section 2
+#'  # And run the code manually in this if`{}` statement , for example:
+#'  sbatch(path = getwd(), rFile = "myfile.R", param1 = 1:5)
+#' }
+#' arg1 = args[1]
+#' # Then input R code to use the arg1 variable. for example:
+#' cat("test code result:", arg1, "\n")
+#'
+#' ## Section 2, the code to use rQsub
+#' # One parameter in R script
+#' path = "/my/file/path"
+#' sbatch(path = path,
+#'       rFile = paste0(path, "/testQsub.R"),
+#'       jobName = "job", threaded = 1,
+#'       memoryG = 10, rTimeHour = 2,
+#'       logFile = paste0(path, "/logfilename.log"),
+#'       preCMD = 'module load R/3.3.0 && Rscript ',
+#'       param1 = 1:10)
+#' # Multiple parameters in R script and using 2 threads
+#' sbatch(path = path,
+#'       rFile = paste0(path, "/testQsub.R"),
+#'       jobName = "job", threaded = 2,
+#'       param1 = 1:10, param2 = 2:11, param3 = 3:12)
+#'
+#' # Specify job names, threads, memories and running time.
+#' sbatch(path = path,
+#'       rFile = paste0(path, "/testQsub.R"),
+#'       jobName = paste0("job_", formatN(1:10, 2)),
+#'       logFile = paste0(path, "/logfilename_", formatN(1:10, 2), ".log"),
+#'       threaded = rep(c(1, 2), each = 5),
+#'       memoryG = rep(c(10, 20), each = 5),
+#'       rTimeHour = rep(c(24, 48), each = 5),
+#'       param1 = 1:10)
+#' 
+#' 
+#' 
+#' ##############################
+#' #' ## Section 1, the format of R script file to submit:
+#' if (FALSE){
+#' # Run the code manually in this if`{}` statement , for example:
+#' pathFile = rstudioapi::getActiveDocumentContext()
+#' path = dirname(pathFile$path)
+#' Rfile = pathFile$path
+#' sbatch(path = path, rFile = Rfile, array = 1:5)
+#' # See section 2 for mor examples.
+#' }
+#' 
+#' arg1 = Sys.getenv("SLURM_TASK_ID")
+#' arg1 = as.numeric(arg1)
+#' # Then input R code to use the arg1 variable. for example:
+#' cat("test code result:", arg1, "\n")
+#' Sys.sleep(200)
+#'
+#' ## Section 2, the code to use rQsub
+#' sbatch(path = path, rFile = Rfile,
+#'       jobName = "job", threaded = 2,
+#'       memoryG = 10, rTimeHour = 1.3,
+#'       logFile = paste0(path, "/logfilename.log"),
+#'       array = 1:3,
+#'       preCMD = 'module load R/3.5.1 && Rscript ',
+#'       param1 = NULL)
+#' 
+#' # Run slurm job1 when previous job (also named "job1") is finished
+#' sbatch(path = path, rFile = Rfile,
+#'       jobName = "job1", threaded = 2,
+#'       memoryG = 10, rTimeHour = 2,
+#'       logFile = paste0(path, "/logfilename.log"),
+#'       array = 1,
+#'       dependency = TRUE,
+#'       preCMD = 'module load R/3.5.1 && Rscript ',
+#'       param1 = NULL)
+#' }
+sbatch = function(path = getwd(), rFile = "testSbatch.R",
+                  jobName = "job", threaded = 1, memoryG = 10, rTimeHour = 2, 
+                  logFile = "logfilename.log", email = NULL,
+                  when2Email = "END,FAIL,STAGE_OUT,TIME_LIMIT",
+                  computeNode = NULL,
+                  moreQsubParams = "",
+                  array = 1:10,
+                  dependency = FALSE,
+                  preCMD = 'module load R/3.5.1 && Rscript ',
+                  param1 = NULL,
+                  ...){
+  
+  if(!is.null(param1)){
+    if(!is.null(array)){
+      stop("Either array or param1 must be NULL")
+    } else {
+      if(dependency){
+        message("'dependency' will not be used")
+      }
+      rTimeHour =  rTimeHour = paste0(floor(rTimeHour), ":", formatN(60*(rTimeHour - floor(rTimeHour)), 2), ":00")
+      return(rQsub2(path, rFile, jobName, threaded, memoryG, rTimeHour, logFile,
+                    email, when2Email, computeNode, moreQsubParams, preCMD, param1, ...))
+    }
+  }
+  
+  params0 = ""
+  if(!is.null(array)){
+    stopifnot(is.null(param1))
+    if(!is.null(param1) || length(list(...))!=0){
+      stop("When array is not NULL, param1 ... must be NULL")
+    }
+    if(is.integer(array)){
+      stopifnot(all(array>0))
+      array = paste0(array, collapse = ",")
+    } else if(is.character(array)){
+      stopifnot(length(array) == 1)
+    } else {
+      stop("If not NULL, array must be integers or characters of length of 1")
+    }
+    params0 = paste(params0, "-a", array)
+  }
+  
+  stopifnot(is.logical(dependency))
+  if(dependency){
+    params0 = paste(params0, "-d singleton")
+  }
+  # 
+  # 
+  # params = list(param1, ...) # parameters passed to R
+  # num = unique(sapply(params, length))
+  # if (length(unique(sapply(params, length))) != 1){
+  #   stop("The length of arguments are not the same!")
+  # }
+  
+  if(!is.null(computeNode)){
+    stopifnot(length(computeNode) == 1 && is.character(computeNode))
+    if(computeNode == "all.q@n00[0-9][0-9]*"){
+      computeNode = NULL
+    }
+    params0 = paste(params0, "-w", computeNode)
+  }
+  
+  # memory
+  memory = paste0("--mem=", memoryG, "G")
+  params0 = paste(params0, memory)
+  
+  # time
+  rTimeHour = paste0(floor(rTimeHour), ":", formatN(60*(rTimeHour - floor(rTimeHour)), 2), ":00")
+  params0 = paste(params0, paste0("--time=", rTimeHour))
+  
+  # jobName
+  params0 = paste(params0, "-J", jobName)
+  
+  # logFile
+  params0 = paste(params0, "-e", logFile, "-o", paste0(logFile, ".out"))
+  
+  # threaded
+  params0 = paste(params0, "-c", threaded)
+  
+  emailTypes = c('NONE', 'BEGIN', 'END', 'FAIL', 'REQUEUE', 'ALL', 
+                 'STAGE_OUT', 'TIME_LIMIT', 'TIME_LIMIT_90', 
+                 'TIME_LIMIT_80', 'TIME_LIMIT_50', 'ARRAY_TASKS', "aes")
+  if (is.null(email)){
+    emailAndWhen = ""
+  } else {
+    stopifnot(is.character(when2Email) && 
+                length(when2Email) ==1 &&
+                all(strsplit(when2Email, ",")[[1]] %in% c(emailTypes))
+    )
+    if (when2Email == "aes"){
+      when2Email = "END,FAIL,STAGE_OUT,TIME_LIMIT"
+    }
+    emailAndWhen = paste0("--mail-user=", email, " --mail-type=", when2Email)
+  }
+  qparam = paste("sbatch", params0, emailAndWhen, moreQsubParams)
+  
+  cmd = paste('echo -e "#!/bin/bash\n', preCMD, rFile, 
+              '" |', qparam)
+  system(cmd, intern = TRUE, wait = TRUE)
+  
+}
+
 
 qstatProcess2 = function(statRes){
   res = strSplit(statRes, "\\|") # split columns.
