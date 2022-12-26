@@ -23,5 +23,5 @@ of the user who run this code.}
 Status (sacct, equivalent to qstat) of running jobs of group members.
 }
 \seealso{
-\code{\link{qstat2}}, \code{\link{qstatAll2}}
+\code{\link{sacct}}, \code{\link{sacctAll}}
 }

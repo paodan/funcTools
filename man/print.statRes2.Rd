@@ -7,7 +7,7 @@
 \method{print}{statRes2}(statRes)
 }
 \arguments{
-\item{statRes}{the result of qstat2/qstatAll2/qstatGroupAll2 functions.}
+\item{statRes}{the result of sacct/sacctAll/sacctGroupAll functions.}
 }
 \description{
 Print statRes2 object
