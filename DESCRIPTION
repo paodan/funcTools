@@ -18,4 +18,5 @@ Imports:
     chron,
     ggthemes,
     scales,
-    data.table
+    data.table,
+    pryr
