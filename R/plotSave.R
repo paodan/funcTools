@@ -47,7 +47,7 @@
 
 plotSave = function(filename, Plot = NULL, plotCMD = NULL, device = NULL,
                     path = NULL, scale = 1,width = NA,
-                    height = NA, units = c("in", "cm", "mm"),
+                    height = NA, units = c("in", "cm", "mm")[1],
                     dpi = 300, limitsize = TRUE, ...){
   supportedClassesPlot = c(names(funCode(plot)@fS3@fName))
   supportedClassesGrid.draw = names(funCode(grid.draw)@fS3@fName)
