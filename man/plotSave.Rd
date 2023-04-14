@@ -13,7 +13,7 @@ plotSave(
   scale = 1,
   width = NA,
   height = NA,
-  units = c("in", "cm", "mm"),
+  units = c("in", "cm", "mm")[1],
   dpi = 300,
   limitsize = TRUE,
   ...
