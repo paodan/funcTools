@@ -8,6 +8,7 @@
 #' @param outputgif output gif file names
 #' @import gtools
 #' @import magick
+#' @export
 makeAnimation = function(imgs, pattern = NULL, path = NULL, fps = 2, 
                          outputgif = "output.gif"){
   dir.create(dirname(outputgif),F)
@@ -28,7 +29,7 @@ makeAnimation = function(imgs, pattern = NULL, path = NULL, fps = 2,
   img_joined <- image_join(img_list)
   
   ## animate at 2 frames per second
-  img_animated <- image_animate(img_joined, fps = 2)
+  img_animated <- image_animate(img_joined, fps = fps)
   
   # ## view animated image
   # img_animated
