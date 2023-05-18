@@ -29,5 +29,4 @@ parfor(1:10, Sys.sleep, .core = 10)
 y = parfor(1:10, print, .printConsole = TRUE, .progressBar = FALSE)
 parfor(1:10, print, .printConsole = TRUE, .progressBar = TRUE)
 }
-
 }

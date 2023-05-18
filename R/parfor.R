@@ -13,7 +13,7 @@
 #' y = parfor(1:10, print, .printConsole = TRUE, .progressBar = FALSE)
 #' parfor(1:10, print, .printConsole = TRUE, .progressBar = TRUE)
 #' }
-#' 
+#' @export
 parfor = function(x, FUN, ..., .core = 2, .printConsole = TRUE, .progressBar = TRUE){
   if(.progressBar){
     .printConsole = TRUE
