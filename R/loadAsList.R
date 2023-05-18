@@ -8,6 +8,7 @@
 #' rm(list = c("x", "y"))
 #' loadAsList("~/Downloads/tmp_xy.Rdata")
 #' }
+#' @export
 loadAsList = function(file){
   res = load(file)
   load(file)
