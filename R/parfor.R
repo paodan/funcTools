@@ -6,6 +6,7 @@
 #' @param .printConsole logical, if messages from FUN is printed
 #' @param .progressBar logical, if a progressBar is added
 #' @import doParallel
+#' @import parallel
 #' @examples 
 #' \dontrun{
 #' parfor(1:10, c, 1)
