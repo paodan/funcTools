@@ -10,9 +10,11 @@
 #' }
 #' @export
 loadAsList = function(file){
+  cat("Loading", normalizePath(file), "\n")
   `__res__` = environment()
   load(file, `__res__`)
   res = as.list(`__res__`)
   id = names(res) != "__res__"
+  on.exit(cat("----- Successfully loaded -----\n\n"))
   return(res[id])
 }
