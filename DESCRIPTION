@@ -1,6 +1,6 @@
 Package: funcTools
 Title: some useful function tools in practice
-Version: 0.1.6
+Version: 0.1.7
 Date: 2023-5-18
 Authors@R: person("Weiyang", "Tao", email = "weiyangtao1513@gmail.com", role = c("aut", "cre"))
 Description: This package includes functions related to data manipulation, viewing source R code, etc. More useful functions will be added gradually.
