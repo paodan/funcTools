@@ -31,7 +31,6 @@ functionInfo = setClass(Class = "functionInfo",
                                      S3S4 = "logical", fcn = "function",
                                      fS3 = "fcnS", fS4 = "fcnS"))
 
-
 #' @title Finding function source code\cr
 #' @description funCode function is to obtain the source code of an R function
 #' @param f a function name with or without quotation
