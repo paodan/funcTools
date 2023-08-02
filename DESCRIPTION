@@ -20,4 +20,5 @@ Imports:
     scales,
     data.table,
     pryr,
-    XML
+    XML,
+    doParallel
