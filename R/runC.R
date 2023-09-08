@@ -19,7 +19,7 @@
 #' @param rebuild logical, whether to compile and rebuild the dynamic link file, default is TRUE.
 #' @param unload logical, whether to unload the dynamic link file after finished, default is TRUE.
 #' @returns It returns what `.cCall` would return.
-#' @import tools file_path_sans_ext file_ext
+#' @importFrom tools file_path_sans_ext file_ext
 #' @examples
 #' \dontrun{
 #' ## Suppose you have a C file called `directory/file.c`, in which you have 
