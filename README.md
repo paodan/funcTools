@@ -1,8 +1,12 @@
 funcTools package contains miscellaneous functions or tools to make my work easier.
 
 # Installation
-if(!require("devtools", quietly = TRUE)) install.packages("devtools")
+```r
+if(!require("devtools", quietly = TRUE)) 
+  install.packages("devtools")
+
 devtools::install_github("paodan/funcTools")
+```
 
 # Function Example:
 
