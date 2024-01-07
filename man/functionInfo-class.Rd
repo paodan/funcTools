@@ -33,10 +33,10 @@ FunctionInfo is an S4 class and a function to generate functionInfo object.
 }
 \section{Methods (by generic)}{
 \itemize{
-\item \code{show}: Show the S3 method names in
+\item \code{show(functionInfo)}: Show the S3 method names in
 object@fS3 and S4 method names in object@fS4
-}}
 
+}}
 \examples{
 \dontrun{
 functionInfo()

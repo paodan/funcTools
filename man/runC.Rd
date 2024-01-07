@@ -5,7 +5,9 @@
 \title{Run a C function based on C interface from R}
 \usage{
 runC(
-  RCall = {     .C("C_dist", x1, x2, nchannel, ncells, nnodes, xdist = 0)$xdist },
+  RCall = {
+     .C("C_dist", x1, x2, nchannel, ncells, nnodes, xdist = 0)$xdist
+ },
   cfile = "src/testC.c",
   body = character(),
   includes = character(),

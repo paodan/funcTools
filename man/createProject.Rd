@@ -7,7 +7,14 @@
 ("00_01_functions.R" and "01_01_readData.R") in Rscript folder. If \code{.git = TRUE},
 then a git repository will be initialized.}
 \usage{
-createProject(proj, path = "./", .git = FALSE, showWarnings = FALSE)
+createProject(
+  proj,
+  path = "./",
+  .git = FALSE,
+  showWarnings = FALSE,
+  inheritProj = NULL,
+  inheritFolders = c("Rscript")
+)
 }
 \arguments{
 \item{proj}{project name}
@@ -16,7 +23,13 @@ createProject(proj, path = "./", .git = FALSE, showWarnings = FALSE)
 
 \item{.git}{logical, whether to create a git repository, default is FALSE}
 
-\item{showWarnings}{logical, whether to show warnings when create the folders, default is FALSE}
+\item{showWarnings}{logical, whether to show warnings when create the folders, 
+the default is FALSE}
+
+\item{inheritProj}{the project folder to be inherited, default is NULL}
+
+\item{inheritFolders}{the folder in the inheritProj project to be copied, 
+the default is c("Rscript")}
 }
 \value{
 a list of two elements, i.e., `dirs` and `files`. `dirs` contains all
@@ -44,5 +57,12 @@ unlink("~/tempProj2",recursive = TRUE) # remove this folder
 createProject("tempProj3", path = "~/", .git = TRUE)
 dir.exists("~/tempProj3/.git")
 unlink("~/tempProj3",recursive = TRUE) # remove this folder
+
+# Inherit from a project
+createProject("tempProj4")
+file.create("tempProj4/0_RawData/tmpdataFile.txt") # make a file in 0_RawData folder
+createProject("tempProj5", inheritProj = "tempProj4", inheritFolders = c("Rscript", "0_RawData"))
+unlink("tempProj4",recursive = TRUE) # remove this folder
+unlink("tempProj5",recursive = TRUE) # remove this folder
 }
 }
