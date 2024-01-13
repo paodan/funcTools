@@ -58,8 +58,16 @@ functionInfo = setClass(Class = "functionInfo",
 #' # The source of standardGeneric show
 #' funCode("show")
 #' funCode(show)
+#' 
+#' # The source of ggproto_method in ggplot2
+#' library(ggplot2)
+#' funCode(Layout$setup)
 #' }
-funCode = function(f = character(), pattern = NULL,
+funCode <- function (f, ...) {
+  UseMethod("funCode", f)
+}
+
+funCode.default = function(f = character(), pattern = NULL,
                    envir = topenv(parent.frame())){
   # get a function name string (f) and a real function (fcn).
   if (is.character(f)) {
@@ -128,6 +136,14 @@ funCode = function(f = character(), pattern = NULL,
              fS4 = new("fcnS", fcn = fcnS4, fName = fNameS4))
   
   return(resF)
+}
+
+funCode.ggproto_method = function(f){
+  wrapper = unclass(f)
+  wrappere = environment(wrapper)
+  
+  inner = wrappere$f
+  return(list(wrapper = wrapper, inner = inner))
 }
 
 

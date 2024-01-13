@@ -4,7 +4,7 @@
 \alias{funCode}
 \title{Finding function source code\cr}
 \usage{
-funCode(f = character(), pattern = NULL, envir = topenv(parent.frame()))
+funCode(f, ...)
 }
 \arguments{
 \item{f}{a function name with or without quotation}
@@ -37,5 +37,9 @@ funCode("plot", "data.frame")
 # The source of standardGeneric show
 funCode("show")
 funCode(show)
+
+# The source of ggproto_method in ggplot2
+library(ggplot2)
+funCode(Layout$setup)
 }
 }
