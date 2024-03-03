@@ -1,6 +1,6 @@
 Package: funcTools
 Title: some useful function tools in practice
-Version: 0.1.10
+Version: 0.1.11
 Date: 2023-07-08
 Authors@R: person("Weiyang", "Tao", email = "weiyangtao1513@gmail.com", role = c("aut", "cre"))
 Description: This package includes functions related to data manipulation, viewing source R code, etc. More useful functions will be added gradually.
@@ -8,7 +8,7 @@ Depends: R (>= 3.2.0)
 License: GPL-3 + file LICENSE
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.1
 Imports: 
     ggplot2,
     reshape2,

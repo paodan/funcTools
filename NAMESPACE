@@ -2,6 +2,8 @@
 
 S3method("$",functionInfo)
 S3method(.DollarNames,functionInfo)
+S3method(funCode,default)
+S3method(funCode,ggproto_method)
 S3method(print,HpcInfo)
 S3method(print,statRes)
 S3method(print,statRes2)

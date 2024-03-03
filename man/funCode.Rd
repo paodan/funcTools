@@ -2,9 +2,15 @@
 % Please edit documentation in R/functionInfo.R
 \name{funCode}
 \alias{funCode}
+\alias{funCode.default}
+\alias{funCode.ggproto_method}
 \title{Finding function source code\cr}
 \usage{
 funCode(f, ...)
+
+\method{funCode}{default}(f = character(), pattern = NULL, envir = topenv(parent.frame()))
+
+\method{funCode}{ggproto_method}(f)
 }
 \arguments{
 \item{f}{a function name with or without quotation}

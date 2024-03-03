@@ -29,8 +29,8 @@ is declared and defined.}
 \item{body}{The C code that are stored as a character/string (vector). By default, it's an 
 empty character. But if this parameter is provided with a non-empty character, 
 the text in `includes` and `body` will be written into a temporary file (`tempfile()`), which, 
-instead of `cfile`, will be compiled and loaded in R. Please note that, the `\n` 
-in the source C code needs to be escaped as `\\n`, and `\t` as `\\t`, `\\` as `\\\\`, etc.}
+instead of `cfile`, will be compiled and loaded in R. Please note that, the `\\n` 
+in the source C code needs to be escaped as `\\\\n`, and `\\t` as `\\\\t`, `\\\\` as `\\\\\\\\`, etc.}
 
 \item{includes}{This includes "#include <...>" C codes ahead of `body`. Default is character().}
 

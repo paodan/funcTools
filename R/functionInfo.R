@@ -31,6 +31,7 @@ functionInfo = setClass(Class = "functionInfo",
                                      S3S4 = "logical", fcn = "function",
                                      fS3 = "fcnS", fS4 = "fcnS"))
 
+#' @name funCode
 #' @title Finding function source code\cr
 #' @description funCode function is to obtain the source code of an R function
 #' @param f a function name with or without quotation
@@ -67,6 +68,8 @@ funCode <- function (f, ...) {
   UseMethod("funCode", f)
 }
 
+#' @rdname funCode
+#' @export
 funCode.default = function(f = character(), pattern = NULL,
                    envir = topenv(parent.frame())){
   # get a function name string (f) and a real function (fcn).
@@ -138,6 +141,8 @@ funCode.default = function(f = character(), pattern = NULL,
   return(resF)
 }
 
+#' @rdname funCode
+#' @export
 funCode.ggproto_method = function(f){
   wrapper = unclass(f)
   wrappere = environment(wrapper)
