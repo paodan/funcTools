@@ -1,3 +1,6 @@
+## funcTools 0.1.12
+* Add getLoadedCFun function
+
 ## funcTools 0.1.11
 * Debug the funCode function
 * Modify the help page of runC function
