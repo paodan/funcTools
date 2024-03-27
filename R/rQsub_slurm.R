@@ -408,7 +408,7 @@ qstatSummary2 = function(statRes){
   fmt = function(item){
     tapply(item, statRes$State, sum, na.rm = TRUE)
   }
-  memory = as.numeric(sub("Mn|Mc", "E-3", sub("Gn|Gc", "", statRes$ReqMem)))
+  memory = as.numeric(sub("Mn|Mc", "E-3", sub("Gn|Gc|G$", "", statRes$ReqMem)))
   memorySummary = fmt(memory)
   
   node = as.numeric(statRes$ReqNodes)
